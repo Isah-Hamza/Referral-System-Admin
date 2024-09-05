@@ -411,12 +411,12 @@ const Profile = ({  }) => {
                       <Select label={'Roles'} options={[{label:'Radiology-Result Unit', value:'1'}]} icon={<RiBankCard2Line size={22} />}/>
                     </div>
                     <div className="mt-10 flex items-center gap-3">
-                    <Button onClick={toggleChangeRole} className={'!px-4 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                    <Button onClick={toggleChangeRole} className={'!px-4 !bg-light_blue'} title={'Send Invite(s)'} />
+                    <Button onClick={toggleInvite} className={'!px-4 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                    <Button onClick={toggleInvite} className={'!px-4 !bg-light_blue'} title={'Send Invite(s)'} />
                     </div>
                   </div>
               </div> : null
-        }
+      }
     </div>
   )
 }
