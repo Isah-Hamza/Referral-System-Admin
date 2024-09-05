@@ -25,6 +25,7 @@ const Login = () => {
         successToast(res.data.message);
         axiosClient().defaults.headers["Authorization"] = "Bearer " + res.data.token;
         window.localStorage.setItem('referrer-admin-token',res.data.token);
+        window.localStorage.setItem('referrer-admin-id',res.data.admin_id);
         
         // const data = {
         //   name:res.data.name,

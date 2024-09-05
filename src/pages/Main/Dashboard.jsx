@@ -4,7 +4,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import avatar from '../../assets/images/avatar.svg';
 import { IoLogOut } from "react-icons/io5";
 import { FaEye } from 'react-icons/fa6';
-import { BsArrowRight, BsArrowUpRight, BsArrowUpRightSquare } from 'react-icons/bs';
+import { BsArrowDownRight, BsArrowRight, BsArrowUpRight, BsArrowUpRightSquare } from 'react-icons/bs';
 import { PiEyeClosedBold } from "react-icons/pi";
 import note from '../../assets/images/note.svg';
 import BarChart from '../../components/Chart/BarChart';
@@ -26,11 +26,47 @@ import { MdArrowForward } from 'react-icons/md';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-
+import { useQuery } from 'react-query';
+import DashboardServices from '../../services/Dashboard';
+import { ConvertToNaira } from '../../utils/Helper';
+import PageLoading from '../../Loader/PageLoading'
 
 const Dashboard = () => {
 
+    const [dashboardStats, setDashboardStats] = useState(null);
+    const [referralStats, setReferralStats] = useState(null);
+    const [rebateChart, setRebateChart] = useState(null);
+    const [appointmentStats,setAppointmentStats] = useState(null);
+
     const navigate = useNavigate('');
+
+    const admin_id = window.localStorage.getItem('referrer-admin-id');
+    
+    const { isLoading:loadingDashboardStats }  = useQuery('dashboard-stats', () => DashboardServices.GetDashboardStats(admin_id), {
+    onSuccess:res => {
+        setDashboardStats(res.data);
+        console.log(res.data)
+        }
+    });
+    
+    const { isLoading:loadingReferralStats }  = useQuery('referral-stats', () => DashboardServices.GetReferralStats(admin_id), {
+    onSuccess:res => {
+        setReferralStats(res.data);
+        }
+    });
+    
+    const { isLoading:loadingRebateChart }  = useQuery('rebate-chart', () => DashboardServices.GetRebateChart(admin_id), {
+    onSuccess:res => {
+        setRebateChart(res.data);
+        }
+    });
+    
+    const { isLoading:loadingAppointmentStats }  = useQuery('appointment-stats', () => DashboardServices.GetAppointmentStats(admin_id), {
+    onSuccess:res => {
+        setAppointmentStats(res.data);
+        }
+    });
+
 
     const today_booking = [
         {
@@ -50,13 +86,17 @@ const Dashboard = () => {
         },
     ]
 
+    if(loadingDashboardStats || loadingReferralStats || loadingRebateChart || loadingAppointmentStats ){
+        return <PageLoading />
+    }
+
   return (
     <>
         <div className="mt-2">
             <div className="grid grid-cols-4 gap-5">
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Total Referrals</p>
-                    <p className='font-semibold text-xl my-3'>232</p>
+                    <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
                     <div className="flex items-center justify-between gap-5 mt-5">
                         <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
                         <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
@@ -67,7 +107,7 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Total Referrers</p>
-                    <p className='font-semibold text-xl my-3'>3,109</p>
+                    <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrers}</p>
                     <div className="flex items-center justify-between gap-5 mt-5">
                         <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
                         <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
@@ -78,18 +118,25 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Monthly Rebate Earned</p>
-                    <p className='font-semibold text-xl my-3'>₦3,009,100</p>
+                    <p className='font-semibold text-xl my-3'>₦{dashboardStats?.month_earning?.total_earning_month?.toLocaleString('en-US')}</p>
                     <div className="flex text-sm items-center gap-1 mt-5">
-                        <div className="text-green-500 font-medium flex items-center gap-1">
-                            <BsArrowUpRight color='' />
-                            <span className='' >20%</span>
-                        </div>
+                        {
+                          dashboardStats?.month_earning?.option == 'increase' ?
+                              <div className="text-green-500 font-medium flex items-center gap-1">
+                                <BsArrowUpRight color='' />
+                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}</span>
+                            </div> :
+                              <div className="text-red-500 font-medium flex items-center gap-1">
+                                <BsArrowDownRight color='' />
+                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}</span>
+                            </div> 
+                        }
                         <span>vs last month</span>
                     </div>
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Total Payouts Settled</p>
-                    <p className='font-semibold text-xl my-3'>₦1,440,900</p>
+                    <p className='font-semibold text-xl my-3'>₦{dashboardStats?.total_payout_settled}</p>
                     <div className="flex text-sm items-center gap-1 mt-5">
                         <span>Payment</span>
                         <div className="text-green-500 font-medium flex items-center gap-1">
@@ -107,22 +154,22 @@ const Dashboard = () => {
                         <p className='text-sm' >Analysis of pending & completed referrals</p>
                         <div className="flex flex-col">
                             <div className=" -ml-10 h-[250px]">
-                                <PieChart />
+                                <PieChart completed = {referralStats?.completed} pending={referralStats?.pending} />
                             </div>
                             <div className="flex justify-center items-center text-center gap-10">
                                 <div className="">
                                     <div className="text-sm flex items-center gap-1">
-                                        <div className="w-2 h-2 rounded-full bg-[#C9E6FF]"></div>
+                                        <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
                                         <span>Completed</span>
                                     </div>
-                                    <p className='pl-'>201</p>
+                                    <p className='pl-'>{referralStats?.completed}</p>
                                 </div>
                                 <div className="">
                                     <div className="text-sm flex items-center gap-1">
                                         <div className="w-2 h-2 rounded-full bg-light_blue"></div>
                                         <span>Pending</span>
                                     </div>
-                                    <p className='pl-'>694</p>
+                                    <p className='pl-'>{referralStats?.pending}</p>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +189,7 @@ const Dashboard = () => {
                     <div className="p-5">
                         <p className='text-sm' >Earning history displayed per month</p>
                         <div className="mt-5 -ml-10 min-w-[400px] h-[250px]">
-                            <BarChart />
+                            <BarChart data = {rebateChart?.rebate_earnings} />
                         </div>
                     </div>
                 </div>
@@ -172,9 +219,9 @@ const Dashboard = () => {
                 <div className="relative w-[28%] bg-black p-5 text-white rounded-xl">
                     <p className='font-medium' >Appointment Stats</p>
                     <div className="grid gap-2 mt-5 relative z-10">
-                        <p>210 Booked</p>
-                        <p>93 Paid</p>
-                        <p>14 Scheduled For Today</p>
+                        <p>{appointmentStats?.total_appointments} Booked</p>
+                        <p>{appointmentStats?.paid_appointments} Paid</p>
+                        <p>{appointmentStats?.appointments_today} Scheduled For Today</p>
                         <Button className={'opacity-90 mt-10 text-sm'}  title='View More Details' />
                     </div>
                         <img className='absolute right-0 bottom-0' src={design} alt="" />

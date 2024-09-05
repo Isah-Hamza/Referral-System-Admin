@@ -1,12 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
 
-const data = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
-];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = [ '#00C49F', '#0088FE','#FFBB28', '#FF8042'];
 
 
 const renderActiveShape = (props) => {
@@ -55,24 +51,24 @@ const renderActiveShape = (props) => {
   );
 };
 
-export default class Example extends PureComponent {
+export default function Example({ pending, completed }){
 
-  state = {
-    activeIndex: 0,
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const data = [
+    { name: 'Completed', value: completed },
+    { name: 'Pending', value: pending },
+  ];
+
+  const onPieEnter = (_, index) => {
+    setActiveIndex(index);
   };
 
-  onPieEnter = (_, index) => {
-    this.setState({
-      activeIndex: index,
-    });
-  };
-
-  render() {
     return (
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={200} height={200}>
           <Pie
-            activeIndex={this.state.activeIndex}
+            activeIndex={activeIndex}
             // activeShape={renderActiveShape}
             data={data}
             cx="50%"
@@ -81,7 +77,7 @@ export default class Example extends PureComponent {
             outerRadius={100}
             fill={"#8884d8"}
             dataKey="value"
-            onMouseEnter={this.onPieEnter}
+            onMouseEnter={onPieEnter}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -90,5 +86,4 @@ export default class Example extends PureComponent {
         </PieChart>
       </ResponsiveContainer>
     );
-  }
 }
