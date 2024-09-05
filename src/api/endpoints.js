@@ -1,9 +1,9 @@
 const endpoints = {
   auth: {
-    LOGIN:'login',
+    LOGIN:'admin/login',
     REGISTER:'register',
     SETUP_PROFILE:'set-up-profile',
-    FORGOT_PASSWORD:'forgot-password',
+    FORGOT_PASSWORD:'admin/forgot-password',
     VERIFY_OTP:'verify-otp',
     CHANGE_PASSWORD:'change-password',
   },

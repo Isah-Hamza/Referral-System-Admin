@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './pages/Auth/Login'
@@ -17,9 +15,12 @@ import Category from './pages/Main/Tests/Category';
 import Referrers from './pages/Main/Referrers';
 import Rebate from './pages/Main/Rebate'
 import Profile from './pages/Main/Profile';
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { QueryClient, QueryClientProvider } from 'react-query';
 
+export const queryClient = new QueryClient();
 function App() {
-  const [count, setCount] = useState(0)
 
   const mainRoutes = [
     {
@@ -62,6 +63,17 @@ function App() {
 
   return ( 
     <>
+      <ToastContainer
+    theme="colored"
+    hideProgressBar
+    pauseOnHover
+    draggable
+    autoClose={true}
+    closeOnClick={true}
+    stacked={false}
+    position="top-right"
+  />
+    <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
         <Route path='/' Component={Login} />
@@ -79,6 +91,7 @@ function App() {
       </Routes>
 
     </BrowserRouter>
+  </QueryClientProvider>
     </>
   )
 }

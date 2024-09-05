@@ -12,7 +12,7 @@ export const axiosClient = () => {
   
   axiosInstance.interceptors.request.use(
     (config) => {
-      let token = window.localStorage.getItem("referrer-token") ?? JSON.parse(window.localStorage.getItem("referrer-user"))?.token ;
+      let token = window.localStorage.getItem("referrer-admin-token") ?? JSON.parse(window.localStorage.getItem("referrer-user"))?.token ;
       // let token = JSON.parse(window.localStorage.getItem("referrer-user"))?.token;
 
       if (token !== null && typeof token !== 'string' && token !== 'undefined' && token !== undefined) {
