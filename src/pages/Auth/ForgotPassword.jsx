@@ -9,10 +9,29 @@ import Button from '../../components/Button';
 import Input from '../../components/Inputs';
 import {Link, useNavigate} from 'react-router-dom'
 import { IoMdArrowBack } from "react-icons/io";
+import { useMutation } from 'react-query';
+import Auth from '../../services/Auth';
+import { axiosClient } from '../../api/axiosClient';
+import {successToast, errorToast} from '../../utils/Helper'
 
 const ForgotPassword = () => {
 
   const navigate = useNavigate()
+
+  const [email, setEmail] = useState('');
+
+  const { mutate, isLoading  } = useMutation(Auth.ForgotPassword, {
+    onSuccess: res => {
+        successToast(res.data.message);        
+        axiosClient().defaults.headers["Authorization"] = "Bearer " + res.data.token;
+        window.localStorage.setItem('referrer-admin-token',res.data.token);
+
+        navigate(`/otp-verification?email=${email}`);
+    },
+    onError: e => { 
+      errorToast(e[0]['email'][0]);
+    }
+})
 
   return (
     <AuthLayout>
