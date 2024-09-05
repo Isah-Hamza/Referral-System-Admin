@@ -16,6 +16,7 @@ const customToastComponent = (msg, error = false) => {
       position: 'top-right',
       closeButton: CloseButton,
       toastId: 'so',
+      
     });
   else
     toast(<CustomSuccessToast mssg={msg} id={id} />, {

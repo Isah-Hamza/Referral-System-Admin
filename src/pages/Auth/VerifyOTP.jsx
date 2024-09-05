@@ -2,18 +2,47 @@ import React, { useEffect, useState } from 'react'
 import AuthLayout from '../../layouts/AuthLayout'
 import { CiUser } from "react-icons/ci";
 import { MdArrowBack, MdOutlineMarkEmailUnread } from "react-icons/md";
-import { FiPhoneCall } from "react-icons/fi";
-import { MdOutlineLockPerson } from "react-icons/md";
-import { FcGoogle } from "react-icons/fc";
+
 import Button from '../../components/Button'; 
 import Input from '../../components/Inputs';
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
 import { IoMdArrowBack } from "react-icons/io";
 import { MdOutlineAccountTree } from "react-icons/md";
+import { useMutation } from 'react-query';
+import Auth from '../../services/Auth';
+import { errorToast, successToast } from '../../utils/Helper';
+import { axiosClient } from '../../api/axiosClient';
+import LoadingModal from '../../Loader/LoadingModal';
 
 
 const VerifyOTP = () => {
 const navigate = useNavigate()
+const [otp, setOtp] = useState('');
+
+const search = useLocation().search;
+const email = new URLSearchParams(search).get('email');
+
+const { mutate, isLoading  } = useMutation(Auth.VerifyOTP, {
+  onSuccess: res => {
+      successToast(res.data.message);   
+      axiosClient().defaults.headers["Authorization"] = "Bearer " + res.data.token;
+      window.localStorage.setItem('referrer-admin-id',res.data.admin_id);
+      window.localStorage.setItem('referrer-admin-token',res.data.token);
+
+      navigate(`/change-password`);
+  },
+  onError: e => { 
+    errorToast(e.error);
+  }
+})
+
+useEffect(() => {
+
+if(!email){
+  navigate('/forgot-password', { replace:true })
+}
+
+}, [email])
 
   return (
     <AuthLayout>
@@ -29,17 +58,20 @@ const navigate = useNavigate()
         </div>
         <div className="px-7 flex flex-col flex-1 ">
           <div className="mt-10 mb-10">
-            <Input placeholder={'123-456'} title={'Enter OTP'}  icon={<MdOutlineAccountTree size={22} />}/>
+            <Input value={otp} onChange={e => setOtp(e.target.value)} placeholder={'123-456'} title={'Enter OTP'}  icon={<MdOutlineAccountTree size={22} />}/>
           </div>
           {/* <div className="mt-5">
               <Input label={'Create Password'} type={'password'} placeholder={'************'} icon={<MdOutlineLockPerson size={22} />}/>
               <Link to={'/forgot-password'} className='text-sm text-primary font-semibold' >forgot password</Link>
           </div> */}
-            <Button className={'opacity-90 mt-auto'} onClick={() => navigate('/change-password')} title='Verify OTP' />
+            <Button className={'opacity-90 mt-auto'} onClick={() => mutate({ email, otp:Number(otp) })} title='Verify OTP' />
 
         </div>
       </div>
     </div>
+    {
+      isLoading ? <LoadingModal /> : null
+    }
   </AuthLayout>
   )
 }

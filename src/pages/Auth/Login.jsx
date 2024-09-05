@@ -37,7 +37,7 @@ const Login = () => {
 
         // window.localStorage.setItem('referrer-data',JSON.stringify(data));
 
-        navigate('/dashboard', {state:{data} });
+        navigate('/dashboard');
     },
     onError: e => {
         errorToast(e.message);
@@ -82,7 +82,7 @@ const { touched, errors, values, getFieldProps, handleSubmit } = useFormik({
         </form>
       </div>
       {
-        isLoading ? (LoadingModal) : null
+        isLoading ? <LoadingModal /> : null
       }
     </AuthLayout>
   )

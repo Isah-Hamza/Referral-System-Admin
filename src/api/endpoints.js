@@ -4,8 +4,8 @@ const endpoints = {
     REGISTER:'register',
     SETUP_PROFILE:'set-up-profile',
     FORGOT_PASSWORD:'admin/forgot-password',
-    VERIFY_OTP:'verify-otp',
-    CHANGE_PASSWORD:'change-password',
+    VERIFY_OTP:'admin/verify-otp',
+    CHANGE_PASSWORD:'admin/change-password',
   },
   bank:{
     ALL_BANKS:'bank/all',
