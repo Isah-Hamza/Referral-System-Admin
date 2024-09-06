@@ -66,6 +66,7 @@ const Dashboard = () => {
         setAppointmentStats(res.data);
         }
     });
+    
 
 
     const today_booking = [
@@ -124,11 +125,11 @@ const Dashboard = () => {
                           dashboardStats?.month_earning?.option == 'increase' ?
                               <div className="text-green-500 font-medium flex items-center gap-1">
                                 <BsArrowUpRight color='' />
-                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}</span>
+                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}%</span>
                             </div> :
                               <div className="text-red-500 font-medium flex items-center gap-1">
                                 <BsArrowDownRight color='' />
-                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}</span>
+                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}%</span>
                             </div> 
                         }
                         <span>vs last month</span>

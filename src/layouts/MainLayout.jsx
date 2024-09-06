@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { IoLogOut } from 'react-icons/io5';
 import { Outlet, useNavigate } from 'react-router-dom'
 import logo from '../assets/images/logo.svg';
 import { AiOutlineHome } from "react-icons/ai";
@@ -17,11 +16,14 @@ import test from '../assets/images/Test.svg';
 import earn from '../assets/images/Earn.svg';
 import { CgClose } from 'react-icons/cg';
 import { useQuery } from 'react-query';
+import Dashboard from '../services/Dashboard';
 
 const MainLayout = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(0);
     const [showActivities, setShowActivities] = useState(false);
+    const [activitiess, setActivities] = useState([]);
+
     const [headerInfo, setHeaderInfo] = useState({
         header:'Dashboard Overview',
         sub:'Manage and analyze your patient statistics.',
@@ -161,7 +163,11 @@ const MainLayout = () => {
         },
     ]
 
-    const { } = useQuery();
+    const { isLoading:loadingActivities }  = useQuery('activities', Dashboard.GetNotifications, {
+        onSuccess:res => {
+            setActivities(res.data);
+            }
+        });
         
   useEffect(() => {
 
