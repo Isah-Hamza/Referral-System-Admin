@@ -9,12 +9,19 @@ import { MdOutlineEmail } from 'react-icons/md'
 import completed from '../../assets/images/completed.svg'
 import New from '../../components/Referral/New'
 import { useLocation } from 'react-router-dom'
+import ReferralService from '../../services/Referrals'
+import PageLoading from '../../Loader/PageLoading'
+import { useQuery } from 'react-query'
+import moment from 'moment'
 
 const Referrals = () => {
     
     const query = useLocation().search.split('=')[1];
     const [acitveTab, setActiveTab] = useState(0);
-    console.log(query);
+    const [page,setPage] = useState(1);
+    const [referrals, setReferrals] = useState([]);
+    const [referral, setReferral] = useState({});
+    const [refCode, setRefCode ] = useState(null);
 
     const [viewDetails, setViewDetails] = useState(false);
     const [newReferral, setNewReferral] = useState(() => query == 'true' ? true : false);
@@ -22,64 +29,6 @@ const Referrals = () => {
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleNewReferral = () => setNewReferral(!newReferral);
 
-    const dummy = [
-        {
-            name:'Marcia Cronin ',
-            email:'gerald37@hotmail.com',
-            phone:'601-671-8795',
-            gender:'Female',
-            test:'-',
-            rebate:'-',
-        },
-        {
-            name:'Luke Hudsonlee Jack',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'528-323-1027',
-            gender:'Male',
-            test:'3',
-            rebate:'₦103,000',
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'366-430-1102',
-            gender:'Male',
-            test:'-',
-            rebate:'-',
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'448-970-7550',
-            gender:'Female',
-            test:'2',
-            rebate:'₦21,000',
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'528-323-1027',
-            gender:'Male',
-            test:'-',
-            rebate:'-',
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'366-430-1102',
-            gender:'Male',
-            test:'1',
-            rebate:'₦55,000',
-        },
-        {
-            name:'Stacey Jacobs',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'448-970-7550',
-            gender:'Female',
-            test:'2',
-            rebate:'₦21,000',
-        },
-    ]
 
     const dummyDetails = [
         {
@@ -123,24 +72,37 @@ const Referrals = () => {
         },
     ]
 
-    const details = [
-        {
+        
+    const { isLoading:loadingReferrals }  = useQuery('referrals', () => ReferralService.GetReferrals({ page }), {
+        onSuccess:res => {
+            setReferrals(res.data.referrals);
+            console.log(res.data)
+            }
+        });
+        
+    const { isLoading:loadingReferral, refetch:refetchReferral}  = useQuery(['referral', refCode], () => ReferralService.GetReferrals(refCode), {
+        enabled:false,
+        onSuccess:res => {
+            setReferral(res.data);
+            }
+        });
 
-        }
-    ]
+        
 
-
+    if(loadingReferrals){
+        return <PageLoading />
+    }
 
   return (
   <>
    {!newReferral ? 
    <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
         <div className="relative border-b p-3 flex justify-between items-center">
-            <div className={`transition-all duration-300 absolute h-0.5 w-36 bg-primary left-5 bottom-0 ${acitveTab == 1 && '!left-[165px] w-48'}`}></div>
-            <div className="flex gap-14 text-sm pl-10">
+            {/* <div className={`transition-all duration-300 absolute h-0.5 w-36 bg-primary left-5 bottom-0 ${acitveTab == 1 && '!left-[165px] w-48'}`}></div> */}
+            <div className="flex gap-14 text-sm pl-3">
                 {
-                    ['All Referrals', 'No Test Appointments'].map((item, idx) => (
-                        <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
+                    ['All Referrals'].map((item, idx) => (
+                        <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100 text-lg'}`} key={idx}>{item}</button>
                     ))
                 }
             </div>
@@ -154,22 +116,22 @@ const Referrals = () => {
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Email Address</p>
                 <p className='' >Phone Number</p>
-                <p className='' >Gender</p>
-                <p className='' >Test Completed</p>
-                <p className='' >Rebate Earned</p>
+                <p className='' >Referrer</p>
+                <p className='' >Invite Code</p>
+                <p className='' >Referral Date</p>
                 <p className='' >Action</p>
             </div>
             <div className="data  text-text_color mt-3">
                 {
-                    dummy.map((item,idx) => (
+                    referrals?.map((item,idx) => (
                     <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-9  gap-3 px-5 py-6 font-medium`}>
-                    <p className='col-span-2 line-clamp-1' >{item.name}</p>
-                    <p className='col-span-2 line-clamp-1' >{item.email}</p>
-                    <p className='' >{item.phone}</p>
-                    <p className='' >{item.gender}</p>
-                    <p className='' >{item.test}</p>
-                    <p className='' >{item.rebate}</p>
-                    <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p className='col-span-2 line-clamp-1' >{item.patient_name}</p>
+                    <p className='col-span-2 line-clamp-1' >{item.patient_email}</p>
+                    <p className='' >{item.patient_phone}</p>
+                    <p className='' >{item.referrer_name}</p>
+                    <button className='font-bold flex items-center gap-1' > <BiCopyAlt size={17} /> {item.ref_code}</button>
+                    <p className='' >{moment(item.referral_date).format('ll')}</p>
+                    <p onClick={() => viewDetails(item.ref_code)} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }

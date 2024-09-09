@@ -75,26 +75,7 @@ const Dashboard = () => {
         setTodayBooking(res.data.appointments);
         }
     });
-    
 
-
-    const today_booking = [
-        {
-            name:'Felix Otti',
-            tests: 4,
-            time:'10:00am - 11:00am',
-        },
-        {
-            name:'Christine Jones',
-            tests: 4,
-            time:'02:00pm - 02:30pm',
-        },
-        {
-            name:'Felix Otti',
-            tests: 4,
-            time:'10:00am - 11:00am',
-        },
-    ]
 
     if(loadingDashboardStats || loadingReferralStats || loadingRebateChart || loadingAppointmentStats ){
         return <PageLoading />

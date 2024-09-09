@@ -19,13 +19,13 @@ const endpoints = {
     APPOINTMENT_STATS:'admin/appointments-stats',
     ACTIVITIES:'/admin/all-notifications',
   },
-  // referrals:{
-  //   GET_REFERRALS:'referrals',
-  //   GET_REFERRAL:'view-referrals',
-  //   CREATE_REFERRAL:'add-referral',
-  //   TEST_CATEGORIES:'category/all',
-  //   CATEGORY_TESTS:'medical-test/view'
-  // },
+  referrals:{
+    GET_REFERRALS:'/admin/all-referrals',
+    GET_REFERRAL:'view-referrals',
+    CREATE_REFERRAL:'add-referral',
+    TEST_CATEGORIES:'category/all',
+    CATEGORY_TESTS:'medical-test/view'
+  },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
   // },

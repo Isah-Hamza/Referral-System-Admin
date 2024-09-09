@@ -196,7 +196,7 @@ const MainLayout = () => {
                                 <div className="text-sm">
                                     {/* <p className='font-medium' >{item.title}</p> */}
                                     <p className='my-1 text-[13px]' >{item?.subject}</p>
-                                    <p className='text-text_color text-xs' >{'5m ago'}</p>
+                                    <p className='text-text_color text-xs' >{item?.date}</p>
                                 </div>
                             </div>
                         ))
