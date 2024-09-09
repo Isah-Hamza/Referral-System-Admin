@@ -21,7 +21,7 @@ const endpoints = {
   },
   referrals:{
     GET_REFERRALS:'/admin/all-referrals',
-    GET_REFERRAL:'view-referrals',
+    GET_REFERRAL:'admin/get-referrals',
     CREATE_REFERRAL:'add-referral',
     TEST_CATEGORIES:'category/all',
     CATEGORY_TESTS:'medical-test/view'

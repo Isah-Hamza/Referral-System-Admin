@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Input from '../../components/Inputs'
 import { BiCopy, BiCopyAlt, BiPhoneIncoming, BiSearch, BiUser } from 'react-icons/bi'
 import Select from '../../components/Inputs/Select'
@@ -11,8 +11,9 @@ import New from '../../components/Referral/New'
 import { useLocation } from 'react-router-dom'
 import ReferralService from '../../services/Referrals'
 import PageLoading from '../../Loader/PageLoading'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import moment from 'moment'
+import { ConvertToNaira } from '../../utils/Helper'
 
 const Referrals = () => {
     
@@ -64,13 +65,18 @@ const Referrals = () => {
     const test_stats = [
         {
             title:'Total Tests Paid',
-            value:'₦2,800,000',
+            value:ConvertToNaira(Number(referral?.total_test_amount)),
         },
         {
             title:'Total Rebate Given',
-            value:'₦280,000',
+            value:ConvertToNaira(Number(referral?.rebate_earned)),
         },
     ]
+
+    const viewRef = (ref_code) => {
+        setRefCode(ref_code);
+        toggleViewDetails();
+    }
 
         
     const { isLoading:loadingReferrals }  = useQuery('referrals', () => ReferralService.GetReferrals({ page }), {
@@ -80,13 +86,18 @@ const Referrals = () => {
             }
         });
         
-    const { isLoading:loadingReferral, refetch:refetchReferral}  = useQuery(['referral', refCode], () => ReferralService.GetReferrals(refCode), {
+    const { isLoading:loadingReferral, mutate:getReferral}  = useMutation(['referral', refCode],ReferralService.GetReferral, {
         enabled:false,
         onSuccess:res => {
             setReferral(res.data);
             }
         });
 
+
+    useEffect(() => {
+        getReferral(refCode);
+    }, [refCode])
+    
         
 
     if(loadingReferrals){
@@ -131,15 +142,20 @@ const Referrals = () => {
                     <p className='' >{item.referrer_name}</p>
                     <button className='font-bold flex items-center gap-1' > <BiCopyAlt size={17} /> {item.ref_code}</button>
                     <p className='' >{moment(item.referral_date).format('ll')}</p>
-                    <p onClick={() => viewDetails(item.ref_code)} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={() => viewRef(item.ref_code)} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
 
             </div>
         </div>
-       {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
-            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+       {viewDetails ? <div className="fixed h-screen inset-0 bg-black/70 flex justify-end">
+            { loadingReferral ?
+            <div className="bg-white w-[550px] max-h-screen overflow-y-auto">
+            <PageLoading />
+            </div> :
+            <div className="bg-white w-[550px] max-h-screen overflow-y-auto">
+
                 <div className="flex items-center justify-between p-3 border-b">
                     <p className='font-semibold' >Referral Details</p>
                     <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
@@ -149,31 +165,31 @@ const Referrals = () => {
                 </div>
                 <div className="flex flex-col gap-1 border-b p-5">
                     {/* <img className='w-16 mx-auto' src={stacey} alt="stacey" /> */}
-                    <p className=' font-semibold text-lg' >Stacey Jacobs</p>
+                    <p className=' font-semibold text-lg' >{referral?.patient?.name}</p>
                     <div className="mt-5 grid grid-cols-2 gap-3 gap-y-5 text-sm">
                         <div className="flex flex-col ">
                             <p className='font-medium' >Email Address</p>
-                            <p className='line-clamp-1 underline text-light_blue' >earnestine_macejkovic89@yahoo.com</p>
+                            <p className='line-clamp-1 underline text-light_blue' >{referral?.patient?.email}</p>
                         </div>
                         <div className="flex flex-col">
                             <p className='font-medium' >Phone Number</p>
-                            <p className='line-clamp-1' >299-470-4508</p>
+                            <p className='line-clamp-1' >{referral?.patient?.phone}</p>
                         </div>
                         <div className="flex flex-col">
                             <p className='font-medium' >Gender</p>
-                            <p className='line-clamp-1' >Female</p>
+                            <p className='line-clamp-1' >{referral?.patient?.gender}</p>
                         </div>
                         <div className="flex flex-col">
-                            <p className='font-medium' >First Invited By</p>
-                            <p className='line-clamp-1' >Ogu Chidinma</p>
+                            <p className='font-medium' >Age</p>
+                            <p className='line-clamp-1' >{referral?.patient?.age}</p>
                         </div>
                         <div className="flex flex-col">
-                            <p className='font-medium' >Total Tests Assignmed</p>
-                            <p className='line-clamp-1' >33</p>
+                            <p className='font-medium' >Referrer</p>
+                            <p className='line-clamp-1' >{referral?.patient?.referrer}</p>
                         </div>
                         <div className="flex flex-col ">
-                            <p className='font-medium' >Total Tests Completed</p>
-                            <p className='line-clamp-1' >18</p>
+                            <p className='font-medium' >Referral Date</p>
+                            <p className='line-clamp-1' >{moment(referral?.patient?.referral_date).format('ll')}</p>
                         </div>
                     </div>
                 </div>
@@ -189,33 +205,31 @@ const Referrals = () => {
                             ))
                         }
                     </div>
-                </div>
-                <div className="mt-5 text-[13px]">
-                    <div className="header grid grid-cols-6 gap-3 px-5 font-medium">
-                        <p className='line-clamp-1' >Date</p>
-                        <p className='line-clamp-1' >Referrer</p>
-                        <p className='' >Test</p>
-                        <p className='' >Status</p>
-                        <p className='' >Amount</p>
-                        <p className='' >Action</p>
+                    <div className="mt-5">
+                    <p className='font-semibold' >Test Type</p>
+                    <div className="bg-[#ededed] p-2 rounded-xl">
+                        <p>{referral?.total_assigned_tests} tests assigned</p>
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                            {
+                                referral?.test_information?.map((item,idx) => (
+                                    <div key={idx} className="bg-white rounded-md border p-3 text-sm">
+                                        <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
+                                            <p className='line-clamp-2' >{item.name}</p>
+                                            <p className='text-3xl opacity-70' >0{idx + 1}</p>
+                                        </div>
+                                        <div className="flex text-sm flex-wrap items-center justify-between gap-2">
+                                            <p className='line-clamp-2' >{item.category}</p>
+                                            <p className='text-base font-medium' >{ConvertToNaira(Number(item.price))}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
                     </div>
-                    <div className="data  text-text_color mt-3 mb-10">
-                        {
-                            dummyDetails.map((item,idx) => (
-                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-6  gap-3 px-5 py-6 font-medium`}>
-                            <p className='line-clamp-1' >{item.date}</p>
-                            <p className='line-clamp-1' >{item.refer}</p>
-                            <p className='' >{item.test}</p>
-                            <p className='' >{item.status}</p>
-                            <p className='' >{item.amount}</p>
-                            <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
-                            </div>
-                            )) 
-                        }
-
                     </div>
                 </div>
-            </div>
+                
+            </div>}
         </div> : null}
     </div> :
     <div className='w-full'>
