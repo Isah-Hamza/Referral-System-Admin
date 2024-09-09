@@ -52,6 +52,13 @@ const GetAppointmentStats = (admin_id) => {
     .catch((error) => Promise.reject(error));
 }
 
+const GetCalendarAppointments = ({admin_id,date}) => {
+  return axiosClient()
+    .get(`${endpoints.dashbaord.CALENDAR_APPOINTMENT}?admin_id=${admin_id}&date=${date}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const GetNotifications = () => {
   return axiosClient()
     .get(`${endpoints.dashbaord.ACTIVITIES}`)
@@ -62,6 +69,6 @@ const GetNotifications = () => {
 
 export default {
   GetDashboardDetails, GetRebateEarnings, GetActivities, GetDashboardStats, GetReferralStats,
-  GetRebateChart, GetAppointmentStats, GetNotifications
+  GetRebateChart, GetAppointmentStats, GetNotifications, GetCalendarAppointments
 };
 

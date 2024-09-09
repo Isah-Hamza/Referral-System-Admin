@@ -111,63 +111,11 @@ const MainLayout = () => {
         },
     ]
 
-    
-    const activities = [
-        {
-            title:'You have referred Benjamin Wales ',
-            desc:'Benjamin Whales Have initiated a payout of ₦23,000.',
-            time:'5m ago',
-            img:avatar,
-        },
-        {
-            title:'You have referred Benjamin Wales ',
-            desc:'You assigned 2 tests. Waiting for your rebate.',
-            time:'5m ago',
-            img:test,
-        },
-        {
-            title:'You have earned your rebate from Benjamin Wales ',
-            desc:'Hurray, ₦23,000 has been added to your wallet.',
-            time:'2d ago',
-            img:earn,
-        },
-        {
-            title:'You have referred Samuel Sandra ',
-            desc:'You assigned 2 tests. Waiting for your rebate.',
-            time:'1m ago',
-            img:test,
-        },
-        {
-            title:'You have earned your rebate from Benjamin Wales ',
-            desc:'Hurray, ₦23,000 has been added to your wallet.',
-            time:'2d ago',
-            img:earn,
-        },
-        {
-            title:'You have initiated a withdrawal request.',
-            desc:'₦350,000 will be credited into your bank account soon.',
-            time:'2d ago',
-            img:bank,
-        },
-        {
-            title:'You have referred Benjamin Wales ',
-            desc:'Benjamin Whales Have initiated a payout of ₦23,000.',
-            time:'5m ago',
-            img:admin,
-        },
-        {
-            title:'You have earned your rebate from Temites Flyn ',
-            desc:'Hurray, ₦23,000 has been added to your wallet.',
-            time:'12d ago',
-            img:earn,
-        },
-    ]
-
     const { isLoading:loadingActivities }  = useQuery('activities', Dashboard.GetNotifications, {
         onSuccess:res => {
-            setActivities(res.data);
+            setActivities(res.data.notifications);
             }
-        });
+    });
         
   useEffect(() => {
 
@@ -189,31 +137,6 @@ const MainLayout = () => {
 
   return (
     <div className='flex w-full bg-[#f8f8f8]'>
-      {/* <header className='flex items-center justify-between gap-5 py-5' >
-        <img onClick={() => navigate('/')} className='cursor-pointer w-40' src={logo} alt="logo" />
-        <div className="flex gap-5 bg-[#ededed] rounded-3xl">
-            {
-                tabs.map((item,idx) => (
-                    <button onClick={() => {
-                        navigate(item.link);
-                        setActiveTab(idx);
-                    }} key={idx} className={`flex items-center gap-2 px-3
-                    ${activeTab == idx && 'text-white bg-primary !px-10 py-3 rounded-3xl'}`} >
-                        { activeTab == idx ? <item.icon /> : null}
-                        <p>{item.title}</p>
-                    </button>
-            ))
-            }
-        </div>
-        <div className="flex items-center gap-3 ">
-            <button onClick={() => navigate('/')} className="w-10 h-10 bg-[#ededed] grid place-content-center rounded-full">
-                <IoLogOut size={20} color='red' />
-            </button>
-            <button>
-                <img className='w-10' src={avatar} alt="" />
-            </button>
-        </div>
-      </header> */}
       <div className="w-72 bg-white p-5 h-screen overflow-y-auto">
         <img className='w-36' src={logo} alt="logo" />
         <button className="mt-10 w-full text-left bg-[#C9E6FF] p-2 rounded flex items-center gap-3">
@@ -254,7 +177,7 @@ const MainLayout = () => {
         <Outlet />
         {
             showActivities ? <div className='inset-0 fixed bg-black/50' >
-                <div className="right w-3/5 flex-1 border border-custom_gray rounded-lg bg-white h-screen ml-auto max-w-[400px]">
+                <div className="overflow-y-auto right w-3/5 flex-1 border border-custom_gray rounded-lg bg-white h-screen ml-auto max-w-[420px]">
                 <div className="flex items-center justify-between p-3 border-b">
                     <p className='font-semibold' >Your Activities</p>
                     <button onClick={toggleActivities} > <CgClose /> </button>
@@ -262,13 +185,18 @@ const MainLayout = () => {
                 <div className="p-5">
                     <div className="grid gap-4">
                     {
-                        activities.map((item,idx) => (
+                        activitiess?.map((item,idx) => (
                             <div key={idx} className='flex gap-3' >
-                                <img className='rounded-full size-12' src={item.img} alt="image" />
+                                <img className='rounded-full size-12' 
+                                src={
+                                    item.type == 'ref' ? avatar :
+                                    item.type == 'rebate' ? bank : test
+                                } 
+                                alt="image" />
                                 <div className="text-sm">
                                     {/* <p className='font-medium' >{item.title}</p> */}
-                                    <p className='my-1 text-[13px]' >{item.desc}</p>
-                                    <p className='text-text_color text-xs' >{item.time}</p>
+                                    <p className='my-1 text-[13px]' >{item?.subject}</p>
+                                    <p className='text-text_color text-xs' >{'5m ago'}</p>
                                 </div>
                             </div>
                         ))

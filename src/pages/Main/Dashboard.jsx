@@ -30,6 +30,7 @@ import { useQuery } from 'react-query';
 import DashboardServices from '../../services/Dashboard';
 import { ConvertToNaira } from '../../utils/Helper';
 import PageLoading from '../../Loader/PageLoading'
+import moment from 'moment';
 
 const Dashboard = () => {
 
@@ -37,6 +38,8 @@ const Dashboard = () => {
     const [referralStats, setReferralStats] = useState(null);
     const [rebateChart, setRebateChart] = useState(null);
     const [appointmentStats,setAppointmentStats] = useState(null);
+    const [date, setDate] = useState(() => moment().format('y-MM-DD'));
+    const [todayBooking, setTodayBooking] = useState([]);
 
     const navigate = useNavigate('');
 
@@ -64,6 +67,12 @@ const Dashboard = () => {
     const { isLoading:loadingAppointmentStats }  = useQuery('appointment-stats', () => DashboardServices.GetAppointmentStats(admin_id), {
     onSuccess:res => {
         setAppointmentStats(res.data);
+        }
+    });
+    
+    const { isLoading:loadingCalendarAppointments }  = useQuery([date, 'calendar-appointments'], () => DashboardServices.GetCalendarAppointments({admin_id,date}), {
+    onSuccess:res => {
+        setTodayBooking(res.data.appointments);
         }
     });
     
@@ -200,16 +209,16 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between p-3 border-b">
                         <p className='font-semibold' >Calendar Appointments</p>
                     </div>
-                    <div className="mt-3 flex gap-3 px-5">
+                    <div className="mt-3 flex gap-3 pl-5">
                         <Calendar className={'w-6/12'}  />
-                        <div className="w-6/12">
+                        <div className="w-6/12 max-h-[300px] overflow-y-auto pr-4">
                             <p className='text-sm font-semibold mt-1' >Scheduled For The Day</p>
                             <div className="grid gap-3 mt-5">
                                 {
-                                    today_booking.map((item,idx) => (
+                                    todayBooking?.map((item,idx) => (
                                         <div className='text-sm p-3 px-2 rounded-md border' key={idx}>
-                                            <p className='font-semibold'>{item.name}</p>
-                                            <p className='text-xs line-clamp-1' >{item.tests} Test(s) booked &bull; {item.time} </p>
+                                            <p className='font-semibold'>{item.patient_name}</p>
+                                            <p className='text-xs line-clamp-1' >{item.test_assigned} Test(s) booked &bull; {item.appointment_time} </p>
                                         </div>
                                     ))
                                 }
