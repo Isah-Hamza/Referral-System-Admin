@@ -19,6 +19,8 @@ import rescheduleImg from '../../assets/images/reschedule.svg';
 import AppointmentService from '../../services/Appointment'
 import { useMutation, useQuery } from 'react-query'
 import moment from 'moment'
+import PageLoading from '../../Loader/PageLoading'
+import { ConvertToNaira } from '../../utils/Helper'
 
 const Appointments = () => {
     
@@ -174,6 +176,11 @@ const Appointments = () => {
             setAppointment(res.data);
             }
         });
+
+        const viewAppointment = (id) => {
+            setId(id);
+            toggleViewDetails();
+        }
         
 
     useEffect(() => {
@@ -215,7 +222,7 @@ const Appointments = () => {
                     <p className='col-span-2 line-clamp-1' >{item.patient_name}</p>
                     <p className='col-span-2 line-clamp-1 pr-5' >{item.patient_email}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.appointment_date).format('lll')}</p> 
-                    <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={()=>viewAppointment(item.appointment_id)} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -244,7 +251,7 @@ const Appointments = () => {
                         {item.status == 0 ? <div className='bg-red-500 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Not Checked In</div> : null}
                         {item.status == 2 ? <div className='bg-black w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Canceled</div> : null}
                     </p>
-                    <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={()=>viewAppointment(item.appointment_id)} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -255,121 +262,127 @@ const Appointments = () => {
             <Calendar className={'min-w-[700px] !leading-[6] !text-lg'} onChange={setDate}  />
         </div>
         {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
-            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
-                <div className="flex items-center justify-between p-3 border-b">
-                    <p className='font-semibold' >Referral Details</p>
-                    <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
-                        <span>Close</span>
-                        <CgClose />
-                    </button>
-                </div>
-                <div className="flex flex-col gap-1 border-b p-5">
-                    <img className='w-16 mx-auto' src={stacey} alt="stacey" />
-                    <p className='text-center font-medium' >Stacey Jacobs</p>
-                    <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
-                        <div className="flex flex-col justify-center text-center">
-                            <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <MdOutlineEmail />
-                             </div>
-                            <p className='font-semibold' >Email Address</p>
-                            <p className='line-clamp-1 underline text-light_blue' >earnestine_macejkovic89@yahoo.com</p>
+            {
+                loadingAppointment ? 
+                    <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
+                        <PageLoading />
+                    </div> :
+                    <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
+                        <div className="flex items-center justify-between p-3 border-b">
+                            <p className='font-semibold' >Referral Details</p>
+                            <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
+                                <span>Close</span>
+                                <CgClose />
+                            </button>
                         </div>
-                        <div className="flex flex-col justify-center items-center text-center">
-                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <BiPhoneIncoming />
-                             </div>
-                            <p className='font-semibold' >Phone Number</p>
-                            <p className='line-clamp-1' >299-470-4508</p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center text-center">
-                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <BiUser />
-                             </div>
-                            <p className='font-semibold' >Gender</p>
-                            <p className='line-clamp-1' >Female</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="p-5 text-sm">
-                    <p className='font-semibold' >Test Type</p>
-                    <div className="mt-3 grid grid-cols-2 gap-2">
-                        {
-                            selectedTests.map((item,idx) => (
-                                <div key={idx} className="bg-white rounded-md border p-3 text-sm">
-                                    <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
-                                        <p className='' >{item.type}</p>
-                                        <p className='text-3xl opacity-70' >0{idx + 1}</p>
+                        <div className="flex flex-col gap-1 border-b p-5">
+                            <img className='w-16 mx-auto' src={stacey} alt="stacey" />
+                            <p className='text-center font-medium' >{appointment?.patient?.patient_name}</p>
+                            <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
+                                <div className="flex flex-col justify-center text-center">
+                                    <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <MdOutlineEmail />
                                     </div>
-                                    <div className="flex text-sm items-center justify-between gap-2">
-                                        <p className='' >{item.category}</p>
-                                      
-                                        <p className='text-base font-medium' >{item.amount}</p>
-                                    </div>
+                                    <p className='font-semibold' >Email Address</p>
+                                    <p className='line-clamp-1 underline text-light_blue' >{appointment?.patient?.patient_email}</p>
                                 </div>
-                            ))
-                        }
-                    </div>
-                    <div className="mt-5 mb-16 grid grid-cols-2  gap-5 gap-y-7 text-sm">
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Rebate</p>
-                            <p className=' ' >10% on each Test</p>
-                        </div>
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Date</p>
-                            <p className=' ' >09 September, 2024</p>
-                        </div>
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Referrer's Name</p>
-                            <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
-                                <img className='w-7' src={stacey} alt="stacey" />
-                                <p className=' ' >Emmanuella Bami</p>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <BiPhoneIncoming />
+                                    </div>
+                                    <p className='font-semibold' >Phone Number</p>
+                                    <p className='line-clamp-1' >{appointment?.patient?.patient_phone}</p>
+                                </div>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <BiUser />
+                                    </div>
+                                    <p className='font-semibold' >Gender</p>
+                                    <p className='line-clamp-1' >{appointment?.patient?.patient_gender}</p>
+                                </div>
                             </div>
                         </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Invitation Code</p>
-                            <p className=' text-primary font-semibold' >UYBFJK</p>
+                        <div className="p-5 text-sm">
+                            <p className='font-semibold' >Test Type</p>
+                            <div className="mt-3 grid grid-cols-2 gap-2">
+                                {
+                                    appointment?.testDetails?.map((item,idx) => (
+                                        <div key={idx} className="bg-white rounded-md border p-3 text-sm">
+                                            <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
+                                                <p className='line-clamp-2' >{item.name}</p>
+                                                <p className='text-3xl opacity-70' >0{idx + 1}</p>
+                                            </div>
+                                            <div className="flex text-sm items-center justify-between gap-2">
+                                                <p className='line-clamp-2' >{item.category}</p>
+                                            
+                                                <p className='text-base font-medium' >{ConvertToNaira(Number(item.price))}</p>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                            <div className="mt-5 mb-16 grid grid-cols-2  gap-5 gap-y-7 text-sm">
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Rebate</p>
+                                    <p className=' ' >10% on each Test</p>
+                                </div>
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Appointment Date</p>
+                                    <p className=' ' >{moment(appointment?.appointments?.appointment_date).format('lll')}</p>
+                                </div>
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Referrer's Name</p>
+                                    <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
+                                        <img className='w-7' src={stacey} alt="stacey" />
+                                        <p className=' ' >{appointment?.appointments?.referral_name}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Invitation Code</p>
+                                    <p className=' text-primary font-semibold' >{appointment?.appointments?.invite_code}</p>
+                                </div>
+                                {/* <div className="flex flex-col">
+                                    <p className='font-medium' >Appointment</p>
+                                    <p className=' ' >09 September 11:30am</p>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Booking Number</p>
+                                    <p className=' ' >003</p>
+                                </div> */}
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Pament Status</p>
+                                    <p className='' >{appointment?.appointments?.payment_status}</p>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Total Test Payment</p>
+                                    <p className='text-primary font-semibold' >{ConvertToNaira(Number(appointment?.total_amount))}</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-5 mt-10">
+                            {
+                                acitveTab == 0 ? 
+                                    <button onClick={() => { toggleReschedule(); toggleViewDetails() }} className="border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                        <RiCalendarScheduleFill />
+                                        <span>Reschedule</span>
+                                    </button>
+                                    :
+                                    <button onClick={() => {toggleMarkPaid(); toggleViewDetails() }} className="border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                        <ImCheckmark />
+                                        <span>Mark as Paid</span>
+                                    </button>
+                                }
+                                <button onClick={() => {toggleFollowUp(); toggleViewDetails()}} className="bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                    <CgMail size={18} />
+                                    <span>Send Follow Up</span>
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Appointment</p>
-                            <p className=' ' >09 September 11:30am</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Booking Number</p>
-                            <p className=' ' >003</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Referral Status</p>
-                            <p className='' >pending</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Total Test Payment</p>
-                            <p className='text-primary font-semibold' >₦112,000</p>
-                        </div>
+                    
+                        {/* <div className="border-t my-5 p-5">
+                            <Button onClick={toggleNewReferral} title={'Refer'} className={'w-full !px-10 !py-2.5 !text-sm  !bg-light_blue'} />
+                        </div> */}
                     </div>
-                    <div className="grid grid-cols-2 gap-5 mt-10">
-                       {
-                        acitveTab == 0 ? 
-                            <button onClick={() => { toggleReschedule(); toggleViewDetails() }} className="border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
-                                <RiCalendarScheduleFill />
-                                <span>Reschedule</span>
-                            </button>
-                            :
-                            <button onClick={() => {toggleMarkPaid(); toggleViewDetails() }} className="border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
-                                <ImCheckmark />
-                                <span>Mark as Paid</span>
-                            </button>
-                        }
-                        <button onClick={() => {toggleFollowUp(); toggleViewDetails()}} className="bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
-                            <CgMail size={18} />
-                            <span>Send Follow Up</span>
-                        </button>
-                    </div>
-                </div>
-               
-                {/* <div className="border-t my-5 p-5">
-                    <Button onClick={toggleNewReferral} title={'Refer'} className={'w-full !px-10 !py-2.5 !text-sm  !bg-light_blue'} />
-                </div> */}
-            </div>
+            }
         </div> : null}
         {
             date ? <div onClick={() => setDate()} className='bg-white/80 inset-0 fixed grid place-content-center'>

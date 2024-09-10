@@ -194,7 +194,7 @@ const Dashboard = () => {
                         <Calendar className={'w-6/12'}  />
                         <div className="w-6/12 max-h-[300px] overflow-y-auto pr-4">
                             <p className='text-sm font-semibold mt-1' >Scheduled For The Day</p>
-                            <div className="grid gap-3 mt-5">
+                            { todayBooking?.length ? <div className="grid gap-3 mt-5">
                                 {
                                     todayBooking?.map((item,idx) => (
                                         <div className='text-sm p-3 px-2 rounded-md border' key={idx}>
@@ -204,6 +204,12 @@ const Dashboard = () => {
                                     ))
                                 }
                             </div>
+                            :
+                            <div className='mt-5 text-sm' >
+                                <p>There are no appointment scheduled for the day yet.</p>
+                                <p>Please check back later.</p>
+                            </div>    
+                        }
                         </div>
                     </div>
                 </div>
