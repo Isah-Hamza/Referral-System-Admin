@@ -16,12 +16,20 @@ import 'react-calendar/dist/Calendar.css';
 import followUpIcon from '../../assets/images/followup.svg';
 import paid from '../../assets/images/paid2.svg';
 import rescheduleImg from '../../assets/images/reschedule.svg';
+import AppointmentService from '../../services/Appointment'
+import { useMutation, useQuery } from 'react-query'
+import moment from 'moment'
 
 const Appointments = () => {
     
     const query = useLocation().search.split('=')[1];
     const [acitveTab, setActiveTab] = useState(0);
     const [date,setDate] = useState();
+    const [page,setPage] = useState(1);
+    const [upcoming, setUpcoming] = useState([]);
+    const [all, setAll] = useState([]);
+    const [id, setId] = useState(0);
+    const [appointment, setAppointment] = useState({});
 
     const [viewDetails, setViewDetails] = useState(false);
     const [newReferral, setNewReferral] = useState(() => query == 'true' ? true : false);
@@ -148,9 +156,29 @@ const Appointments = () => {
         },
     ]
 
-    useEffect(() => {
+    
+    const { isLoading:loadingUpcoming}  = useQuery('upcoming', () => AppointmentService.GetUpcomingAppointments({ page }), {
+        onSuccess:res => {
+            setUpcoming(res.data.appointments);
+            }
+        });
+        
+    const { isLoading:loadingAll}  = useQuery('all', () => AppointmentService.GetAllAppointments({ page }), {
+        onSuccess:res => {
+            setAll(res.data.appointments);
+            }
+        });
+        
+    const { isLoading:loadingAppointment, mutate:getAppoinment}  = useMutation(AppointmentService.GetAppointment, {
+        onSuccess:res => {
+            setAppointment(res.data);
+            }
+        });
+        
 
-    }, [date])
+    useEffect(() => {
+        getAppoinment(id);
+    }, [id])
     
 
   return (
@@ -158,10 +186,10 @@ const Appointments = () => {
    {!newReferral ? 
    <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
         <div className="relative border-b p-3 flex justify-between items-center">
-            <div className={`transition-all duration-300 absolute h-0.5 w-36 bg-primary left-7 bottom-0 ${acitveTab == 1 && '!left-[200px] w-40'} ${acitveTab == 2 && '!left-[360px] w-40'} `}></div>
+            <div className={`transition-all duration-300 absolute h-0.5 w-44 bg-primary left-7 bottom-0 ${acitveTab == 1 && '!left-[220px] w-40'} ${acitveTab == 2 && '!left-[360px] w-40'} `}></div>
             <div className="flex gap-14 text-sm pl-5">
                 {
-                    ['Completed Payment', 'Pending Payment', 'Calendar View'].map((item, idx) => (
+                    ['Upcoming Appointments', 'All Appointments'].map((item, idx) => (
                         <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
                     ))
                 }
@@ -171,24 +199,51 @@ const Appointments = () => {
                 {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
             </div>
         </div>
-        <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 || acitveTab == 1 ) && '!block'}`}>
-            <div className="header grid grid-cols-11 gap-3 px-5 font-medium">
+        <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 ) && '!block'}`}>
+            <div className="header grid grid-cols-9 gap-3 px-5 font-medium">
                 <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Email Address</p>
-                <p className='col-span-2 line-clamp-1' >Appointment Schedule</p>
                 <p className='col-span-2 line-clamp-1' >Payment Date</p>
                 <p className='' >Action</p>
             </div>
             <div className="data text-text_color mt-3">
                 {
-                    dummy.map((item,idx) => (
+                    upcoming?.map((item,idx) => (
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-9  gap-3 px-5 py-6 font-medium`}>
+                    <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
+                    <p className='col-span-2 line-clamp-1' >{item.patient_name}</p>
+                    <p className='col-span-2 line-clamp-1 pr-5' >{item.patient_email}</p>
+                    <p className='col-span-2 line-clamp-1' >{moment(item.appointment_date).format('lll')}</p> 
+                    <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    </div>
+                    )) 
+                }
+
+            </div>
+        </div>
+        <div className={`mt-5 text-[13px] hidden ${(acitveTab == 1 ) && '!block'}`}>
+            <div className="header grid grid-cols-11 gap-3 px-5 font-medium">
+                <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
+                <p className='col-span-2 line-clamp-1' >Full Name</p>
+                <p className='col-span-2 line-clamp-1' >Appointment Schedule</p>
+                <p className='col-span-2 line-clamp-1' >Amount Paid</p>
+                <p className='col-span-2 line-clamp-1' >Status</p>
+                <p className='col-span-2' >Action</p>
+            </div>
+            <div className="data text-text_color mt-3">
+                {
+                    all?.map((item,idx) => (
                     <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-11  gap-3 px-5 py-6 font-medium`}>
                     <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
-                    <p className='col-span-2 line-clamp-1' >{item.name}</p>
-                    <p className='col-span-2 line-clamp-1 pr-5' >{item.email}</p>
-                    <p className='col-span-2 line-clamp-1' >{item.appointment}</p>
-                    <p className='col-span-2 line-clamp-1' >{item.pay_date}</p> 
+                    <p className='col-span-2 line-clamp-1' >{item.patient_name}</p>
+                    <p className='col-span-2 line-clamp-1' >{moment(item.appointment_date).format('lll')}</p> 
+                    <p className='col-span-2 line-clamp-1 pr-5' >{item.amount ?? '-'}</p>
+                    <p className='col-span-2 line-clamp-1 pr-5' >
+                        {item.status == 1 ? <div className='bg-primary w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Checked In</div> : null}
+                        {item.status == 0 ? <div className='bg-red-500 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Not Checked In</div> : null}
+                        {item.status == 2 ? <div className='bg-black w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Canceled</div> : null}
+                    </p>
                     <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 

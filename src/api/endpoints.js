@@ -26,6 +26,11 @@ const endpoints = {
     TEST_CATEGORIES:'category/all',
     CATEGORY_TESTS:'medical-test/view'
   },
+  appointments:{
+    UPCOMING_APPOINTMENTS:'/admin/appointments/upcoming',
+    ALL_APPOINTMENTS:'admin/appointments/all',
+    APPOINTMENTS:'/admin/appointments',
+  },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
   // },

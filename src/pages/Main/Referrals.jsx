@@ -31,37 +31,6 @@ const Referrals = () => {
     const toggleNewReferral = () => setNewReferral(!newReferral);
 
 
-    const dummyDetails = [
-        {
-            date:'09/10/2024',
-            refer:'Stanley Stacey',
-            test:3,
-            status:'completd',
-            amount:'₦2,800,000',
-        },
-        {
-            date:'12/01/2023',
-            refer:'Stanley Stacey',
-            test:3,
-            status:'completd',
-            amount:'₦2,800,000',
-        },
-        {
-            date:'09/10/2024',
-            refer:'Hilda Bacci',
-            test:3,
-            status:'completd',
-            amount:'₦44,000',
-        },
-        {
-            date:'12/01/2023',
-            refer:'Emunne Ijeoma',
-            test:3,
-            status:'completd',
-            amount:'₦26,500',
-        },
-    ]
-
     const test_stats = [
         {
             title:'Total Tests Paid',
