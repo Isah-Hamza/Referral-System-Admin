@@ -39,6 +39,13 @@ const FollowUp = (data) => {
     .catch((error) => Promise.reject(error));
 }
 
+const Reschedule = (data) => {
+  return axiosClient()
+    .post(`${endpoints.appointments.RESCHEDULE}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 
 const GetTimeSlots = (date) => {
   return axiosClient()
@@ -50,6 +57,6 @@ const GetTimeSlots = (date) => {
 
 
 export default {
-  GetUpcomingAppointments, GetAllAppointments, GetAppointment, CheckIn, FollowUp, GetTimeSlots
+  GetUpcomingAppointments, GetAllAppointments, GetAppointment, CheckIn, FollowUp, GetTimeSlots, Reschedule
 };
 

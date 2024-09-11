@@ -57,13 +57,15 @@ const Appointments = () => {
     const toggleShowMore = () => setShowMore(!showMore);
 
 
-    const formik = useFormik({
+    const {handleSubmit, values, getFieldProps, setFieldValue} = useFormik({
+        enableReinitialize:true,
         initialValues:{
             date:'',
             time:'',
+            appointment_id:id,
         },
         onSubmit:values => {
-            console.log(values);
+            rescheduleMutate(values);
         }
     })
 
@@ -197,12 +199,25 @@ const Appointments = () => {
         }
         });
         
-    const { isLoading:gettingTime, mutate:getTimes}  = useMutation(AppointmentService.GetTimeSlots, {
+        
+    const { isLoading:rescheduling, mutate:rescheduleMutate}  = useMutation(AppointmentService.Reschedule, {
         onSuccess:res => {
-            setTimes(res.data.availableSlots);
+            successToast(res.data.message);
+            toggleReschedule();
+            getAppoinment(id);
         },
         onError: e=> {
-            errorToast(e.message);
+            errorToast(e.errors);
+        }
+        });
+        
+    const { isLoading:gettingTime, mutate:getTimes}  = useMutation(AppointmentService.GetTimeSlots, {
+        onSuccess:res => {
+            const formatted = res.data.available_slots.map(item => ({ label:item,value:item }))
+            setTimes(formatted);
+        },
+        onError: e=> {
+            errorToast(e.response.data.errors.date[0]);
         }
         });
 
@@ -215,6 +230,10 @@ const Appointments = () => {
     useEffect(() => {
         if(id) getAppoinment(id);
     }, [id])
+
+    useEffect(() => {
+        if(values.date) getTimes(moment(values.date).format('YYYY-MM-DD'));
+    }, [values.date])
     
 
   return (
@@ -508,18 +527,18 @@ const Appointments = () => {
         }
         {
            reschedule ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
-                <form className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                <form onSubmit={handleSubmit} className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                     <img className='w-12 m-auto' src={rescheduleImg} alt="delete" />
                     <p className='text-base font-semibold' >Reschedule Appointment</p>
                     <div className="grid gap-5 text-left mt-10">
-                        <Input type={'date'} label={'Date'} />
-                        <Input type={'time'} label={'Time'} />
+                        <Input {...getFieldProps('date')} type={'date'} label={'Date'} />
+                        <Select onChange={e => setFieldValue('time',e.target.value)} options={times} disabled={gettingTime} label={'Time'} />
                     </div>
                     <p className='text-xs text-left'>Users will receive an email concerning this changes.</p>
 
                     <div className="mt-10 flex items-center gap-5 ">
                         <Button onClick={toggleReschedule} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                        <Button onClick={toggleReschedule} className={'!px-5 !bg-black text-white'} title={'Reschedule'} />
+                        <Button type='submit' className={'!px-5 !bg-black text-white'} title={'Reschedule'} />
                     </div>
                 </form>
             </div> : null
@@ -530,7 +549,7 @@ const Appointments = () => {
     </div>
     }
     {
-        (checkingIn || followingUp) ? <LoadingModal /> : null
+        (checkingIn || followingUp || rescheduling) ? <LoadingModal /> : null
     }
   </>
   )

@@ -1,12 +1,13 @@
 import React from "react";
 import {RxCaretDown} from "react-icons/rx";
 
-const Select = ({options, className, label, labelClass, placeholder, value, onChange,icon, ...rest}) => {
+const Select = ({options, className, label, labelClass, placeholder, value, onChange,icon,  disabled = false, ...rest}) => {
   return (
     <div className="flex flex-col gap-1 ">
       <p className={`text-sm font-medium ${labelClass}`}>{label}</p>
       <div className="relative">
         <select
+          disabled={disabled}
           className={`${icon && '!pl-10'} focus-within:border-primary-green outline-none w-full border rounded-3xl p-3 pr-4 appearance-none text-sm ${className}`}
           onChange={onChange}
           value={value}
