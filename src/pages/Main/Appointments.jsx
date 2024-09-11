@@ -21,6 +21,7 @@ import { useMutation, useQuery } from 'react-query'
 import moment from 'moment'
 import PageLoading from '../../Loader/PageLoading'
 import { ConvertToNaira } from '../../utils/Helper'
+import { HiEllipsisHorizontal } from 'react-icons/hi2'
 
 const Appointments = () => {
     
@@ -38,12 +39,14 @@ const Appointments = () => {
     const [followUp, setFollowUp] = useState(false);
     const [markPaid, setMarkPaid] = useState(false);
     const [reschedule, setReschedule] = useState(false);
+    const [showMore, setShowMore] = useState(false);
 
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleNewReferral = () => setNewReferral(!newReferral);
     const toggleReschedule = () => setReschedule(!reschedule);    
     const toggleFollowUp = () => setFollowUp(!followUp);
     const toggleMarkPaid = () => setMarkPaid(!markPaid);
+    const toggleShowMore = () => setShowMore(!showMore);
 
     const dummy = [
         {
@@ -358,8 +361,8 @@ const Appointments = () => {
                                     <p className='text-primary font-semibold' >{ConvertToNaira(Number(appointment?.total_amount))}</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-5 mt-10">
-                            {
+                            <div className="flex gap-5 mt-10">
+                            {/* {
                                 acitveTab == 0 ? 
                                     <button onClick={() => { toggleReschedule(); toggleViewDetails() }} className="border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
                                         <RiCalendarScheduleFill />
@@ -370,10 +373,30 @@ const Appointments = () => {
                                         <ImCheckmark />
                                         <span>Mark as Paid</span>
                                     </button>
-                                }
-                                <button onClick={() => {toggleFollowUp(); toggleViewDetails()}} className="bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
-                                    <CgMail size={18} />
-                                    <span>Send Follow Up</span>
+                                } */}
+                                <button onClick={() => {toggleFollowUp(); toggleViewDetails()}} className="flex-1 justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                    <span>Check Patient In</span>
+                                </button>
+                                <button onClick={toggleShowMore} className='w-12 h-12 relative rounded-full grid place-content-center border border-black' >
+                                    <HiEllipsisHorizontal />
+                                   {showMore ? <div className="p-3 flex flex-col gap-3 absolute bottom-[60px] right-4 min-h-52 border rounded-lg bg-white shadow w-52">
+                                        <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                            <CgMail size={18} />
+                                            <span>View Patient Details</span>
+                                        </p>
+                                        <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                            <CgMail size={18} />
+                                            <span>Send Follow Up</span>
+                                        </p>
+                                        <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                            <CgMail size={18} />
+                                            <span>Reschedule</span>
+                                        </p>
+                                        <p className="whitespace-nowrap h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                            <CgMail size={18} />
+                                            <span>Missed Apppointment</span>
+                                        </p>
+                                    </div> : null }
                                 </button>
                             </div>
                         </div>
