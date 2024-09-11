@@ -34,6 +34,7 @@ const endpoints = {
     FOLLOW_UP:'/admin/appointments/follow-up',
     RESCHEDULE:'/admin/appointments/reschedule',
     TIME_SLOTS:'patient/appointments/available-slots',
+    MISS_APPOINTMENT:'/admin/appointments/cancel',
   },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'

@@ -54,9 +54,17 @@ const GetTimeSlots = (date) => {
     .catch((error) => Promise.reject(error));
 }
 
+const missAppoitment = (payload) => {
+  return axiosClient()
+    .put(`${endpoints.appointments.MISS_APPOINTMENT}`,payload)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 
 
 export default {
-  GetUpcomingAppointments, GetAllAppointments, GetAppointment, CheckIn, FollowUp, GetTimeSlots, Reschedule
+  GetUpcomingAppointments, GetAllAppointments, GetAppointment, CheckIn, FollowUp, GetTimeSlots, Reschedule,
+  missAppoitment,
 };
 

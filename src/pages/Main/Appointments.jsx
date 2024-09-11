@@ -14,6 +14,7 @@ import { ImCheckmark } from 'react-icons/im'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 import followUpIcon from '../../assets/images/followup.svg';
+import missedIcon from '../../assets/images/missed_appoitment.svg'
 import paid from '../../assets/images/paid2.svg';
 import rescheduleImg from '../../assets/images/reschedule.svg';
 import AppointmentService from '../../services/Appointment'
@@ -38,6 +39,7 @@ const Appointments = () => {
     const [id, setId] = useState(0);
     const [appointment, setAppointment] = useState({});
     const [times,setTimes] = useState([]);
+    const [missed, setMissed] = useState(false);
 
     const [viewDetails, setViewDetails] = useState(false);
     const [newReferral, setNewReferral] = useState(() => query == 'true' ? true : false);
@@ -55,6 +57,7 @@ const Appointments = () => {
     const toggleCheckin = () => setCheckin(!checkin);
     const toggleMarkPaid = () => setMarkPaid(!markPaid);
     const toggleShowMore = () => setShowMore(!showMore);
+    const toggleMissed = () => setMissed(!missed);
 
 
     const {handleSubmit, values, getFieldProps, setFieldValue} = useFormik({
@@ -68,69 +71,6 @@ const Appointments = () => {
             rescheduleMutate(values);
         }
     })
-
-    const dummy = [
-        {
-            name:'Marcia Cronin ',
-            email:'gerald37@hotmail.com',
-            appointment:'12-09-2023 09:00am',
-            gender:'Female',
-            test:'-',
-            rebate:'-',
-            pay_date:'14-04-2024 11:39pm',
-        },
-        {
-            name:'Luke Hudsonlee Jack',
-            email:'earnestine_macejkovic89@yahoo.com',
-            appointment:'12-09-2023 09:00am',
-            gender:'Male',
-            test:'3',
-            rebate:'₦103,000',
-            pay_date:'09-11-2012 09:15pm',
-
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            appointment:'12-09-2023 09:00am',
-            gender:'Male',
-            test:'-',
-            pay_date:'09-11-2012 09:15pm',
-            rebate:'-',
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            appointment:'12-09-2023 09:00am',
-            gender:'Female',
-            pay_date:'14-04-2024 11:39pm',
-            rebate:'₦21,000',
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            appointment:'12-09-2023 09:00am',
-            gender:'Male',
-            pay_date:'14-04-2024 11:39pm',
-            rebate:'-',
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            appointment:'12-09-2023 09:00am',
-            gender:'Male',
-            pay_date:'14-04-2024 11:39pm',
-            rebate:'₦55,000',
-        },
-        {
-            name:'Stacey Jacobs',
-            email:'mohammad.schimmel@gmail.com',
-            appointment:'12-09-2023 09:00am',
-            gender:'Female',
-            pay_date:'14-04-2024 11:39pm',
-            rebate:'₦21,000',
-        },
-    ]
 
     const today_booking = [
         {
@@ -196,6 +136,17 @@ const Appointments = () => {
         },
         onError: e=> {
             errorToast(e.message);
+        }
+        });
+        
+    const { isLoading:missing, mutate:missAppointment}  = useMutation(AppointmentService.missAppoitment, {
+        onSuccess:res => {
+            successToast(res.data.message);
+            toggleMissed();
+            getAppoinment(id);
+        },
+        onError: e=> {
+            errorToast(e.errors);
         }
         });
         
@@ -437,9 +388,9 @@ const Appointments = () => {
                                             <CgMail size={18} />
                                             <span>Reschedule</span>
                                         </p>
-                                        <p className="whitespace-nowrap h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                        <p onClick={toggleMissed} className="whitespace-nowrap h-fit flex items-center gap-3 font-medium  py-2 text-sm">
                                             <CgMail size={18} />
-                                            <span>Missed Apppointment</span>
+                                            <span>Missed Appointment</span>
                                         </p>
                                     </div> : null }
                                 </button>
@@ -500,6 +451,28 @@ const Appointments = () => {
             </div> : null
         }
         {
+           missed ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+                <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                    <img className='w-12 m-auto' src={missedIcon} alt="delete" />
+                    <p className='text-base font-semibold' >Missed Appointment</p>
+                    <p className='text-sm' >Select a reason for missing appointment.</p>
+                    <div className="grid gap-4 text-left mt-5 pl-10">
+                       {
+                         ['Emergency (family&personal)','Double Bookings', 'Work Conflict','Patient Forgot','Long Wait Times'].map(item => <div className='flex items-center
+                          gap-2 text-sm'>
+                            <input type="radio" name="" id="" />
+                            <p>{item}</p>
+                         </div>)
+                       }
+                    </div>
+                    <div className="mt-10 flex items-center gap-5 ">
+                        <Button onClick={toggleMissed} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                        <Button  onClick={() => missAppointment({appointment_id:id})} className={'!px-5 bg-red-600'} title={'Proceed'} />
+                    </div>
+                </div>
+            </div> : null
+        }
+        {
            checkin ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
                 <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                     <img className='w-12 m-auto' src={checkinIcon} alt="delete" />
@@ -549,7 +522,7 @@ const Appointments = () => {
     </div>
     }
     {
-        (checkingIn || followingUp || rescheduling) ? <LoadingModal /> : null
+        (checkingIn || followingUp || rescheduling || missing) ? <LoadingModal /> : null
     }
   </>
   )
