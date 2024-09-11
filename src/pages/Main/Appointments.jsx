@@ -20,8 +20,12 @@ import AppointmentService from '../../services/Appointment'
 import { useMutation, useQuery } from 'react-query'
 import moment from 'moment'
 import PageLoading from '../../Loader/PageLoading'
-import { ConvertToNaira } from '../../utils/Helper'
+import { ConvertToNaira, errorToast, successToast } from '../../utils/Helper'
 import { HiEllipsisHorizontal } from 'react-icons/hi2'
+import LoadingModal from '../../Loader/LoadingModal';
+import checkinIcon from '../../assets/images/checkin.svg';
+import { useFormik } from 'formik'
+
 
 const Appointments = () => {
     
@@ -33,20 +37,35 @@ const Appointments = () => {
     const [all, setAll] = useState([]);
     const [id, setId] = useState(0);
     const [appointment, setAppointment] = useState({});
+    const [times,setTimes] = useState([]);
 
     const [viewDetails, setViewDetails] = useState(false);
     const [newReferral, setNewReferral] = useState(() => query == 'true' ? true : false);
     const [followUp, setFollowUp] = useState(false);
+    const [checkin, setCheckin] = useState(false);
     const [markPaid, setMarkPaid] = useState(false);
     const [reschedule, setReschedule] = useState(false);
     const [showMore, setShowMore] = useState(false);
+    const [comment, setComment] = useState('');
 
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleNewReferral = () => setNewReferral(!newReferral);
     const toggleReschedule = () => setReschedule(!reschedule);    
     const toggleFollowUp = () => setFollowUp(!followUp);
+    const toggleCheckin = () => setCheckin(!checkin);
     const toggleMarkPaid = () => setMarkPaid(!markPaid);
     const toggleShowMore = () => setShowMore(!showMore);
+
+
+    const formik = useFormik({
+        initialValues:{
+            date:'',
+            time:'',
+        },
+        onSubmit:values => {
+            console.log(values);
+        }
+    })
 
     const dummy = [
         {
@@ -138,30 +157,6 @@ const Appointments = () => {
         },
     ]
     
-    const selectedTests = [
-        {
-          type:'C.T. Scan - Pelvimetry',
-          category:'C.T Test',
-          amount:'₦28,000',
-        },
-        {
-            type:'Menstrual Irregularities',
-            category:'Endocrinology',
-            amount:'₦8,000',
-        },
-        {
-          type:'C.T. Scan - Pelvimetry',
-          category:'C.T Test',
-          amount:'₦28,000',
-        },
-        {
-            type:'Fibronology',
-            category:'HAEMATOLOGY',
-            amount:'₦5,500',
-        },
-    ]
-
-    
     const { isLoading:loadingUpcoming}  = useQuery('upcoming', () => AppointmentService.GetUpcomingAppointments({ page }), {
         onSuccess:res => {
             setUpcoming(res.data.appointments);
@@ -179,6 +174,37 @@ const Appointments = () => {
             setAppointment(res.data);
             }
         });
+        
+    const { isLoading:checkingIn, mutate:checkIn}  = useMutation(AppointmentService.CheckIn, {
+        onSuccess:res => {
+            toggleCheckin();
+            successToast(res.data.message);
+            getAppoinment(id);
+        },
+        onError: e=> {
+            errorToast(e.errors);
+        }
+        });
+        
+    const { isLoading:followingUp, mutate:followUpMutate}  = useMutation(AppointmentService.FollowUp, {
+        onSuccess:res => {
+            successToast(res.data.message);
+            toggleFollowUp();
+            setComment('');
+        },
+        onError: e=> {
+            errorToast(e.message);
+        }
+        });
+        
+    const { isLoading:gettingTime, mutate:getTimes}  = useMutation(AppointmentService.GetTimeSlots, {
+        onSuccess:res => {
+            setTimes(res.data.availableSlots);
+        },
+        onError: e=> {
+            errorToast(e.message);
+        }
+        });
 
         const viewAppointment = (id) => {
             setId(id);
@@ -187,7 +213,7 @@ const Appointments = () => {
         
 
     useEffect(() => {
-        getAppoinment(id);
+        if(id) getAppoinment(id);
     }, [id])
     
 
@@ -374,7 +400,7 @@ const Appointments = () => {
                                         <span>Mark as Paid</span>
                                     </button>
                                 } */}
-                                <button onClick={() => {toggleFollowUp(); toggleViewDetails()}} className="flex-1 justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                <button onClick={toggleCheckin} className="flex-1 justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
                                     <span>Check Patient In</span>
                                 </button>
                                 <button onClick={toggleShowMore} className='w-12 h-12 relative rounded-full grid place-content-center border border-black' >
@@ -384,11 +410,11 @@ const Appointments = () => {
                                             <CgMail size={18} />
                                             <span>View Patient Details</span>
                                         </p>
-                                        <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                        <p onClick={toggleFollowUp} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
                                             <CgMail size={18} />
                                             <span>Send Follow Up</span>
                                         </p>
-                                        <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                        <p onClick={toggleReschedule} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
                                             <CgMail size={18} />
                                             <span>Reschedule</span>
                                         </p>
@@ -442,11 +468,27 @@ const Appointments = () => {
                         <p className='font-medium mb-1'>Comment</p>
                         <textarea 
                             className='outline-none rounded-lg p-3 border w-full min-h-[100px]'
-                            placeholder='Type your message here..' />
+                            placeholder='Type your message here..'
+                            value={comment}
+                            onChange={e => setComment(e.target.value)}
+                            />
                     </div>
                     <div className="mt-10 flex items-center gap-5 ">
-                        <Button onClick={toggleFollowUp} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                        <Button onClick={toggleFollowUp} className={'!px-5 bg-primary'} title={'Yes Proceed'} />
+                        <Button onClick={() => setFollowUp(false)} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                        <Button disabled={!comment} onClick={()=> followUpMutate({ appointment_id:id, comment })} className={'!px-5 bg-primary'} title={'Yes Proceed'} />
+                    </div>
+                </div>
+            </div> : null
+        }
+        {
+           checkin ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+                <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                    <img className='w-12 m-auto' src={checkinIcon} alt="delete" />
+                    <p className='text-base font-semibold' >Check Patient In</p>
+                    <p className='text-sm' >You are confirming that this user is present and will begin the assigned test shortly.</p>
+                    <div className="mt-10 flex items-center gap-5 ">
+                        <Button onClick={() => toggleCheckin()} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                        <Button onClick={() => checkIn({ appointment_id : id })} className={'!px-5 bg-primary'} title={'Yes Proceed'} />
                     </div>
                 </div>
             </div> : null
@@ -466,7 +508,7 @@ const Appointments = () => {
         }
         {
            reschedule ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
-                <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                <form className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                     <img className='w-12 m-auto' src={rescheduleImg} alt="delete" />
                     <p className='text-base font-semibold' >Reschedule Appointment</p>
                     <div className="grid gap-5 text-left mt-10">
@@ -479,13 +521,16 @@ const Appointments = () => {
                         <Button onClick={toggleReschedule} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
                         <Button onClick={toggleReschedule} className={'!px-5 !bg-black text-white'} title={'Reschedule'} />
                     </div>
-                </div>
+                </form>
             </div> : null
         }
     </div> :
     <div className='w-full'>
         <New toggleNewReferral={toggleNewReferral} /> 
     </div>
+    }
+    {
+        (checkingIn || followingUp) ? <LoadingModal /> : null
     }
   </>
   )

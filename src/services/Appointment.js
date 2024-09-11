@@ -25,8 +25,31 @@ const GetAppointment = (id) => {
     .catch((error) => Promise.reject(error));
 }
 
+const CheckIn = (data) => {
+  return axiosClient()
+    .put(`${endpoints.appointments.CHECKIN}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const FollowUp = (data) => {
+  return axiosClient()
+    .put(`${endpoints.appointments.FOLLOW_UP}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+
+const GetTimeSlots = (date) => {
+  return axiosClient()
+    .get(`${endpoints.appointments.TIME_SLOTS}?date=${date}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+
 
 export default {
-  GetUpcomingAppointments, GetAllAppointments, GetAppointment
+  GetUpcomingAppointments, GetAllAppointments, GetAppointment, CheckIn, FollowUp, GetTimeSlots
 };
 

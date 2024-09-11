@@ -30,6 +30,9 @@ const endpoints = {
     UPCOMING_APPOINTMENTS:'/admin/appointments/upcoming',
     ALL_APPOINTMENTS:'admin/appointments/all',
     APPOINTMENTS:'/admin/appointments',
+    CHECKIN:'/admin/appointments/check-in',
+    FOLLOW_UP:'/admin/appointments/follow-up',
+    TIME_SLOTS:'patient/appointments/available-slots',
   },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
