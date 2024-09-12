@@ -17,7 +17,21 @@ const GetAllTests = ({data_per_page=20,page=1}) => {
     .catch((error) => Promise.reject(error));
 }
 
+const TestDetail = (lab_id) => {
+  return axiosClient()
+    .get(`${endpoints.tests.TEST_DETAIL}?lab_id=${lab_id}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const MarkComplete = (payload) => {
+  return axiosClient()
+    .post(`${endpoints.tests.MARK_TEST_COMPLETE}`, payload)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 export default {
-  GetPendingTests,GetAllTests,
+  GetPendingTests,GetAllTests, MarkComplete, TestDetail
 };
 

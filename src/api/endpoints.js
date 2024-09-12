@@ -39,6 +39,8 @@ const endpoints = {
   tests:{
     TESTS:'/admin/test/all',
     PENDING_TESTS:'/admin/test/pending',
+    MARK_TEST_COMPLETE:'/admin/test/mark-complete',
+    TEST_DETAIL:'/admin/test/details'
   },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
