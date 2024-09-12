@@ -34,4 +34,3 @@ const MarkComplete = (payload) => {
 export default {
   GetPendingTests,GetAllTests, MarkComplete, TestDetail
 };
-
