@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Input from '../../../components/Inputs'
-import { BiCopy, BiCopyAlt, BiEdit, BiPhoneIncoming, BiSearch, BiTestTube, BiUser, BiZoomOut } from 'react-icons/bi'
+import { BiCalendar, BiCopy, BiCopyAlt, BiEdit, BiPhoneIncoming, BiSearch, BiTestTube, BiUser, BiZoomOut } from 'react-icons/bi'
 import Select from '../../../components/Inputs/Select'
 import Button from '../../../components/Button'
 import { CgClose, CgMail } from 'react-icons/cg'
@@ -14,13 +14,14 @@ import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'; 
 import preview from '../../../assets/images/preview.svg';
 import { FaEdit } from 'react-icons/fa'
-import { BsArrowRight, BsFillTrashFill, BsTrash } from 'react-icons/bs'
+import { BsArrowRight, BsCheck, BsFillTrashFill, BsTrash } from 'react-icons/bs'
 import { FcDownload } from 'react-icons/fc';
 import { LuTestTube, LuTestTube2 } from 'react-icons/lu';
 import deleteIcon from '../../../assets/images/delete.svg';
 import moment from 'moment'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import TestService from '../../../services/Tests'
+import { ConvertToNaira } from '../../../utils/Helper'
 
 const Tests = () => {
     const navigate = useNavigate();
@@ -30,7 +31,8 @@ const Tests = () => {
     const [tests, setTests] = useState([]);
     const [page,setPage] = useState(1);
     const [pendingTests, setPendingTests] = useState([]);
-
+    const [id,setId] = useState(0);
+    const [testDetails, setTestDetails]  = useState(null);
     const [viewDetails, setViewDetails] = useState(false);
     const [uploadTest, setUploadTest] = useState(false);
     const [viewTest, setViewTest] = useState(false);
@@ -121,11 +123,25 @@ const Tests = () => {
             setTests(res.data.tests);
             }
         });
+
+            
+        const { isLoading:loadingTestDetails, mutate:viewTestMutate}  = useMutation(TestService.TestDetail, {
+            onSuccess:res => {
+                setTestDetails(res.data.details);
+                }
+            });
+            
+
+        const viewTestDetails = (id) => {
+            setId(id);
+            toggleViewDetails();
+        }
+        
         
 
     useEffect(() => {
-
-    }, [date])
+        if(id) viewTestMutate(id);
+    }, [id])
 
 
     
@@ -178,7 +194,7 @@ const Tests = () => {
                     <p className='col-span-2 line-clamp-1 pr-5' >{item.assigned_test}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.appointment_date).format('lll')}</p> 
                     <p className='col-span-2 line-clamp-1 pr-5' >{item.check_in_time}</p>
-                    <p onClick={null} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={() =>viewTestDetails(item.lab_id)} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -207,7 +223,7 @@ const Tests = () => {
                         {item.status == 0 ? <div className='bg-red-500 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Not Checked In</div> : null}
                         {item.status == 'Not Started' ? <div className='bg-black w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Not Started</div> : null}
                     </p>
-                    <p onClick={null} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={() =>viewTestDetails(item.lab_id)} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -239,7 +255,7 @@ const Tests = () => {
             <Calendar className={'min-w-[700px] !leading-[6] !text-lg'} onChange={setDate}  />
         </div> */}
         {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
-            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+            <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
                 <div className="flex items-center justify-between p-3 border-b">
                     <p className='font-semibold' >Referral Details</p>
                     <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
@@ -249,115 +265,73 @@ const Tests = () => {
                 </div>
                 <div className="flex flex-col gap-1 border-b p-5">
                     <img className='w-16 mx-auto' src={stacey} alt="stacey" />
-                    <p className='text-center font-medium' >Stacey Jacobs</p>
-                    <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
+                    <p className='text-center font-medium' >{testDetails?.full_name}</p>
+                    <div className="mt-5 grid grid-cols-4 gap-3 text-sm">
                         <div className="flex flex-col justify-center text-center">
                             <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
                                 <MdOutlineEmail />
                              </div>
                             <p className='font-semibold' >Email Address</p>
-                            <p className='line-clamp-1 underline text-light_blue' >earnestine_macejkovic89@yahoo.com</p>
+                            <p className='line-clamp-1 underline text-light_blue' >{testDetails?.email}</p>
                         </div>
                         <div className="flex flex-col justify-center items-center text-center">
                             <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
                                 <BiPhoneIncoming />
                              </div>
                             <p className='font-semibold' >Phone Number</p>
-                            <p className='line-clamp-1' >299-470-4508</p>
+                            <p className='line-clamp-1' >{testDetails?.phone_number}</p>
                         </div>
                         <div className="flex flex-col justify-center items-center text-center">
                             <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
                                 <BiUser />
                              </div>
                             <p className='font-semibold' >Gender</p>
-                            <p className='line-clamp-1' >Female</p>
+                            <p className='line-clamp-1' >{testDetails?.gender}</p>
+                        </div>
+                        <div className="flex flex-col justify-center items-center text-center">
+                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                <BiCalendar />
+                             </div>
+                            <p className='font-semibold' >Age</p>
+                            <p className='line-clamp-1' >{testDetails?.age}</p>
                         </div>
                     </div>
                 </div>
                 <div className="p-5 text-sm">
-                    <p className='font-semibold text-base' >Test Type</p>
-                    <div className="mt-3 grid grid-cols-2 gap-2">
-                        {
-                            selectedTests.map((item,idx) => (
-                                <div key={idx} className="bg-white rounded-md border p-3 text-sm">
-                                    <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
-                                        <p className='' >{item.type}</p>
-                                        <p className='text-3xl opacity-70' >0{idx + 1}</p>
-                                    </div>
-                                    <div className="flex text-sm items-center justify-between gap-2">
-                                        <p className='' >{item.category}</p>
-                                      
-                                        <p className='text-base font-medium' >{item.amount}</p>
-                                    </div>
-                                </div>
-                            ))
-                        }
-                    </div>
                     <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
                         <div className="flex flex-col ">
-                            <p className='font-medium' >Rebate</p>
-                            <p className=' ' >10% on each Test</p>
+                            <p className='font-medium' >Test Name</p>
+                            <p className=' ' >{testDetails?.test_name}</p>
                         </div>
                         <div className="flex flex-col ">
-                            <p className='font-medium' >Date</p>
-                            <p className=' ' >09 September, 2024</p>
+                            <p className='font-medium' >Test Category</p>
+                            <p className=' ' >-</p>
                         </div>
                         <div className="flex flex-col ">
-                            <p className='font-medium' >Referrer's Name</p>
+                            <p className='font-medium' >Test Price</p>
                             <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
                                 <img className='w-7' src={stacey} alt="stacey" />
-                                <p className=' ' >Emmanuella Bami</p>
+                                <p className=' ' >{ ConvertToNaira(Number(testDetails?.test_price))}</p>
                             </div>
                         </div>
                         <div className="flex flex-col">
-                            <p className='font-medium' >Invitation Code</p>
-                            <p className=' text-primary font-semibold' >UYBFJK</p>
+                            <p className='font-medium' >Check In Time</p>
+                            <p className=' text-primary font-semibold' >{testDetails?.check_in_time}</p>
                         </div>
                         <div className="flex flex-col">
-                            <p className='font-medium' >Appointment</p>
-                            <p className=' ' >09 September 11:30am</p>
+                            <p className='font-medium' >Appointment Date</p>
+                            <p className=' ' >{testDetails?.appointment_date}</p>
                         </div>
                         <div className="flex flex-col">
-                            <p className='font-medium' >Booking Number</p>
-                            <p className=' ' >003</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Referral Status</p>
-                            <p className='' >pending</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Total Test Payment</p>
-                            <p className='text-primary font-semibold' >₦112,000</p>
+                            <p className='font-medium' >Test Status</p>
+                            <p className=' ' >{testDetails?.test_status}</p>
                         </div>
                     </div>
-                    <div className="mt-10 text-sm mb-16 ">
-                    <p className='font-semibold text-base' >Uploded Results</p>
-                    <div className="my-7 mt-5 grid grid-cols-3 gap-2 gap-y-4">
-                        {
-                            [1,2,3,4,5].map(item => (
-                                <div key={item}>
-                                    <div onClick={() => {toggleViewDetails(); toggleViewTest()}} className="cursor-pointer group relative overflow-hidden rounded-lg">
-                                        <div className="group-hover:grid absolute inset-0 bg-black/50 hidden place-content-center">
-                                            <BiZoomOut size={20} className='text-white' />
-                                        </div>
-                                        <img className='max-h-[80vh]' src={preview} alt="preview" />
-                                        {/* <button className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
-                                            <BsFillTrashFill size={15} color='red' />
-                                        </button>   */}
-                                    </div>
-                                    {/* <div className="flex items-center justify-between gap-3">
-                                        <p>Stacey MRI Test</p>
-                                        <FaEdit />
-                                    </div> */}
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-                    <div className="grid  gap-5 mt-20">
+
+                    <div className="grid  gap-2 mt-20">
                         <button onClick={() => {toggleUploadTest(); toggleViewDetails()}} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
-                            <BiTestTube size={18} />
-                            <span>Upload Tests Result</span>
+                            <BsCheck size={22} />
+                            <span>Mark as "Completed"</span>
                         </button>
                     </div>
                 </div>
