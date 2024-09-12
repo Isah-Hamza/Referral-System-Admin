@@ -36,6 +36,10 @@ const endpoints = {
     TIME_SLOTS:'patient/appointments/available-slots',
     MISS_APPOINTMENT:'/admin/appointments/cancel',
   },
+  tests:{
+    TESTS:'/admin/test/all',
+    PENDING_TESTS:'/admin/test/pending',
+  },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
   // },
