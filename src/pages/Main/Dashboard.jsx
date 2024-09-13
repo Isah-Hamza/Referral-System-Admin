@@ -109,7 +109,7 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Monthly Rebate Earned</p>
-                    <p className='font-semibold text-xl my-3'>₦{dashboardStats?.month_earning?.total_earning_month?.toLocaleString('en-US')}</p>
+                    <p className='font-semibold text-xl my-3'>{ ConvertToNaira(Number(dashboardStats?.month_earning?.total_earning_month))}</p>
                     <div className="flex text-sm items-center gap-1 mt-5">
                         {
                           dashboardStats?.month_earning?.option == 'increase' ?

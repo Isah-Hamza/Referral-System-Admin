@@ -18,7 +18,9 @@ import { BsFillTrashFill } from 'react-icons/bs'
 import { FcDownload } from 'react-icons/fc'
 import moment from 'moment'
 import Result from '../../services/Result'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
+import { ConvertToNaira, successToast } from '../../utils/Helper'
+import LoadingModal from '../../Loader/LoadingModal'
 
 const Results = () => {
     
@@ -28,6 +30,7 @@ const Results = () => {
     const [uploadedResults, setUploadedResults] = useState([]);
     const [awaitingResults, setAwaitingResults] = useState([]); 
     const [page,setPage] = useState(1);
+    const [details, setDetails] = useState({});
 
     const [viewDetails, setViewDetails] = useState(false);
     const [uploadTest, setUploadTest] = useState(false);
@@ -36,6 +39,8 @@ const Results = () => {
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleUploadTest = () => setUploadTest(!uploadTest);
     const toggleViewTest = () => setViewTest(!viewTest);
+    const [id,setId] = useState(0);
+    const [item, setItem] = useState(null);
 
     const today_booking = [
         {
@@ -66,44 +71,61 @@ const Results = () => {
     
     const selectedTests = [
         {
-          type:'C.T. Scan - Pelvimetry',
-          category:'C.T Test',
-          amount:'₦28,000',
-        },
-        {
-            type:'Menstrual Irregularities',
-            category:'Endocrinology',
-            amount:'₦8,000',
-        },
-        {
-          type:'C.T. Scan - Pelvimetry',
-          category:'C.T Test',
-          amount:'₦28,000',
-        },
-        {
-            type:'Fibronology',
-            category:'HAEMATOLOGY',
-            amount:'₦5,500',
+          type:details?.assigned_test,
+          category:details?.test_category,
+          amount: ConvertToNaira(Number(details?.test_amount)),
         },
     ]
 
          
-    const { isLoading:loadingAwaiting}  = useQuery('awaiting', () => Result.GetAwaitingResults({ page }), {
+    const { isLoading:loadingAwaiting, refetch:refetchAwaiting}  = useQuery('awaiting', () => Result.GetAwaitingResults({ page }), {
         onSuccess:res => {
             setAwaitingResults(res.data.awaitingResults);
             }
         });
          
-    const { isLoading:loadingUploaded}  = useQuery('uploaded', () => Result.GetUploadedResults({ page }), {
+    const { isLoading:loadingUploaded, refetch:refetchUploaded}  = useQuery('uploaded', () => Result.GetUploadedResults({ page }), {
         onSuccess:res => {
             setUploadedResults(res.data.uploadedResults);
             }
         });
         
+                
+    const { isLoading:loadingResultDetails, mutate:viewResult}  = useMutation(Result.GetResult, {
+        onSuccess:res => {
+            setDetails(res.data.resultDetails);
+            }
+        });
+        
+                
+    const { isLoading:uploadingResult, mutate:uploadResult}  = useMutation(Result.UploadResult, {
+        onSuccess:res => {
+            successToast(res.data.message);
+            toggleViewDetails();
+            acitveTab == 0 ? refetchAwaiting() : refetchUploaded();
+            }
+        });
+
+    const downloadFile = (fileUrl, fileName) => {
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = function () {
+        var a = document.createElement('a'); // create html element anchor
+        a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+        a.download = fileName; // Set the file name.
+        a.style.display = 'none'; // set anchor as hidden
+        document.body.appendChild(a);
+        a.click();
+        a.remove()
+        };
+        xhr.open('GET', fileUrl);
+        xhr.send();
+    }
+            
 
     useEffect(() => {
-
-    }, [date])
+        viewResult(id);
+    }, [id])
     
 
   return (
@@ -142,7 +164,7 @@ const Results = () => {
                     <p className='col-span-2 line-clamp-1' >{item.full_name}</p>
                     <p className='col-span-2 line-clamp-1 pr-5' >{item.assigned_test}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.test_date).format('lll')}</p> 
-                    <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={() =>{ setId(item.result_id); toggleViewDetails();}} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -167,7 +189,7 @@ const Results = () => {
                     <p className='col-span-2 line-clamp-1' >{item.assigned_test}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.test_date).format('lll')}</p> 
                     <p className='col-span-2 line-clamp-1' >{moment(item.uploaded_date).format('lll')}</p> 
-                    <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={() =>{ setId(item.result_id); toggleViewDetails();}} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -185,34 +207,34 @@ const Results = () => {
                 </div>
                 <div className="flex flex-col gap-1 border-b p-5">
                     <img className='w-16 mx-auto' src={stacey} alt="stacey" />
-                    <p className='text-center font-medium' >Stacey Jacobs</p>
+                    <p className='text-center font-medium' >{details?.full_name}</p>
                     <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
                         <div className="flex flex-col justify-center text-center">
                             <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
                                 <MdOutlineEmail />
                              </div>
                             <p className='font-semibold' >Email Address</p>
-                            <p className='line-clamp-1 underline text-light_blue' >earnestine_macejkovic89@yahoo.com</p>
+                            <p className='line-clamp-1 underline text-light_blue' >{details?.email}</p>
                         </div>
                         <div className="flex flex-col justify-center items-center text-center">
                             <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
                                 <BiPhoneIncoming />
                              </div>
                             <p className='font-semibold' >Phone Number</p>
-                            <p className='line-clamp-1' >299-470-4508</p>
+                            <p className='line-clamp-1' >{details?.phone_number}</p>
                         </div>
                         <div className="flex flex-col justify-center items-center text-center">
                             <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
                                 <BiUser />
                              </div>
                             <p className='font-semibold' >Gender</p>
-                            <p className='line-clamp-1' >Female</p>
+                            <p className='line-clamp-1' >{details?.gender}</p>
                         </div>
                     </div>
                 </div>
                 <div className="p-5 text-sm">
                     <p className='font-semibold text-base' >Test Type</p>
-                    <div className="mt-3 grid grid-cols-2 gap-2">
+                    <div className="mt-3 grid gap-2">
                         {
                             selectedTests.map((item,idx) => (
                                 <div key={idx} className="bg-white rounded-md border p-3 text-sm">
@@ -231,14 +253,14 @@ const Results = () => {
                     </div>
                     <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
                         <div className="flex flex-col ">
-                            <p className='font-medium' >Rebate</p>
-                            <p className=' ' >10% on each Test</p>
+                            <p className='font-medium' >Patient Age</p>
+                            <p className=' ' >{details?.age}</p>
                         </div>
                         <div className="flex flex-col ">
-                            <p className='font-medium' >Date</p>
-                            <p className=' ' >09 September, 2024</p>
+                            <p className='font-medium' >Test Date</p>
+                            <p className=' ' >{ moment(details?.test_date).format('lll')}</p>
                         </div>
-                        <div className="flex flex-col ">
+                        {/* <div className="flex flex-col ">
                             <p className='font-medium' >Referrer's Name</p>
                             <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
                                 <img className='w-7' src={stacey} alt="stacey" />
@@ -256,40 +278,33 @@ const Results = () => {
                         <div className="flex flex-col">
                             <p className='font-medium' >Booking Number</p>
                             <p className=' ' >003</p>
-                        </div>
+                        </div> */}
                         <div className="flex flex-col">
-                            <p className='font-medium' >Referral Status</p>
-                            <p className='' >pending</p>
+                            <p className='font-medium' >Result Status</p>
+                            <p className='' >{details?.result_status}</p>
                         </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Total Test Payment</p>
-                            <p className='text-primary font-semibold' >₦112,000</p>
-                        </div>
+                         
                     </div>
-                    <div className="mt-10 text-sm mb-16 ">
-                    <p className='font-semibold text-base' >Uploded Results</p>
-                    <div className="my-7 mt-5 grid grid-cols-3 gap-2 gap-y-4">
-                        {
-                            [1,2,3,4,5].map(item => (
-                                <div key={item}>
-                                    <div onClick={() => {toggleViewDetails(); toggleViewTest()}} className="cursor-pointer group relative overflow-hidden rounded-lg">
-                                        <div className="group-hover:grid absolute inset-0 bg-black/50 hidden place-content-center">
-                                            <BiZoomOut size={20} className='text-white' />
-                                        </div>
-                                        <img className='max-h-[80vh]' src={preview} alt="preview" />
-                                        {/* <button className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
-                                            <BsFillTrashFill size={15} color='red' />
-                                        </button>   */}
+                     { acitveTab == 1 ? <div className="mt-10 text-sm mb-16 ">
+                        <p className='font-semibold text-base' >Uploaded Results</p>
+                        <div className="my-7 mt-5 grid grid-cols-3 gap-2 gap-y-4">
+                            <div key={item}>
+                                <div onClick={() => {toggleViewDetails(); toggleViewTest()}} className="cursor-pointer group relative overflow-hidden rounded-lg">
+                                    <div className="group-hover:grid absolute inset-0 bg-black/50 hidden place-content-center">
+                                        <BiZoomOut size={20} className='text-white' />
                                     </div>
-                                    {/* <div className="flex items-center justify-between gap-3">
-                                        <p>Stacey MRI Test</p>
-                                        <FaEdit />
-                                    </div> */}
+                                    <img className='max-h-[80vh]' src={details?.result_image} alt="preview" /> 
+                                        <button className="shadow-md absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
+                                        <BsFillTrashFill size={15} color='red' />
+                                    </button> 
                                 </div>
-                            ))
-                        }
-                    </div>
-                </div>
+                            </div>
+                        </div> 
+                    </div> : null}
+                    {/* <div className="flex items-center justify-between gap-3">
+                        <p>Stacey MRI Test</p>
+                        <FaEdit />
+                    </div>  */}
                     <div className="grid  gap-5 mt-20">
                         <button onClick={() => {toggleUploadTest(); toggleViewDetails()}} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
                             <BiTestTube size={18} />
@@ -393,12 +408,17 @@ const Results = () => {
         }
         {
            viewTest ? <div className='text-white bg-black/50 fixed inset-0 grid px-5' >
-                        <button onClick={toggleViewTest} className="ml-auto flex items-center gap-1 border-b">
-                        <CgClose color='white' />
-                            close</button>
-                        <img className='flex-1 mx-auto mb-5' src={preview} alt="previwe" />       
-                        <button className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</button>            
+                <button onClick={toggleViewTest} className="ml-auto flex items-center gap-1 border-b">
+                <CgClose color='white' />
+                    close</button>
+                <img className='flex-1 max-h-[90dvh] mx-auto mb-5' src={details?.result_image} alt="previwe" />       
+                {/* <button onClick={() => downloadFile(details?.result_image,`${details?.full_name} Test Result`)} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</button>             */}
+                <a download target='_blank' href={details?.result_status} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</a>            
             </div> : null
+        }
+
+        {
+            (uploadingResult) ? <LoadingModal /> : null
         }
 
     </div> 

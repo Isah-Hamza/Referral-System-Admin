@@ -53,7 +53,9 @@ const endpoints = {
   },
   result:{
     AWAITING_RESULTS:'/admin/result/awaiting',
-    UPLOADED_RESULTS:'/admin/result/uploaded'
+    UPLOADED_RESULTS:'/admin/result/uploaded',
+    RESULT_DETAILS:'/admin/result/details',
+    UPLOAD_RESULT:'/admin/result/upload',
   }
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
