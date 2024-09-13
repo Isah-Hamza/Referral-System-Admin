@@ -22,9 +22,11 @@ import disableIcon from '../../../assets/images/disable.svg';
 
 import { FaEyeSlash } from 'react-icons/fa6'
 import TestService from '../../../services/Tests'
-import { useQuery } from 'react-query'
-import { ConvertToNaira } from '../../../utils/Helper'
+import { useMutation, useQuery } from 'react-query'
+import { ConvertToNaira, errorToast, successToast } from '../../../utils/Helper'
 import PageLoading from '../../../Loader/PageLoading'
+import { useFormik } from 'formik'
+import LoadingModal from '../../../Loader/LoadingModal'
 
 const Category = () => {
     const navigate = useNavigate();
@@ -32,7 +34,7 @@ const Category = () => {
     const [acitveTab, setActiveTab] = useState(0);
     const [activeItem, setActiveItem] = useState(-1);
     const [date,setDate] = useState();
-    const [id, setId] = useState(0);
+    const [item, setItem] = useState(null);
 
     const [viewDetails, setViewDetails] = useState(false);
     const [uploadTest, setUploadTest] = useState(false);
@@ -59,45 +61,35 @@ const Category = () => {
     const { category } = useLocation().state;
     const cat_id = window.location.pathname.split('/')[2];
 
-    const dummy = [
-        {
-            test:'24hr urine albumin/Creatine ratio',
-            price:'₦20,000', 
-        },
-        {
-            test:'Albumin',
-            price:'₦52,500', 
-        },
-        {
-            test:'Elephant 2 criticality call',
-            price:'₦409,000', 
-        },
-        {
-            test:'Uat too anomalies',
-            price:'₦21,000', 
-        },
-        {
-            test:'Elephant 2 criticality call',
-            price:'₦409,000', 
-        },
-        {
-            test:'Albumin',
-            price:'₦52,500', 
-        },
-        {
-            test:'Solutions idea metal your',
-            price:'₦25,000', 
-        },
-        {
-            test:'Activities ground seems',
-            price:'₦85,000', 
-        },
-        {
-            test:'Sorry race protocol',
-            price:'₦32,500', 
-        },
 
-    ]
+            
+    const { isLoading:updating, mutate:updateTest}  = useMutation(TestService.UpdateTest, {
+        onSuccess:res => {
+            toggleEditCategory();
+            successToast(res.data.message);
+            refetchTests();
+        },
+        onError: e=> {
+            errorToast(e.message);
+        }
+        });
+        
+
+    const {getFieldProps, setFieldValue, handleSubmit, values,errors} = useFormik({
+        enableReinitialize:true,
+        initialValues:{
+            test_id:item?.test_id,
+            name:item?.name,
+            price:item?.price,
+            turn_around_time: item?.turn_around_time ?? '',
+            instruction: item?.instruction ?? '',
+
+        },
+        onSubmit:values => {
+            console.log(values)
+            updateTest(values);
+        }
+    })
 
 
     const handleClickEllipses = (e,id) => {
@@ -172,7 +164,7 @@ const Category = () => {
                         <p className='col-span-2 line-clamp-1' >{ConvertToNaira(Number(item.price))}</p>
                         <p className='col-span-2 line-clamp-1' >{item.turn_around_time ?? '-'}</p>
                         <p className='col-span-2 line-clamp-1' >{item.instruction ?? '-'}</p>
-                        <button onClick={(e) => handleClickEllipses(e,idx)} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
+                        <button onClick={(e) => { setItem(item); handleClickEllipses(e,idx)}} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
                                 { idx == activeItem ? 
                                     <div className="z-10 origin-top-right absolute right-5 mt-2 w-48 rounded-md shadow-lg bg-white">
                                         <div className="bg-white py-2 p-2 w-full relative z-10">
@@ -388,15 +380,16 @@ const Category = () => {
 
         {
             newCategory || editCategory ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
-            <div className="bg-white w-[450px] p-5 rounded-xl flex flex-col justify-center text-center gap-3 text-sm">
+            <form onSubmit={handleSubmit} className="bg-white w-[450px] p-5 rounded-xl flex flex-col justify-center text-center gap-3 text-sm">
                 <p className='text-base font-semibold' >{newCategory ? 'Add New' : 'Edit'} Test</p>
                 <div className="grid grid-cols-2 gap-5 text-left mt-7">
-                    <div className="col-span-2"><Input placeholder={'Retinal Curvature Correction'} icon={<LuTestTube2 className='opacity-80 ' size={17} />} type={'text'} label={'Test'} /></div>
-                    <Input placeholder={'₦20,000'} icon={<BiMoney className='opacity-80' size={17} />} type={'text'} label={'Price'} />
-                    <Input placeholder={''} icon={<BsClock className='opacity-80' size={17} />} type={'text'} label={'Turnaround Time'} />
+                    <div className="col-span-2"><Input {...getFieldProps('name')} placeholder={'Retinal Curvature Correction'} icon={<LuTestTube2 className='opacity-80 ' size={17} />} type={'text'} label={'Test'} /></div>
+                    <Input {...getFieldProps('price')} placeholder={'₦20,000'} icon={<BiMoney className='opacity-80' size={17} />} type={'text'} label={'Price'} />
+                    <Input  {...getFieldProps('turn_around_time')} placeholder={''} icon={<BsClock className='opacity-80' size={17} />} type={'text'} label={'Turnaround Time'} />
                     <div className="text-left col-span-2">
                         <p className='font-medium mb-1'>Instruction</p>
                         <textarea 
+                             {...getFieldProps('instruction')}
                             className='outline-none rounded-lg p-3 border w-full min-h-[100px]'
                             placeholder='Type your test instruction here..' />
                     </div>
@@ -404,9 +397,9 @@ const Category = () => {
 
                 <div className="mt-10 flex items-center gap-5 ">
                     <Button onClick={ newCategory ? toggleNewCategory : toggleEditCategory} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                    <Button onClick={ newCategory ? toggleNewCategory : toggleEditCategory} className={'!px-5 !bg-black text-white'} title={`${newCategory ? 'Add Test' : 'Save Changes'}`} />
+                    <Button type='submit' onClick={ newCategory ? toggleNewCategory : null} className={'!px-5 !bg-black text-white'} title={`${newCategory ? 'Add Test' : 'Save Changes'}`} />
                 </div>
-            </div>
+            </form>
         </div> : null
         }
 
@@ -438,7 +431,9 @@ const Category = () => {
                  </div>
                </div> : null
         }
-
+        {
+            (updating) ? <LoadingModal /> : null
+        }
     </div> 
   )
 }
