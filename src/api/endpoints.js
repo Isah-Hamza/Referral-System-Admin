@@ -51,6 +51,10 @@ const endpoints = {
     ENABLE_TEST:'/medical-test/enable',
 
   },
+  result:{
+    AWAITING_RESULTS:'/admin/result/awaiting',
+    UPLOADED_RESULTS:'/admin/result/uploaded'
+  }
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
   // },

@@ -16,12 +16,18 @@ import preview from '../../assets/images/preview.svg';
 import { FaEdit } from 'react-icons/fa'
 import { BsFillTrashFill } from 'react-icons/bs'
 import { FcDownload } from 'react-icons/fc'
+import moment from 'moment'
+import Result from '../../services/Result'
+import { useQuery } from 'react-query'
 
 const Results = () => {
     
     const query = useLocation().search.split('=')[1];
     const [acitveTab, setActiveTab] = useState(0);
     const [date,setDate] = useState();
+    const [uploadedResults, setUploadedResults] = useState([]);
+    const [awaitingResults, setAwaitingResults] = useState([]); 
+    const [page,setPage] = useState(1);
 
     const [viewDetails, setViewDetails] = useState(false);
     const [uploadTest, setUploadTest] = useState(false);
@@ -30,46 +36,6 @@ const Results = () => {
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleUploadTest = () => setUploadTest(!uploadTest);
     const toggleViewTest = () => setViewTest(!viewTest);
-
-    const dummy = [
-        {
-            name:'Abdulrazak Mumuni',
-            test_token:'C.T. Scan - Pelvimetry, Menstrual Irregularities, Fibrinogen, Rubella Immunity (IgG)',
-            date:'July 21, 2023',
-            status:'1',
-        },
-        {
-            name:'Emmanuella Bami',
-            test_token:'Fribology - Pelvimetry, Menstrual Irregularities, Rubella Immunity (IgG)',
-            date:'August 7, 2019',
-            status:'2',
-        },
-        {
-            name:'John Smith',
-            test_token:'C.T. Scan - Pelvimetry, Menstrual Irregularities, Fibrinogen, Rubella Immunity (IgG)',
-            date:'July 21, 2023',
-            status:'1',
-        },
-        {
-            name:'Maduagbum Chinenye',
-            test_token:'C.T. Scan - Pelvimetry, Menstrual Irregularities, Fibrinogen, Rubella Immunity (IgG)',
-            date:'February 22, 2020',
-            status:'2',
-        },
-        {
-            name:'Emmanuella Bami',
-            test_token:'Fribology - Pelvimetry, Menstrual Irregularities, Rubella Immunity (IgG)',
-            date:'August 7, 2019',
-            status:'2',
-        },
-        {
-            name:'Abdulrazak Mumuni',
-            test_token:'C.T. Scan - Pelvimetry, Menstrual Irregularities, Fibrinogen, Rubella Immunity (IgG)',
-            date:'July 21, 2023',
-            status:'1',
-        },
-
-    ]
 
     const today_booking = [
         {
@@ -121,6 +87,20 @@ const Results = () => {
         },
     ]
 
+         
+    const { isLoading:loadingAwaiting}  = useQuery('awaiting', () => Result.GetAwaitingResults({ page }), {
+        onSuccess:res => {
+            setAwaitingResults(res.data.awaitingResults);
+            }
+        });
+         
+    const { isLoading:loadingUploaded}  = useQuery('uploaded', () => Result.GetUploadedResults({ page }), {
+        onSuccess:res => {
+            setUploadedResults(res.data.uploadedResults);
+            }
+        });
+        
+
     useEffect(() => {
 
     }, [date])
@@ -129,38 +109,39 @@ const Results = () => {
   return (
    <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
         <div className="relative border-b p-3 flex justify-between items-center">
-            <p className='font-semibold text-base opacity-90' >Department of Radiology</p>
+            <div className={`transition-all duration-300 absolute h-0.5 w-[132px] bg-primary left-5 bottom-0 ${acitveTab == 1 && '!left-[190px] w-52'} ${acitveTab == 2 && '!left-[260px] w-40'} `}></div>
+            <div className="flex gap-14 text-sm pl-5">
+                {
+                    ['Awaiting Results', 'Uploaded Results'].map((item, idx) => (
+                        <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
+                    ))
+                }
+            </div>
             <div className="flex items-center gap-4">
-                <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
+               {
+               acitveTab  != 2 ? <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} /> :
+                <button onClick={toggleNewCategory} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-10 py-2 text-sm">
+                    <span>Add New Category</span>
+                </button>}
                 {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
             </div>
         </div>
-        <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 || acitveTab == 1 ) && '!block'}`}>
-            <div className="header grid grid-cols-12 gap-3 px-5 font-medium">
+        <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 ) && '!block'}`}>
+            <div className="header grid grid-cols-9 gap-3 px-5 font-medium">
                 <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
-                <p className='col-span-3 line-clamp-1' >Test Token</p>
+                <p className='col-span-2 line-clamp-1' >Assigned Test</p>
                 <p className='col-span-2 line-clamp-1' >Test Date</p>
-                <p className='col-span-2 line-clamp-1' >Status</p>
                 <p className='' >Action</p>
             </div>
             <div className="data text-text_color mt-3">
                 {
-                    dummy.map((item,idx) => (
-                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid items-center grid-cols-12  gap-3 px-5 py-6 font-medium`}>
+                    awaitingResults?.map((item,idx) => (
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-9  gap-3 px-5 py-6 font-medium`}>
                     <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
-                    <p className='col-span-2 line-clamp-1' >{item.name}</p>
-                    <p className='col-span-3 line-clamp-3 pr-5' >{item.test_token}</p>
-                    <p className='col-span-2 line-clamp-1' >{item.date}</p>
-                    <p className='col-span-2 line-clamp-1' >{item.status == 1 ?
-                        <div className='w-24 bg-custom_gray rounded-3xl text-center p-3 py-2'>
-                            Awaiting
-                        </div> : 
-                        <div className='w-24 bg-blue-100 rounded-3xl text-center p-3 py-2'>
-                            Sent
-                        </div>    
-                        }
-                    </p>
+                    <p className='col-span-2 line-clamp-1' >{item.full_name}</p>
+                    <p className='col-span-2 line-clamp-1 pr-5' >{item.assigned_test}</p>
+                    <p className='col-span-2 line-clamp-1' >{moment(item.test_date).format('lll')}</p> 
                     <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
@@ -168,8 +149,30 @@ const Results = () => {
 
             </div>
         </div>
-        <div className={`mt-5 text-[13px] hidden ${acitveTab == 2 && '!block' }`}>
-            <Calendar className={'min-w-[700px] !leading-[6] !text-lg'} onChange={setDate}  />
+        <div className={`mt-5 text-[13px] hidden ${(acitveTab == 1 ) && '!block'}`}>
+            <div className="header grid grid-cols-11 gap-3 px-5 font-medium">
+                <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
+                <p className='col-span-2 line-clamp-1' >Full Name</p>
+                <p className='col-span-2 line-clamp-1' >Assigned Test</p>
+                <p className='col-span-2 line-clamp-1' >Test Date</p>
+                <p className='col-span-2 line-clamp-1' >Uploaded Date/Time</p>
+                <p className='col-span-2' >Action</p>
+            </div>
+            <div className="data text-text_color mt-3">
+                {
+                    uploadedResults?.map((item,idx) => (
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-11  gap-3 px-5 py-6 font-medium`}>
+                    <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
+                    <p className='col-span-2 line-clamp-1' >{item.full_name}</p>
+                    <p className='col-span-2 line-clamp-1' >{item.assigned_test}</p>
+                    <p className='col-span-2 line-clamp-1' >{moment(item.test_date).format('lll')}</p> 
+                    <p className='col-span-2 line-clamp-1' >{moment(item.uploaded_date).format('lll')}</p> 
+                    <p onClick={toggleViewDetails} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    </div>
+                    )) 
+                }
+
+            </div>
         </div>
         {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
             <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
