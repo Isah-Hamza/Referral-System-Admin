@@ -224,7 +224,7 @@ const Tests = () => {
                         <p className='line-clamp-2 text-base font-semibold'>{item.name}</p>
                         <p>{item.tests_count} Test(s)</p>
                         <div className="mt-7 flex items-center justify-between gap-5">
-                            <button onClick={() => navigate(`${idx + 1}`, { state: { 'category':item } })} className='flex items-center gap-1 font-medium text-primary' >
+                            <button onClick={() => navigate(`${item.cat_id}`, { state: { 'category':item } })} className='flex items-center gap-1 font-medium text-primary' >
                                 <span>View Details</span> <BsArrowRight /> 
                             </button>
                             <div className="flex items-center gap-3">

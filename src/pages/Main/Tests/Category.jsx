@@ -21,6 +21,10 @@ import deleteIcon from '../../../assets/images/delete.svg';
 import disableIcon from '../../../assets/images/disable.svg';
 
 import { FaEyeSlash } from 'react-icons/fa6'
+import TestService from '../../../services/Tests'
+import { useQuery } from 'react-query'
+import { ConvertToNaira } from '../../../utils/Helper'
+import PageLoading from '../../../Loader/PageLoading'
 
 const Category = () => {
     const navigate = useNavigate();
@@ -28,6 +32,7 @@ const Category = () => {
     const [acitveTab, setActiveTab] = useState(0);
     const [activeItem, setActiveItem] = useState(-1);
     const [date,setDate] = useState();
+    const [id, setId] = useState(0);
 
     const [viewDetails, setViewDetails] = useState(false);
     const [uploadTest, setUploadTest] = useState(false);
@@ -38,6 +43,7 @@ const Category = () => {
     const [disable, setDisable] = useState(false);
     const [_delete_, setDelete] = useState(false);
     const [showMore, setShowMore] = useState(false);
+    const [tests, setTests] = useState([]);
 
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleUploadTest = () => setUploadTest(!uploadTest);
@@ -49,7 +55,9 @@ const Category = () => {
     const toggleDisable = () => setDisable(!disable);
     const toggleDelete = () => setDelete(!_delete_);
 
+
     const { category } = useLocation().state;
+    const cat_id = window.location.pathname.split('/')[2];
 
     const dummy = [
         {
@@ -91,44 +99,6 @@ const Category = () => {
 
     ]
 
-    const dummyCategories = [
-        {
-            title:'Chemical Pathology',
-            tests:'120',
-        },
-        {
-            title:'Haematology',
-            tests:'55',
-        },
-        {
-            title:'Histology/Cytology',
-            tests:'103',
-        },
-        {
-            title:'Hommone/Immunology',
-            tests:'49',
-        },
-        {
-            title:'Molecular Biology (CPR)',
-            tests:'5',
-        },
-        {
-            title:'Profiles',
-            tests:'5',
-        },
-        {
-            title:'Toxicology/Drug Testing',
-            tests:'5',
-        },
-        {
-            title:'Microbiology/Parasitology',
-            tests:'5',
-        },
-        {
-            title:'Other Lab Services',
-            tests:'5',
-        },
-    ]
 
     const handleClickEllipses = (e,id) => {
         toggleShowMore();
@@ -161,19 +131,19 @@ const Category = () => {
         },
     ]
 
-    useEffect(() => {
-
-    }, [date])
-
-
-    
+                
+    const { isLoading:loadingTests, refetch:refetchTests}  = useQuery(['tests',cat_id],() => TestService.CategoryTests(cat_id), {
+        onSuccess:res => {
+            setTests(res.data.tests);
+            }
+        });
 
   return (
    <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
         <div className="relative border-b p-3 flex justify-between items-center">
             <button onClick={() => navigate('/tests')} className="flex items-center gap-2">
                 <BiArrowBack />
-                <p className='font-semibold text-base opacity-90' >{category?.title}</p>
+                <p className='font-semibold text-base opacity-90' >{category?.name}</p>
             </button>
             <div className="flex items-center gap-4">
                 <button onClick={toggleNewCategory} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-10 py-2 text-sm">
@@ -191,14 +161,17 @@ const Category = () => {
                 <p className='col-span-2 line-clamp-1' >Instruction</p>
                 <p className='' >Action</p>
             </div>
-            <div className="data text-text_color mt-3">
+           {
+            loadingTests ? <div className='-mt-32' ><PageLoading /></div>  :
+            tests?.length ?
+           <div className="data text-text_color mt-3">
                 {
-                    dummy.map((item,idx) => (
+                    tests?.map((item,idx) => (
                     <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} grid items-center grid-cols-10 gap-3 px-5 py-6 font-medium`}>
-                        <p className='col-span-3 line-clamp-1' >{item.test}</p>
-                        <p className='col-span-2 line-clamp-1' >{item.price}</p>
-                        <p className='col-span-2 line-clamp-1' >-</p>
-                        <p className='col-span-2 line-clamp-1' >-</p>
+                        <p className='col-span-3 line-clamp-1' >{item.name}</p>
+                        <p className='col-span-2 line-clamp-1' >{ConvertToNaira(Number(item.price))}</p>
+                        <p className='col-span-2 line-clamp-1' >{item.turn_around_time ?? '-'}</p>
+                        <p className='col-span-2 line-clamp-1' >{item.instruction ?? '-'}</p>
                         <button onClick={(e) => handleClickEllipses(e,idx)} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
                                 { idx == activeItem ? 
                                     <div className="z-10 origin-top-right absolute right-5 mt-2 w-48 rounded-md shadow-lg bg-white">
@@ -226,7 +199,12 @@ const Category = () => {
                     )) 
                 }
 
+            </div> : 
+            <div className='my-20 text-center'>
+                <p className='font-medium' >No data.</p>
+                <p>Check back later</p>
             </div>
+            }
         </div>
         <div className={`mt-5 text-[13px] hidden ${acitveTab == 2 && '!block' }`}>
             <Calendar className={'min-w-[700px] !leading-[6] !text-lg'} onChange={setDate}  />

@@ -89,5 +89,5 @@ const EnableTest = (cat_id) => {
 
 export default {
   GetPendingTests,GetAllTests, MarkComplete, TestDetail, CreateCategory, Categories,Departments,
-  UpdateCategory, UpdateTest, DisableTest, EnableTest,
+  UpdateCategory, UpdateTest, DisableTest, EnableTest, CategoryTests
 };
