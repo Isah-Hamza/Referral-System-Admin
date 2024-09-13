@@ -40,7 +40,16 @@ const endpoints = {
     TESTS:'/admin/test/all',
     PENDING_TESTS:'/admin/test/pending',
     MARK_TEST_COMPLETE:'/admin/test/mark-complete',
-    TEST_DETAIL:'/admin/test/details'
+    TEST_DETAIL:'/admin/test/details',
+    CATEGORIES:'/category/all',
+    CREATE_CATEGORIES:'/category/add',
+    UPDATE_CATEGORIES:'/category/update',
+    DEPARTMENTS:'/department/all',
+    CATEGORY_TESTS:'/medical-test/view',
+    UPDATE_TEST:'/medical-test/update',
+    DISABLE_TEST:'/medical-test/disable',
+    ENABLE_TEST:'/medical-test/enable',
+
   },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'

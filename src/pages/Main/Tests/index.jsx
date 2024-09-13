@@ -21,7 +21,9 @@ import deleteIcon from '../../../assets/images/delete.svg';
 import moment from 'moment'
 import { useMutation, useQuery } from 'react-query'
 import TestService from '../../../services/Tests'
-import { ConvertToNaira } from '../../../utils/Helper'
+import { ConvertToNaira, errorToast, successToast } from '../../../utils/Helper'
+import testIcon from '../../../assets/images/Test.svg'
+import LoadingModal from '../../../Loader/LoadingModal'
 
 const Tests = () => {
     const navigate = useNavigate();
@@ -39,6 +41,10 @@ const Tests = () => {
     const [newCategory, setNewCategory] = useState(false);
     const [editCategory, setEditCategory] = useState(false);
     const [deleteCategory, setDeleteCategory] = useState(false);
+    const [completed, setCompleted] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [catTitle, setCatTitle] = useState('');
+    const [catId, setCatId] = useState('');
 
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleUploadTest = () => setUploadTest(!uploadTest);
@@ -46,71 +52,9 @@ const Tests = () => {
     const toggleNewCategory = () => setNewCategory(!newCategory);
     const toggleEditCategory = () => setEditCategory(!editCategory);
     const toggleDeleteCategory = () => setDeleteCategory(!deleteCategory);
+    const toggleCompleted = () => setCompleted(!completed);
 
-
-
-    const dummyCategories = [
-        {
-            title:'Chemical Pathology',
-            tests:'120',
-        },
-        {
-            title:'Haematology',
-            tests:'55',
-        },
-        {
-            title:'Histology/Cytology',
-            tests:'103',
-        },
-        {
-            title:'Hommone/Immunology',
-            tests:'49',
-        },
-        {
-            title:'Molecular Biology (CPR)',
-            tests:'5',
-        },
-        {
-            title:'Profiles',
-            tests:'5',
-        },
-        {
-            title:'Toxicology/Drug Testing',
-            tests:'5',
-        },
-        {
-            title:'Microbiology/Parasitology',
-            tests:'5',
-        },
-        {
-            title:'Other Lab Services',
-            tests:'5',
-        },
-    ]
     
-    const selectedTests = [
-        {
-          type:'C.T. Scan - Pelvimetry',
-          category:'C.T Test',
-          amount:'₦28,000',
-        },
-        {
-            type:'Menstrual Irregularities',
-            category:'Endocrinology',
-            amount:'₦8,000',
-        },
-        {
-          type:'C.T. Scan - Pelvimetry',
-          category:'C.T Test',
-          amount:'₦28,000',
-        },
-        {
-            type:'Fibronology',
-            category:'HAEMATOLOGY',
-            amount:'₦5,500',
-        },
-    ]
-
         
     const { isLoading:loadingPending}  = useQuery('pending', () => TestService.GetPendingTests({ page }), {
         onSuccess:res => {
@@ -128,6 +72,48 @@ const Tests = () => {
         const { isLoading:loadingTestDetails, mutate:viewTestMutate}  = useMutation(TestService.TestDetail, {
             onSuccess:res => {
                 setTestDetails(res.data.details);
+                }
+            });
+            
+        const { isLoading:loadingCategories, refetch:refetchCategories}  = useQuery('categories',TestService.Categories, {
+            onSuccess:res => {
+                setCategories(res.data.categories);
+                }
+            });
+            
+        const { isLoading:markingCompleted, mutate:markCompleted}  = useMutation(TestService.MarkComplete, {
+            onSuccess:res => {
+                toggleCompleted();
+                successToast(res.data.message);
+                viewTestMutate(id);
+                },
+                onError:e => {
+                    errorToast(e.message);
+                }
+            });
+            
+            
+        const { isLoading:creatingCat, mutate:createCategory}  = useMutation(TestService.CreateCategory, {
+            onSuccess:res => {
+                toggleNewCategory();
+                successToast(res.data.message);
+                setCatTitle('');
+                refetchCategories();
+                },
+                onError:e => {
+                    errorToast(e.message);
+                }
+            });
+            
+        const { isLoading:updatingCat, mutate:updateCategory}  = useMutation(TestService.UpdateCategory, {
+            onSuccess:res => {
+                toggleEditCategory();
+                successToast(res.data.message);
+                setCatTitle('');
+                refetchCategories();
+                },
+                onError:e => {
+                    errorToast(e.message);
                 }
             });
             
@@ -233,16 +219,16 @@ const Tests = () => {
         <div className={`p-5 text-[13px] hidden ${(acitveTab == 2 ) && '!block'}`}>
            <div className="grid grid-cols-3 gap-5">
             {
-                dummyCategories.map((item,idx) => (
+                categories?.map((item,idx) => (
                     <div className='border rounded-xl p-5 bg-[#fcfcfd]' >
-                        <p className='text-base font-semibold'>{item.title}</p>
-                        <p>{item.tests} Test(s)</p>
+                        <p className='line-clamp-2 text-base font-semibold'>{item.name}</p>
+                        <p>{item.tests_count} Test(s)</p>
                         <div className="mt-7 flex items-center justify-between gap-5">
                             <button onClick={() => navigate(`${idx + 1}`, { state: { 'category':item } })} className='flex items-center gap-1 font-medium text-primary' >
                                 <span>View Details</span> <BsArrowRight /> 
                             </button>
                             <div className="flex items-center gap-3">
-                                <button onClick={toggleEditCategory}><FaEdit className='opacity-80'  size={16 }/></button>
+                                <button onClick={() => { setCatTitle(item.name); toggleEditCategory(); setCatId(item.cat_id) }}><FaEdit className='opacity-80'  size={16 }/></button>
                                 <button onClick={toggleDeleteCategory}> <BsTrash size={15 } /></button>
                             </div>
                         </div>
@@ -255,7 +241,7 @@ const Tests = () => {
             <Calendar className={'min-w-[700px] !leading-[6] !text-lg'} onChange={setDate}  />
         </div> */}
         {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
-            <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
+            <div className="flex flex-col bg-white w-[500px] max-h-screen overflow-y-auto">
                 <div className="flex items-center justify-between p-3 border-b">
                     <p className='font-semibold' >Referral Details</p>
                     <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
@@ -297,7 +283,7 @@ const Tests = () => {
                         </div>
                     </div>
                 </div>
-                <div className="p-5 text-sm">
+                <div className="p-5 text-sm mb-10">
                     <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
                         <div className="flex flex-col ">
                             <p className='font-medium' >Test Name</p>
@@ -310,8 +296,7 @@ const Tests = () => {
                         <div className="flex flex-col ">
                             <p className='font-medium' >Test Price</p>
                             <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
-                                <img className='w-7' src={stacey} alt="stacey" />
-                                <p className=' ' >{ ConvertToNaira(Number(testDetails?.test_price))}</p>
+                                <p className='font-semibold' >{ ConvertToNaira(Number(testDetails?.test_price))}</p>
                             </div>
                         </div>
                         <div className="flex flex-col">
@@ -327,13 +312,12 @@ const Tests = () => {
                             <p className=' ' >{testDetails?.test_status}</p>
                         </div>
                     </div>
-
-                    <div className="grid  gap-2 mt-20">
-                        <button onClick={() => {toggleUploadTest(); toggleViewDetails()}} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
-                            <BsCheck size={22} />
-                            <span>Mark as "Completed"</span>
-                        </button>
-                    </div>
+                </div>
+                <div className="grid  gap-2 mt-auto m-5">
+                    <button onClick={toggleCompleted} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2.5 text-sm">
+                        <BsCheck size={22} />
+                        <span>Mark as "Completed"</span>
+                    </button>
                 </div>
             </div>
         </div> : null}
@@ -394,15 +378,30 @@ const Tests = () => {
             <div className="bg-white w-[400px] p-5 rounded-xl flex flex-col justify-center text-center gap-3 text-sm">
                 <p className='text-base font-semibold' >{newCategory ? 'Add New' : 'Edit'} Category</p>
                 <div className="grid gap-5 text-left mt-7">
-                    <Input placeholder={'Enter title here..'} icon={<LuTestTube2 className='opacity-80' size={17} />} type={'text'} label={'Category Title'} />
+                    <Input value={catTitle} onChange={e=>setCatTitle(e.target.value)} placeholder={'Enter title here..'} icon={<LuTestTube2 className='opacity-80' size={17} />} type={'text'} label={'Category Title'} />
                 </div>
 
                 <div className="mt-10 flex items-center gap-5 ">
                     <Button onClick={ newCategory ? toggleNewCategory : toggleEditCategory} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                    <Button onClick={ newCategory ? toggleNewCategory : toggleEditCategory} className={'!px-5 !bg-black text-white'} title={`${newCategory ? 'Add Category' : 'Save Changes'}`} />
+                    <Button disabled={!catTitle} onClick={ newCategory ?  ()=> createCategory({name:catTitle,dept_id:"330004"}) : ()=> updateCategory({name:catTitle,cat_id:catId})} className={'!px-5 !bg-black text-white'} title={`${newCategory ? 'Add Category' : 'Save Changes'}`} />
                 </div>
             </div>
         </div> : null
+        }
+
+        {
+            completed ? 
+               <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+                 <div className="bg-white w-[350px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                   <img className='w-12 m-auto' src={testIcon} alt="delete" />
+                   <p className='text-base font-semibold' >Mark Test as Completed</p>
+                   <p className='text-sm' >You are confirming that this user has completed the assigned test and their status has been changed to "Awaiting Result."</p>
+                   <div className="mt-10 flex items-center gap-5 ">
+                   <Button onClick={toggleCompleted} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                   <Button onClick={()=>markCompleted({lab_id:id})} className={'!px-5 bg-light_blue'} title={'Yes Proceed'} />
+                   </div>
+                 </div>
+               </div> : null
         }
 
         {
@@ -418,6 +417,9 @@ const Tests = () => {
                    </div>
                  </div>
                </div> : null
+        }
+        {
+            (markingCompleted || creatingCat  || updatingCat) ? <LoadingModal /> : null
         }
 
     </div> 
