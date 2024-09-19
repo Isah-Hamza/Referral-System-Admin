@@ -70,7 +70,7 @@ const Referrals = () => {
         
 
     if(loadingReferrals || refetchingReferrals){
-        return <PageLoading />
+        return <PageLoading adjustHeight={true} />
     }
 
   return (

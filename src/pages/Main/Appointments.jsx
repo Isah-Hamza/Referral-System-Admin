@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Input from '../../components/Inputs'
-import { BiCopy, BiCopyAlt, BiPhoneIncoming, BiSearch, BiUser } from 'react-icons/bi'
+import { BiCalendar, BiCopy, BiCopyAlt, BiNote, BiPhoneIncoming, BiSearch, BiUser } from 'react-icons/bi'
 import Select from '../../components/Inputs/Select'
 import Button from '../../components/Button'
-import { CgClose, CgMail } from 'react-icons/cg'
+import { CgClose, CgEye, CgMail } from 'react-icons/cg'
 import stacey from '../../assets/images/stacey.svg'
 import { MdArrowForward, MdOutlineEmail } from 'react-icons/md'
 import completed from '../../assets/images/completed.svg'
@@ -188,7 +188,7 @@ const Appointments = () => {
 
 
     if(loadingUpcoming || refetchingUpcoming || loadingAll || refetchingAll){
-        return <PageLoading />
+        return <PageLoading adjustHeight={true} />
     }
 
 
@@ -375,14 +375,26 @@ const Appointments = () => {
                                         <span>Mark as Paid</span>
                                     </button>
                                 } */}
-                                <button onClick={toggleCheckin} className="flex-1 justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
-                                    <span>Check Patient In</span>
-                                </button>
+                                {
+                                    appointment?.appointments?.appointment_status == 'Not Checked In' ?
+                                    <button onClick={toggleCheckin} className="flex-1 justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                        <span>Check Patient In</span>
+                                    </button>
+                                    : appointment?.appointments?.appointment_status == 'Checked In' ?
+                                    <button disabled className="disabled:opacity-65 flex-1 justify-center bg-black text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                        <span>Patient Checked In</span>
+                                    </button>
+                                    : appointment?.appointments?.appointment_status == 'Cancelled' ?
+                                    <button disabled className="disabled:opacity-65 flex-1 justify-center bg-red-400 text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                        <span>Appointment Cancelled</span>
+                                    </button>
+                                    : null
+                                }
                                 <button onClick={toggleShowMore} className='w-12 h-12 relative rounded-full grid place-content-center border border-black' >
                                     <HiEllipsisHorizontal />
                                    {showMore ? <div className="p-3 flex flex-col gap-3 absolute bottom-[60px] right-4 min-h-52 border rounded-lg bg-white shadow w-52">
                                         <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
-                                            <CgMail size={18} />
+                                            <CgEye size={18} />
                                             <span>View Patient Details</span>
                                         </p>
                                         <p onClick={toggleFollowUp} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
@@ -390,11 +402,11 @@ const Appointments = () => {
                                             <span>Send Follow Up</span>
                                         </p>
                                         <p onClick={toggleReschedule} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
-                                            <CgMail size={18} />
+                                            <BiCalendar size={18} />
                                             <span>Reschedule</span>
                                         </p>
-                                        <p onClick={toggleMissed} className="whitespace-nowrap h-fit flex items-center gap-3 font-medium  py-2 text-sm">
-                                            <CgMail size={18} />
+                                        <p onClick={toggleMissed} className="text-red-700 whitespace-nowrap h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                            <BiNote size={18} />
                                             <span>Missed Appointment</span>
                                         </p>
                                     </div> : null }
@@ -472,7 +484,7 @@ const Appointments = () => {
                     </div>
                     <div className="mt-10 flex items-center gap-5 ">
                         <Button onClick={toggleMissed} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                        <Button  onClick={() => missAppointment({appointment_id:id})} className={'!px-5 bg-red-600'} title={'Proceed'} />
+                        <Button  onClick={() => missAppointment({appointment_id:id, reason_id:"0191181"})} className={'!px-5 bg-red-600'} title={'Proceed'} />
                     </div>
                 </div>
             </div> : null

@@ -64,7 +64,7 @@ if(!email){
               <Input label={'Create Password'} type={'password'} placeholder={'************'} icon={<MdOutlineLockPerson size={22} />}/>
               <Link to={'/forgot-password'} className='text-sm text-primary font-semibold' >forgot password</Link>
           </div> */}
-            <Button className={'opacity-90 mt-auto'} onClick={() => mutate({ email, otp:Number(otp) })} title='Verify OTP' />
+            <Button className={'opacity-90 mt-auto'} onClick={() => mutate({ email, otp:otp })} title='Verify OTP' />
 
         </div>
       </div>

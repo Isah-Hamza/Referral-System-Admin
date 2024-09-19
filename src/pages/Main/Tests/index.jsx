@@ -57,13 +57,13 @@ const Tests = () => {
 
     
         
-    const { isLoading:loadingPending}  = useQuery('pending', () => TestService.GetPendingTests({ page }), {
+    const { isLoading:loadingPending, isRefetching:refetchingPending }  = useQuery('pending', () => TestService.GetPendingTests({ page }), {
         onSuccess:res => {
             setPendingTests(res.data.tests);
             }
         });
         
-    const { isLoading:loadingAll}  = useQuery('all', () => TestService.GetAllTests({ page }), {
+    const { isLoading:loadingAll, isRefetching:refetchingAll }  = useQuery('all', () => TestService.GetAllTests({ page }), {
         onSuccess:res => {
             setTests(res.data.tests);
             }
@@ -131,6 +131,9 @@ const Tests = () => {
     }, [id])
 
 
+    if(loadingAll || loadingPending || refetchingAll || refetchingPending){
+        return <PageLoading adjustHeight={true} />
+    }
     
 
   return (
