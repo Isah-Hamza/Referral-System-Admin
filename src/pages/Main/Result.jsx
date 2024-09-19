@@ -81,13 +81,13 @@ const Results = () => {
     ]
 
          
-    const { isLoading:loadingAwaiting, refetch:refetchAwaiting}  = useQuery('awaiting', () => Result.GetAwaitingResults({ page }), {
+    const { isLoading:loadingAwaiting, isRefetching:refetchingAwaiting, refetch:refetchAwaiting}  = useQuery('awaiting', () => Result.GetAwaitingResults({ page }), {
         onSuccess:res => {
             setAwaitingResults(res.data.awaitingResults);
             }
         });
          
-    const { isLoading:loadingUploaded, refetch:refetchUploaded}  = useQuery('uploaded', () => Result.GetUploadedResults({ page }), {
+    const { isLoading:loadingUploaded, isRefetching:refetchingUploaded, refetch:refetchUploaded}  = useQuery('uploaded', () => Result.GetUploadedResults({ page }), {
         onSuccess:res => {
             setUploadedResults(res.data.uploadedResults);
             }
@@ -143,7 +143,11 @@ const Results = () => {
         console.log(previewUrl)
     }, [previewUrl])
 
-    
+
+    if(loadingAwaiting || refetchingAwaiting || loadingUploaded || refetchingUploaded){
+        return <PageLoading />
+    }
+
     
 
   return (

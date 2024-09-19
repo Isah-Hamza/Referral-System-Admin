@@ -48,7 +48,7 @@ const Referrals = () => {
     }
 
         
-    const { isLoading:loadingReferrals }  = useQuery('referrals', () => ReferralService.GetReferrals({ page }), {
+    const { isLoading:loadingReferrals, isRefetching:refetchingReferrals }  = useQuery('referrals', () => ReferralService.GetReferrals({ page }), {
         onSuccess:res => {
             setReferrals(res.data.referrals);
             console.log(res.data)
@@ -69,7 +69,7 @@ const Referrals = () => {
     
         
 
-    if(loadingReferrals){
+    if(loadingReferrals || refetchingReferrals){
         return <PageLoading />
     }
 

@@ -99,13 +99,13 @@ const Appointments = () => {
         },
     ]
     
-    const { isLoading:loadingUpcoming}  = useQuery('upcoming', () => AppointmentService.GetUpcomingAppointments({ page }), {
+    const { isLoading:loadingUpcoming, isRefetching:refetchingUpcoming}  = useQuery('upcoming', () => AppointmentService.GetUpcomingAppointments({ page }), {
         onSuccess:res => {
             setUpcoming(res.data.appointments);
             }
         });
         
-    const { isLoading:loadingAll}  = useQuery('all', () => AppointmentService.GetAllAppointments({ page }), {
+    const { isLoading:loadingAll, isRefetching:refetchingAll}  = useQuery('all', () => AppointmentService.GetAllAppointments({ page }), {
         onSuccess:res => {
             setAll(res.data.appointments);
             }
@@ -185,7 +185,12 @@ const Appointments = () => {
     useEffect(() => {
         if(values.date) getTimes(moment(values.date).format('YYYY-MM-DD'));
     }, [values.date])
-    
+
+
+    if(loadingUpcoming || refetchingUpcoming || loadingAll || refetchingAll){
+        return <PageLoading />
+    }
+
 
   return (
   <>
