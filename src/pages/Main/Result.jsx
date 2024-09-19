@@ -92,7 +92,6 @@ const Results = () => {
             setUploadedResults(res.data.uploadedResults);
             }
         });
-        
                 
     const { isLoading:loadingResultDetails, mutate:viewResult}  = useMutation(Result.GetResult, {
         onSuccess:res => {
@@ -264,7 +263,7 @@ const Results = () => {
                                     <div className="flex text-sm items-center justify-between gap-2">
                                         <p className='' >{item.category}</p>
                                       
-                                        <p className='text-base font-medium' >{item.amount}</p>
+                                        {/* <p className='text-base font-medium' >{item.amount}</p> */}
                                     </div>
                                 </div>
                             ))

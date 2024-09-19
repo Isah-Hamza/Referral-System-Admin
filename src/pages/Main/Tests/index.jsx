@@ -24,6 +24,7 @@ import TestService from '../../../services/Tests'
 import { ConvertToNaira, errorToast, successToast } from '../../../utils/Helper'
 import testIcon from '../../../assets/images/Test.svg'
 import LoadingModal from '../../../Loader/LoadingModal'
+import PageLoading from '../../../Loader/PageLoading'
 
 const Tests = () => {
     const navigate = useNavigate();
@@ -241,85 +242,82 @@ const Tests = () => {
             <Calendar className={'min-w-[700px] !leading-[6] !text-lg'} onChange={setDate}  />
         </div> */}
         {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
-            <div className="flex flex-col bg-white w-[500px] max-h-screen overflow-y-auto">
-                <div className="flex items-center justify-between p-3 border-b">
-                    <p className='font-semibold' >Referral Details</p>
-                    <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
-                        <span>Close</span>
-                        <CgClose />
-                    </button>
-                </div>
-                <div className="flex flex-col gap-1 border-b p-5">
-                    <img className='w-16 mx-auto' src={stacey} alt="stacey" />
-                    <p className='text-center font-medium' >{testDetails?.full_name}</p>
-                    <div className="mt-5 grid grid-cols-4 gap-3 text-sm">
-                        <div className="flex flex-col justify-center text-center">
-                            <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <MdOutlineEmail />
-                             </div>
-                            <p className='font-semibold' >Email Address</p>
-                            <p className='line-clamp-1 underline text-light_blue' >{testDetails?.email}</p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center text-center">
-                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <BiPhoneIncoming />
-                             </div>
-                            <p className='font-semibold' >Phone Number</p>
-                            <p className='line-clamp-1' >{testDetails?.phone_number}</p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center text-center">
-                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <BiUser />
-                             </div>
-                            <p className='font-semibold' >Gender</p>
-                            <p className='line-clamp-1' >{testDetails?.gender}</p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center text-center">
-                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <BiCalendar />
-                             </div>
-                            <p className='font-semibold' >Age</p>
-                            <p className='line-clamp-1' >{testDetails?.age}</p>
-                        </div>
+            {
+                loadingTestDetails ? 
+                <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
+                        <PageLoading />
                     </div>
-                </div>
-                <div className="p-5 text-sm mb-10">
-                    <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Test Name</p>
-                            <p className=' ' >{testDetails?.test_name}</p>
+                    :
+                    <div className="flex flex-col bg-white w-[500px] max-h-screen overflow-y-auto">
+                        <div className="flex items-center justify-between p-3 border-b">
+                            <p className='font-semibold' >Referral Details</p>
+                            <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
+                                <span>Close</span>
+                                <CgClose />
+                            </button>
                         </div>
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Test Category</p>
-                            <p className=' ' >-</p>
-                        </div>
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Test Price</p>
-                            <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
-                                <p className='font-semibold' >{ ConvertToNaira(Number(testDetails?.test_price))}</p>
+                        <div className="flex flex-col gap-1 border-b p-5">
+                            <img className='w-16 mx-auto' src={stacey} alt="stacey" />
+                            <p className='text-center font-medium' >{testDetails?.full_name}</p>
+                            <div className="mt-5 grid grid-cols-4 gap-3 text-sm">
+                                <div className="flex flex-col justify-center text-center">
+                                    <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <MdOutlineEmail />
+                                     </div>
+                                    <p className='font-semibold' >Email Address</p>
+                                    <p className='line-clamp-1 underline text-light_blue' >{testDetails?.email}</p>
+                                </div>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <BiPhoneIncoming />
+                                     </div>
+                                    <p className='font-semibold' >Phone Number</p>
+                                    <p className='line-clamp-1' >{testDetails?.phone_number}</p>
+                                </div>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <BiUser />
+                                     </div>
+                                    <p className='font-semibold' >Gender</p>
+                                    <p className='line-clamp-1' >{testDetails?.gender}</p>
+                                </div>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <BiCalendar />
+                                     </div>
+                                    <p className='font-semibold' >Age</p>
+                                    <p className='line-clamp-1' >{testDetails?.age}</p>
+                                </div>
                             </div>
                         </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Check In Time</p>
-                            <p className=' text-primary font-semibold' >{testDetails?.check_in_time}</p>
+                        <div className="p-5 text-sm mb-10">
+                            <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Test Name</p>
+                                    <p className=' ' >{testDetails?.test_name}</p>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Check In Time</p>
+                                    <p className=' text-primary font-semibold' >{testDetails?.check_in_time}</p>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Appointment Date</p>
+                                    <p className=' ' >{testDetails?.appointment_date}</p>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Test Status</p>
+                                    <p className=' ' >{testDetails?.test_status}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Appointment Date</p>
-                            <p className=' ' >{testDetails?.appointment_date}</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Test Status</p>
-                            <p className=' ' >{testDetails?.test_status}</p>
+                        <div className="grid  gap-2 mt-auto m-5">
+                            <button disabled={testDetails?.test_status == 'Completed'} onClick={toggleCompleted} className={` disabled:opacity-70 justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-7  py-2.5 text-sm ${testDetails?.test_status == 'Completed' && '!bg-black text-white'}`}>
+                               { testDetails?.test_status !== 'Completed' ? <BsCheck size={22} /> : null}
+                               { testDetails?.test_status !== 'Completed' ? <span>Mark as "Completed"</span> : <span>Completed</span> }
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div className="grid  gap-2 mt-auto m-5">
-                    <button onClick={toggleCompleted} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2.5 text-sm">
-                        <BsCheck size={22} />
-                        <span>Mark as "Completed"</span>
-                    </button>
-                </div>
-            </div>
+            }
         </div> : null}
         {
            uploadTest ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
