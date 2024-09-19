@@ -292,7 +292,7 @@ const Tests = () => {
                         </div>
                         <div className="p-5 text-sm mb-10">
                             <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
-                                <div className="flex flex-col ">
+                                <div className="flex flex-col col-span-2 ">
                                     <p className='font-medium' >Test Name</p>
                                     <p className=' ' >{testDetails?.test_name}</p>
                                 </div>

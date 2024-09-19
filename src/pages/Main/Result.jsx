@@ -21,10 +21,10 @@ import Result from '../../services/Result'
 import { useMutation, useQuery } from 'react-query'
 import { ConvertToNaira, errorToast, successToast } from '../../utils/Helper'
 import LoadingModal from '../../Loader/LoadingModal'
+import PageLoading from '../../Loader/PageLoading'
 
 const Results = () => {
     
-    const previewRef = useRef(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const query = useLocation().search.split('=')[1];
     const [acitveTab, setActiveTab] = useState(0);
@@ -215,160 +215,165 @@ const Results = () => {
             </div>
         </div>
         {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
-            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
-                <div className="flex items-center justify-between p-3 border-b">
-                    <p className='font-semibold' >Referral Details</p>
-                    <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
-                        <span>Close</span>
-                        <CgClose />
-                    </button>
-                </div>
-                <div className="flex flex-col gap-1 border-b p-5">
-                    <img className='w-16 mx-auto' src={stacey} alt="stacey" />
-                    <p className='text-center font-medium' >{details?.full_name}</p>
-                    <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
-                        <div className="flex flex-col justify-center text-center">
-                            <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <MdOutlineEmail />
-                             </div>
-                            <p className='font-semibold' >Email Address</p>
-                            <p className='line-clamp-1 underline text-light_blue' >{details?.email}</p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center text-center">
-                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <BiPhoneIncoming />
-                             </div>
-                            <p className='font-semibold' >Phone Number</p>
-                            <p className='line-clamp-1' >{details?.phone_number}</p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center text-center">
-                            <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
-                                <BiUser />
-                             </div>
-                            <p className='font-semibold' >Gender</p>
-                            <p className='line-clamp-1' >{details?.gender}</p>
-                        </div>
+            {
+                loadingResultDetails ?
+                <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
+                        <PageLoading />
+                    </div> :
+                <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+                    <div className="flex items-center justify-between p-3 border-b">
+                        <p className='font-semibold' >Referral Details</p>
+                        <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
+                            <span>Close</span>
+                            <CgClose />
+                        </button>
                     </div>
-                </div>
-                <div className="p-5 text-sm">
-                    <p className='font-semibold text-base' >Test Type</p>
-                    <div className="mt-3 grid gap-2">
-                        {
-                            selectedTests.map((item,idx) => (
-                                <div key={idx} className="bg-white rounded-md border p-3 text-sm">
-                                    <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
-                                        <p className='' >{item.type}</p>
-                                        <p className='text-3xl opacity-70' >0{idx + 1}</p>
-                                    </div>
-                                    <div className="flex text-sm items-center justify-between gap-2">
-                                        <p className='' >{item.category}</p>
-                                      
-                                        {/* <p className='text-base font-medium' >{item.amount}</p> */}
-                                    </div>
+                    <div className="flex flex-col gap-1 border-b p-5">
+                        <img className='w-16 mx-auto' src={stacey} alt="stacey" />
+                        <p className='text-center font-medium' >{details?.full_name}</p>
+                        <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
+                            <div className="flex flex-col justify-center text-center">
+                                <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                    <MdOutlineEmail />
                                 </div>
-                            ))
-                        }
-                    </div>
-                    <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Patient Age</p>
-                            <p className=' ' >{details?.age}</p>
-                        </div>
-                        <div className="flex flex-col ">
-                            <p className='font-medium' >Test Date</p>
-                            <p className=' ' >{ moment(details?.test_date).format('lll')}</p>
-                        </div>
-                        {/* <div className="flex flex-col ">
-                            <p className='font-medium' >Referrer's Name</p>
-                            <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
-                                <img className='w-7' src={stacey} alt="stacey" />
-                                <p className=' ' >Emmanuella Bami</p>
+                                <p className='font-semibold' >Email Address</p>
+                                <p className='line-clamp-1 underline text-light_blue' >{details?.email}</p>
+                            </div>
+                            <div className="flex flex-col justify-center items-center text-center">
+                                <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                    <BiPhoneIncoming />
+                                </div>
+                                <p className='font-semibold' >Phone Number</p>
+                                <p className='line-clamp-1' >{details?.phone_number}</p>
+                            </div>
+                            <div className="flex flex-col justify-center items-center text-center">
+                                <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                    <BiUser />
+                                </div>
+                                <p className='font-semibold' >Gender</p>
+                                <p className='line-clamp-1' >{details?.gender}</p>
                             </div>
                         </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Invitation Code</p>
-                            <p className=' text-primary font-semibold' >UYBFJK</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Appointment</p>
-                            <p className=' ' >09 September 11:30am</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Booking Number</p>
-                            <p className=' ' >003</p>
-                        </div> */}
-                        <div className="flex flex-col">
-                            <p className='font-medium' >Result Status</p>
-                            <p className='' >{details?.result_status}</p>
-                        </div>
-                         
                     </div>
-                     { acitveTab == 1 ? <div className="mt-10 text-sm mb-16 ">
-                        <p className='font-semibold text-base' >Uploaded Results</p>
-                        <div className="my-7 mt-5 grid grid-cols-3 gap-2 gap-y-4">
-                            <div key={item}>
-                                <div onClick={() => {toggleViewDetails(); toggleViewTest()}} className="cursor-pointer group relative overflow-hidden rounded-lg">
-                                    <div className="group-hover:grid absolute inset-0 bg-black/50 hidden place-content-center">
-                                        <BiZoomOut size={20} className='text-white' />
+                    <div className="p-5 text-sm">
+                        <p className='font-semibold text-base' >Test Type</p>
+                        <div className="mt-3 grid gap-2">
+                            {
+                                selectedTests.map((item,idx) => (
+                                    <div key={idx} className="bg-white rounded-md border p-3 text-sm">
+                                        <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
+                                            <p className='' >{item.type}</p>
+                                            <p className='text-3xl opacity-70' >0{idx + 1}</p>
+                                        </div>
+                                        <div className="flex text-sm items-center justify-between gap-2">
+                                            <p className='' >{item.category}</p>
+                                            {/* <p className='text-base font-medium' >{item.amount}</p> */}
+                                        </div>
                                     </div>
-                                    <img className='min-h-[100px]' src={details?.result_image} alt="preview" /> 
-                                        <button className="shadow-md absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
-                                        <BsFillTrashFill size={15} color='red' />
-                                    </button> 
+                                ))
+                            }
+                        </div>
+                        <div className="mt-5 grid grid-cols-2 gap-5 gap-y-7 text-sm">
+                            <div className="flex flex-col ">
+                                <p className='font-medium' >Patient Age</p>
+                                <p className=' ' >{details?.age}</p>
+                            </div>
+                            <div className="flex flex-col ">
+                                <p className='font-medium' >Test Date</p>
+                                <p className=' ' >{ moment(details?.test_date).format('lll')}</p>
+                            </div>
+                            {/* <div className="flex flex-col ">
+                                <p className='font-medium' >Referrer's Name</p>
+                                <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
+                                    <img className='w-7' src={stacey} alt="stacey" />
+                                    <p className=' ' >Emmanuella Bami</p>
                                 </div>
                             </div>
-                        </div> 
-                    </div> : 
-                    <div className="grid  gap-5 mt-20">
-                        <input
-                         onChange={(e) => {
-                            setFile(e.target.files[0])
-                            toggleUploadTest(); 
-                            toggleViewDetails();
-                            if (e.target.files.length > 0) {
-                                var reader = new FileReader();
-                                reader.onload = function(){
-                                setPreviewUrl(reader.result);
-                                };
-                                reader.readAsDataURL(e.target.files[0]);
-                              
-                                // previewImage.style.display = 'block';
-                              }
-                        }} 
-                         hidden type="file" name="file" id="file" />
-                        <label htmlFor='file' 
-                        className="cursor-pointer justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
-                            <BiTestTube size={18} />
-                            <span>Upload Test Result</span>
-                        </label>
-                    </div>}
-                </div>
-                {/* <div className="p-5 text-sm">
-                    <p className='font-semibold' >Uploded Results</p>
-                    <div className="my-7 grid grid-cols-3 gap-3 gap-y-7">
-                        {
-                            [1,2,3].map(item => (
+                            <div className="flex flex-col">
+                                <p className='font-medium' >Invitation Code</p>
+                                <p className=' text-primary font-semibold' >UYBFJK</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <p className='font-medium' >Appointment</p>
+                                <p className=' ' >09 September 11:30am</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <p className='font-medium' >Booking Number</p>
+                                <p className=' ' >003</p>
+                            </div> */}
+                            <div className="flex flex-col">
+                                <p className='font-medium' >Result Status</p>
+                                <p className='' >{details?.result_status}</p>
+                            </div>
+                            
+                        </div>
+                        { acitveTab == 1 ? <div className="mt-10 text-sm mb-16 ">
+                            <p className='font-semibold text-base' >Uploaded Results</p>
+                            <div className="my-7 mt-5 grid grid-cols-3 gap-2 gap-y-4">
                                 <div key={item}>
-                                    <div className="relative">
-                                        <img className='max-h-[80vh]' src={preview} alt="preview" />
-                                        <button className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
+                                    <div onClick={() => {toggleViewDetails(); toggleViewTest()}} className="cursor-pointer group relative overflow-hidden rounded-lg">
+                                        <div className="group-hover:grid absolute inset-0 bg-black/50 hidden place-content-center">
+                                            <BiZoomOut size={20} className='text-white' />
+                                        </div>
+                                        <img className='min-h-[100px]' src={details?.result_image} alt="preview" /> 
+                                            <button className="shadow-md absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
                                             <BsFillTrashFill size={15} color='red' />
-                                        </button>  
-                                    </div>
-                                    <div className="flex items-center justify-between gap-3">
-                                        <p>Stacey MRI Test</p>
-                                        <FaEdit />
+                                        </button> 
                                     </div>
                                 </div>
-                            ))
-                        }
+                            </div> 
+                        </div> : 
+                        <div className="grid  gap-5 mt-20">
+                            <input
+                            onChange={(e) => {
+                                setFile(e.target.files[0])
+                                toggleUploadTest(); 
+                                toggleViewDetails();
+                                if (e.target.files.length > 0) {
+                                    var reader = new FileReader();
+                                    reader.onload = function(){
+                                    setPreviewUrl(reader.result);
+                                    };
+                                    reader.readAsDataURL(e.target.files[0]);
+                                
+                                    // previewImage.style.display = 'block';
+                                }
+                            }} 
+                            hidden type="file" name="file" id="file" />
+                            <label htmlFor='file' 
+                            className="cursor-pointer justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                <BiTestTube size={18} />
+                                <span>Upload Test Result</span>
+                            </label>
+                        </div>}
                     </div>
-                </div> */}
-               
-                {/* <div className="border-t my-5 p-5">
-                    <Button onClick={toggleNewReferral} title={'Refer'} className={'w-full !px-10 !py-2.5 !text-sm  !bg-light_blue'} />
-                </div> */}
-            </div>
+                    {/* <div className="p-5 text-sm">
+                        <p className='font-semibold' >Uploded Results</p>
+                        <div className="my-7 grid grid-cols-3 gap-3 gap-y-7">
+                            {
+                                [1,2,3].map(item => (
+                                    <div key={item}>
+                                        <div className="relative">
+                                            <img className='max-h-[80vh]' src={preview} alt="preview" />
+                                            <button className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
+                                                <BsFillTrashFill size={15} color='red' />
+                                            </button>  
+                                        </div>
+                                        <div className="flex items-center justify-between gap-3">
+                                            <p>Stacey MRI Test</p>
+                                            <FaEdit />
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div> */}
+                
+                    {/* <div className="border-t my-5 p-5">
+                        <Button onClick={toggleNewReferral} title={'Refer'} className={'w-full !px-10 !py-2.5 !text-sm  !bg-light_blue'} />
+                    </div> */}
+                </div>
+            }
         </div> : null}
         {
             date ? <div onClick={() => setDate()} className='bg-white/80 inset-0 fixed grid place-content-center'>
