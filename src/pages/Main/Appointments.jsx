@@ -210,7 +210,7 @@ const Appointments = () => {
                 <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Email Address</p>
-                <p className='col-span-2 line-clamp-1' >Payment Date</p>
+                <p className='col-span-2 line-clamp-1' >Appointment Date</p>
                 <p className='' >Action</p>
             </div>
             <div className="data text-text_color mt-3">

@@ -26,7 +26,7 @@ const GetResult = (result_id) => {
 
 const UploadResult = (payload) => {
   return axiosClient()
-    .post(`${endpoints.result.RESULT_DETAILS}`, payload)
+    .post(`${endpoints.result.UPLOAD_RESULT}`, payload)
     .then((res) => res)
     .catch((error) => Promise.reject(error));
 }

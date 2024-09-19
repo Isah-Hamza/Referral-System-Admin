@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Input from '../../components/Inputs'
 import { BiCopy, BiCopyAlt, BiPhoneIncoming, BiSearch, BiTestTube, BiUser, BiZoomOut } from 'react-icons/bi'
 import Select from '../../components/Inputs/Select'
@@ -19,11 +19,13 @@ import { FcDownload } from 'react-icons/fc'
 import moment from 'moment'
 import Result from '../../services/Result'
 import { useMutation, useQuery } from 'react-query'
-import { ConvertToNaira, successToast } from '../../utils/Helper'
+import { ConvertToNaira, errorToast, successToast } from '../../utils/Helper'
 import LoadingModal from '../../Loader/LoadingModal'
 
 const Results = () => {
     
+    const previewRef = useRef(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
     const query = useLocation().search.split('=')[1];
     const [acitveTab, setActiveTab] = useState(0);
     const [date,setDate] = useState();
@@ -41,6 +43,7 @@ const Results = () => {
     const toggleViewTest = () => setViewTest(!viewTest);
     const [id,setId] = useState(0);
     const [item, setItem] = useState(null);
+    const [file, setFile] = useState(null);
 
     const today_booking = [
         {
@@ -101,9 +104,13 @@ const Results = () => {
     const { isLoading:uploadingResult, mutate:uploadResult}  = useMutation(Result.UploadResult, {
         onSuccess:res => {
             successToast(res.data.message);
-            toggleViewDetails();
+            setViewDetails(false);
+            toggleUploadTest();
             acitveTab == 0 ? refetchAwaiting() : refetchUploaded();
-            }
+            },
+        onError:e => {
+            errorToast(e.errors.result_file[0]);
+        }
         });
 
     const downloadFile = (fileUrl, fileName) => {
@@ -122,10 +129,22 @@ const Results = () => {
         xhr.send();
     }
             
+    const sendResult = () => {
+        const formData = new FormData();
+        formData.append('result_id', id),
+        formData.append('result_file', file),
+        uploadResult(formData);
+    }
 
     useEffect(() => {
-        viewResult(id);
+        if(id)   viewResult(id);
     }, [id])
+
+    useEffect(() => {
+        console.log(previewUrl)
+    }, [previewUrl])
+
+    
     
 
   return (
@@ -293,24 +312,37 @@ const Results = () => {
                                     <div className="group-hover:grid absolute inset-0 bg-black/50 hidden place-content-center">
                                         <BiZoomOut size={20} className='text-white' />
                                     </div>
-                                    <img className='max-h-[80vh]' src={details?.result_image} alt="preview" /> 
+                                    <img className='min-h-[100px]' src={details?.result_image} alt="preview" /> 
                                         <button className="shadow-md absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
                                         <BsFillTrashFill size={15} color='red' />
                                     </button> 
                                 </div>
                             </div>
                         </div> 
-                    </div> : null}
-                    {/* <div className="flex items-center justify-between gap-3">
-                        <p>Stacey MRI Test</p>
-                        <FaEdit />
-                    </div>  */}
+                    </div> : 
                     <div className="grid  gap-5 mt-20">
-                        <button onClick={() => {toggleUploadTest(); toggleViewDetails()}} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
+                        <input
+                         onChange={(e) => {
+                            setFile(e.target.files[0])
+                            toggleUploadTest(); 
+                            toggleViewDetails();
+                            if (e.target.files.length > 0) {
+                                var reader = new FileReader();
+                                reader.onload = function(){
+                                setPreviewUrl(reader.result);
+                                };
+                                reader.readAsDataURL(e.target.files[0]);
+                              
+                                // previewImage.style.display = 'block';
+                              }
+                        }} 
+                         hidden type="file" name="file" id="file" />
+                        <label htmlFor='file' 
+                        className="cursor-pointer justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
                             <BiTestTube size={18} />
-                            <span>Upload Tests Result</span>
-                        </button>
-                    </div>
+                            <span>Upload Test Result</span>
+                        </label>
+                    </div>}
                 </div>
                 {/* <div className="p-5 text-sm">
                     <p className='font-semibold' >Uploded Results</p>
@@ -368,7 +400,7 @@ const Results = () => {
            uploadTest ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
                 <div className="relative grid grid-cols-3 overflow-hidden bg-[#ededed] w-[1000px] max-h-[95vh] my-auto  rounded-2xl gap-3 text-sm">
                     <div className="col-span-2 max-h-[inherit] px-7 py-14">
-                        <img className='w-full h-full' src={preview} alt="previwe" />
+                        <img className='w-full h-full' src={previewUrl ?? preview} alt="preview" />
                     </div>
                     <div className="bg-white flex flex-col overflow-y-auto">
                         <div className="p-3 flex items-center gap-5 justify-between">
@@ -397,7 +429,7 @@ const Results = () => {
                             <button onClick={toggleUploadTest} className="justify-center border rounded-3xl flex items-center gap-2 font-medium py-2 text-sm">
                                 <span>Close</span>
                             </button>
-                            <button onClick={() => {toggleFollowUp(); toggleViewDetails()}} className="justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-2 font-medium py-2 text-sm">
+                            <button onClick={sendResult} className="justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-2 font-medium py-2 text-sm">
                                 <CgMail size={18} />
                                 <span>Send Result</span>
                             </button>
@@ -408,12 +440,12 @@ const Results = () => {
         }
         {
            viewTest ? <div className='text-white bg-black/50 fixed inset-0 grid px-5' >
-                <button onClick={toggleViewTest} className="ml-auto flex items-center gap-1 border-b">
+                <button onClick={toggleViewTest} className="max-h-[30px] ml-auto flex items-center gap-1 border-b">
                 <CgClose color='white' />
                     close</button>
                 <img className='flex-1 max-h-[90dvh] mx-auto mb-5' src={details?.result_image} alt="previwe" />       
                 {/* <button onClick={() => downloadFile(details?.result_image,`${details?.full_name} Test Result`)} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</button>             */}
-                <a download target='_blank' href={details?.result_status} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</a>            
+                <a download target='_blank' href={details?.result_status} className="max-h-[45px] -mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</a>            
             </div> : null
         }
 
