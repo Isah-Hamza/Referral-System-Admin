@@ -144,7 +144,7 @@ const Results = () => {
     }, [previewUrl])
 
 
-    if(loadingAwaiting || refetchingAwaiting || loadingUploaded || refetchingUploaded){
+    if(loadingAwaiting || loadingUploaded ){
         return <PageLoading adjustHeight={true} />
     }
 

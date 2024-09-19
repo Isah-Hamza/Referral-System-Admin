@@ -19,6 +19,7 @@ import RebateService from '../../../services/Rebate';
 import moment from 'moment';
 import { ConvertToNaira } from '../../../utils/Helper';
 import { CgClose } from 'react-icons/cg';
+import PageLoading from '../../../Loader/PageLoading';
 
 const Rebate = () => {
 
@@ -35,110 +36,21 @@ const Rebate = () => {
     const toggleDeactivate = () => setDeactivate(!deactivate);
     const [page, setPage] = useState(1);
     const [testRebates, setTestRebates] = useState([]);
+    const [payoutRebates, setPayoutRebates] = useState([]);
 
-    const { isLoading:loadingByTests } = useQuery('rebate-by-tests', () => RebateService.RebateByTests(page), {
+    const { isLoading:loadingByTests, isFetching:fetchingTests } = useQuery('rebate-by-tests', () => RebateService.RebateByTests(page), {
         onSuccess:res => {
             setTestRebates(res.data.rebates);
         }
     })
 
-    const dummy_deactivated = [
-        {
-            name:'Marcia Cronin ',
-            email:'gerald37@hotmail.com',
-            reason:'Money sky boy discussions existing growth air barn conversation looking. Points need overflow effects unpack must.',
-        },
-        {
-            name:'Luke Hudsonlee Jack',
-            email:'earnestine_macejkovic89@yahoo.com',
-            reason:"Tent status ask didn't good giant. Enable well mint metal respectively.",
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            reason:"Rundown one cloud in social is leverage place. Giant like spaces offline turn seems clean moving."
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            reason:"Disband functional solutionize solutionize community plane. Indicators fruit running call pushback individual important space one."
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            reason:"Cob offline banner rehydrate about just. Idea strategy got me thought encourage."
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            reason:"Dangerous build we've solutions nobody sorry dive. Spaces deep hanging new group hard."
-        },
-        {
-            name:'Stacey Jacobs',
-            email:'mohammad.schimmel@gmail.com',
-            reason:"Build roll that's crack but functional boardroom expectations so third. Break place dogpile scope line reality bed future-proof."
-        },
-    ]
+    const { isLoading:loadingByRebates, isFetching:fetchingPayouts } = useQuery('rebate-by-payouts', () => RebateService.RebateByPayouts(page), {
+        onSuccess:res => {
+            setPayoutRebates(res.data.rebates);
+        }
+    })
 
-    const dummy = [
-        {
-            name:'Marcia Cronin ',
-            email:'gerald37@hotmail.com',
-            phone:'601-671-8795',
-            gender:'Female',
-            test:'41',
-            rebate:'₦121,000',
-        },
-        {
-            name:'Luke Hudsonlee Jack',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'528-323-1027',
-            gender:'Male',
-            test:'3',
-            rebate:'₦103,000',
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'366-430-1102',
-            gender:'Male',
-            test:'23',
-            rebate:'₦34,500',
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'448-970-7550',
-            gender:'Female',
-            test:'2',
-            rebate:'₦21,000',
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'528-323-1027',
-            gender:'Male',
-            test:'19',
-            rebate:'₦55,500',
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'366-430-1102',
-            gender:'Male',
-            test:'106',
-            rebate:'₦600,000',
-        },
-        {
-            name:'Stacey Jacobs',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'448-970-7550',
-            gender:'Female',
-            test:'2',
-            rebate:'₦21,000',
-        },
-    ]
-
+ 
     const dummyDetails = [
         {
             date:'09/10/2024',
@@ -210,6 +122,11 @@ const Rebate = () => {
     ]
 
 
+    
+    if(loadingByTests || loadingByRebates || fetchingTests || fetchingPayouts){
+        return <PageLoading adjustHeight={true} />
+    }
+
   return (
     <>
        <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
@@ -229,23 +146,24 @@ const Rebate = () => {
         </div>
        { 
         acitveTab == 1 ? <div className="mt-5 text-[13px]">
-            <div className="header grid grid-cols-8 gap-3 px-5 font-medium">
-                <p className='col-span-2 line-clamp-1' >Full Name</p>
-                <p className='col-span-2 line-clamp-1' >Email Address</p>
-                <p className='col-span-3 line-clamp-2 ' >Deactivation Reason</p>
-                <p className='col-span-1' >Action</p>
+            <div className="header grid grid-cols-5 gap-3 px-5 font-medium">
+                <p className='line-clamp-1' >Payout ID</p>
+                <p className='line-clamp-1' >Paid To</p>
+                <p className='line-clamp-2 ' >Payout Date</p>
+                <p className='' >Amount Paid</p>
+                <p className='' >Status</p>
             </div>
             <div className="data  text-text_color mt-3">
                 {
-                    dummy_deactivated.map((item,idx) => (
-                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid items-center grid-cols-8  gap-3 px-5 py-6 font-medium`}>
-                    <div className="flex items-center gap-2 col-span-2 line-clamp-1">
-                        <img className='w-8' src={stacey} alt="stacey" />
-                        <p className='col-span-2 line-clamp-1' >{item.name}</p>
-                    </div>
-                        <p className='col-span-2 line-clamp-1' >{item.email}</p>
-                        <p className='col-span-3 line-clamp-2 ' >{item.reason}</p>
-                        <p onClick={toggleReactivate} className='font-semibold text-light_blue cursor-pointer' >Reactivate User</p>
+                    payoutRebates?.map((item,idx) => (
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid items-center grid-cols-5  gap-3 px-5 py-6 font-medium`}>
+                        <p className='line-clamp-1' >{item.trnx_id}</p>
+                        <p className='line-clamp-1' >{item.payout_to}</p>
+                        <p className='line-clamp-2 ' >{moment(item.payout_date).format('lll')}</p>
+                        <p className='line-clamp-1' >{ ConvertToNaira(item.payout_amount)}</p>
+                        <div className='line-clamp-1' >
+                            {item.status == 'Completed' ? <div className='bg-green-600 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Completed</div> : null}
+                        </div>
                     </div>
                     )) 
                 }
@@ -262,10 +180,10 @@ const Rebate = () => {
             </div>
             <div className="data  text-text_color mt-3">
                 {
-                    testRebates?.map((item,idx) => (
+                 testRebates?.map((item,idx) => (
                     <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-6  gap-3 px-5 py-6 font-medium`}>
                     <p className='line-clamp-1' >{item.test_name}</p>
-                   <p className='line-clamp-1' >{moment(item.date_completed).format('lll')}</p>
+                    <p className='line-clamp-1' >{moment(item.date_completed).format('lll')}</p>
                     <p className='' >{item.referrer_name}</p>
                     <p className='' >{moment(item.date_earned).format('lll')}</p>
                     <p className='' >{ConvertToNaira(item.payout_amount)}</p>

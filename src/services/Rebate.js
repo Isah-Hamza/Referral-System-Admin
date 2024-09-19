@@ -12,11 +12,10 @@ const RebateByTests = ({data_per_page=20,page=1}) => {
 
 const RebateByPayouts = ({data_per_page=20,page=1}) => {
   return axiosClient()
-    .get(`${endpoints.rebate.REBATE_BY_TESTS}?data_per_page=${data_per_page}&page=${page}`)
+    .get(`${endpoints.rebate.REBATE_BY_PAYOUTS}?data_per_page=${data_per_page}&page=${page}`)
     .then((res) => res)
     .catch((error) => Promise.reject(error));
 }
-
 
 export default {
   RebateByTests, RebateByPayouts

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Input from '../../components/Inputs'
-import { BiCalendar, BiCopy, BiCopyAlt, BiNote, BiPhoneIncoming, BiSearch, BiUser } from 'react-icons/bi'
+import { BiCalendar, BiCheck, BiCopy, BiCopyAlt, BiNote, BiPhoneIncoming, BiSearch, BiUser } from 'react-icons/bi'
 import Select from '../../components/Inputs/Select'
 import Button from '../../components/Button'
 import { CgClose, CgEye, CgMail } from 'react-icons/cg'
@@ -400,6 +400,10 @@ const Appointments = () => {
                                         <p onClick={toggleFollowUp} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
                                             <CgMail size={18} />
                                             <span>Send Follow Up</span>
+                                        </p>
+                                        <p onClick={toggleMarkPaid} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                            <BiCheck size={18} />
+                                            <span>Mark Paid</span>
                                         </p>
                                         <p onClick={toggleReschedule} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
                                             <BiCalendar size={18} />
