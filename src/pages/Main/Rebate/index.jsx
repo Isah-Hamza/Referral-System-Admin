@@ -12,20 +12,132 @@ import stacey from '../../../assets/images/stacey.svg';
 import Button from '../../../components/Button'
 import Select from '../../../components/Inputs/Select';
 import Input from '../../../components/Inputs';
-import { BiArrowBack } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
+import { BiArrowBack, BiSearch, BiTrash } from 'react-icons/bi';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import RebateService from '../../../services/Rebate';
+import moment from 'moment';
+import { ConvertToNaira } from '../../../utils/Helper';
+import { CgClose } from 'react-icons/cg';
 
 const Rebate = () => {
 
-    const navigate = useNavigate();
+    const query = useLocation().search.split('=')[1];
+    const [acitveTab, setActiveTab] = useState(0);
+    const [acitveInnerTab, setActiveInnerTab] = useState(0);
 
-    const [openRequest, setOpenRequest] = useState(false);
-    const [schedule, setSchedule] = useState(false);
-    const [viewPayment, setViewPayment] = useState(false);
+    const [viewDetails, setViewDetails] = useState(false);
+    const [reactivate, setReactivate] = useState(false);
+    const [deactivate, setDeactivate] = useState(false);
 
-    const toggleOpenRequest = () => setOpenRequest(!openRequest);
-    const toggleSchedule = () => setSchedule(!schedule);
-    const toggleViewPayment = () => setViewPayment(!viewPayment);
+    const toggleViewDetails = () => setViewDetails(!viewDetails);
+    const toggleReactivate = () => setReactivate(!reactivate);
+    const toggleDeactivate = () => setDeactivate(!deactivate);
+    const [page, setPage] = useState(1);
+    const [testRebates, setTestRebates] = useState([]);
+
+    const { isLoading:loadingByTests } = useQuery('rebate-by-tests', () => RebateService.RebateByTests(page), {
+        onSuccess:res => {
+            setTestRebates(res.data.rebates);
+        }
+    })
+
+    const dummy_deactivated = [
+        {
+            name:'Marcia Cronin ',
+            email:'gerald37@hotmail.com',
+            reason:'Money sky boy discussions existing growth air barn conversation looking. Points need overflow effects unpack must.',
+        },
+        {
+            name:'Luke Hudsonlee Jack',
+            email:'earnestine_macejkovic89@yahoo.com',
+            reason:"Tent status ask didn't good giant. Enable well mint metal respectively.",
+        },
+        {
+            name:'Anthony Von',
+            email:'emily.rolfson@hotmail.com',
+            reason:"Rundown one cloud in social is leverage place. Giant like spaces offline turn seems clean moving."
+        },
+        {
+            name:'Stacey Jacobs Volkswagon',
+            email:'mohammad.schimmel@gmail.com',
+            reason:"Disband functional solutionize solutionize community plane. Indicators fruit running call pushback individual important space one."
+        },
+        {
+            name:'Luke Hudson',
+            email:'earnestine_macejkovic89@yahoo.com',
+            reason:"Cob offline banner rehydrate about just. Idea strategy got me thought encourage."
+        },
+        {
+            name:'Anthony Von',
+            email:'emily.rolfson@hotmail.com',
+            reason:"Dangerous build we've solutions nobody sorry dive. Spaces deep hanging new group hard."
+        },
+        {
+            name:'Stacey Jacobs',
+            email:'mohammad.schimmel@gmail.com',
+            reason:"Build roll that's crack but functional boardroom expectations so third. Break place dogpile scope line reality bed future-proof."
+        },
+    ]
+
+    const dummy = [
+        {
+            name:'Marcia Cronin ',
+            email:'gerald37@hotmail.com',
+            phone:'601-671-8795',
+            gender:'Female',
+            test:'41',
+            rebate:'₦121,000',
+        },
+        {
+            name:'Luke Hudsonlee Jack',
+            email:'earnestine_macejkovic89@yahoo.com',
+            phone:'528-323-1027',
+            gender:'Male',
+            test:'3',
+            rebate:'₦103,000',
+        },
+        {
+            name:'Anthony Von',
+            email:'emily.rolfson@hotmail.com',
+            phone:'366-430-1102',
+            gender:'Male',
+            test:'23',
+            rebate:'₦34,500',
+        },
+        {
+            name:'Stacey Jacobs Volkswagon',
+            email:'mohammad.schimmel@gmail.com',
+            phone:'448-970-7550',
+            gender:'Female',
+            test:'2',
+            rebate:'₦21,000',
+        },
+        {
+            name:'Luke Hudson',
+            email:'earnestine_macejkovic89@yahoo.com',
+            phone:'528-323-1027',
+            gender:'Male',
+            test:'19',
+            rebate:'₦55,500',
+        },
+        {
+            name:'Anthony Von',
+            email:'emily.rolfson@hotmail.com',
+            phone:'366-430-1102',
+            gender:'Male',
+            test:'106',
+            rebate:'₦600,000',
+        },
+        {
+            name:'Stacey Jacobs',
+            email:'mohammad.schimmel@gmail.com',
+            phone:'448-970-7550',
+            gender:'Female',
+            test:'2',
+            rebate:'₦21,000',
+        },
+    ]
 
     const dummyDetails = [
         {
@@ -58,318 +170,280 @@ const Rebate = () => {
         },
     ]
 
-    const transactions = [
+    const dummyDetails2 = [
         {
-            title:'You have referred Benjamin Wales ',
-            desc:'Benjamin Whales Have initiated a payout of ₦23,000.',
-            time:'5m ago',
-            img:avatar,
+            refer:'Stanley Stacey',
+            recurring:3,
+            completed_tests:390,
         },
         {
-            title:'You have referred Benjamin Wales ',
-            desc:'You assigned 2 tests. Waiting for your rebate.',
-            time:'5m ago',
-            img:test,
+            refer:'Beverly Weimann',
+            recurring:1,
+            completed_tests:21,
         },
         {
-            title:'You have earned your rebate from Benjamin Wales ',
-            desc:'Hurray, ₦23,000 has been added to your wallet.',
-            time:'2d ago',
-            img:earn,
+            refer:'Ramona Witting',
+            recurring:5,
+            completed_tests:11,
         },
         {
-            title:'You have referred Samuel Sandra ',
-            desc:'You assigned 2 tests. Waiting for your rebate.',
-            time:'1m ago',
-            img:test,
+            refer:'Jerome Prohaska',
+            recurring:9,
+            completed_tests:35,
         },
         {
-            title:'You have earned your rebate from Benjamin Wales ',
-            desc:'Hurray, ₦23,000 has been added to your wallet.',
-            time:'2d ago',
-            img:earn,
-        },
-        {
-            title:'You have initiated a withdrawal request.',
-            desc:'₦350,000 will be credited into your bank account soon.',
-            time:'2d ago',
-            img:bank,
-        },
-        {
-            title:'You have referred Benjamin Wales ',
-            desc:'Benjamin Whales Have initiated a payout of ₦23,000.',
-            time:'5m ago',
-            img:admin,
-        },
-        {
-            title:'You have earned your rebate from Temites Flyn ',
-            desc:'Hurray, ₦23,000 has been added to your wallet.',
-            time:'12d ago',
-            img:earn,
+            refer:'Brendan Schoen',
+            recurring:27,
+            completed_tests:44,
         },
     ]
 
-    const dummy = [
+    const test_stats = [
         {
-            name:'Marcia Cronin ',
-            email:'gerald37@hotmail.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Female',
-            test:'Withdrawal Request',
-            rebate:'₦121,000',
-            status:1,
+            title:'Total Rebate Earned',
+            value:'₦2,800,000',
         },
         {
-            name:'Luke Hudsonlee Jack',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Male',
-            test:'Weekly Payout',
-            rebate:'₦103,000',
-            status:1,
-
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Male',
-            test:'Withdrawal Request',
-            rebate:'₦34,500',
-            status:3,
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Female',
-            test:'Weekly Payout',
-            rebate:'₦21,000',
-            status:3,
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Male',
-            test:'Withdrawal Request',
-            rebate:'₦55,500',
-            status:2,
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Male',
-            test:'Weekly Payout',
-            rebate:'₦600,000',
-            status:1,
-        },
-        {
-            name:'Stacey Jacobs Paramount',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Female',
-            test:'Withdrawal Request',
-            rebate:'₦21,000',
-            status:2,
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Female',
-            test:'Weekly Payout',
-            rebate:'₦21,000',
-            status:2
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Male',
-            test:'Withdrawal Request',
-            rebate:'₦55,500',
-            status:1,
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'02-05-2024 11:00AM',
-            gender:'Male',
-            test:'Weekly Payout',
-            rebate:'₦600,000',
-            status:1,
+            title:'Pending Rebate',
+            value:'₦280,000',
         },
     ]
+
 
   return (
     <>
-        {
-        !viewPayment ?
-            <div className='mt-3 border overflow-hidden bg-white border-custom_gray h-[calc(100vh-145px)] rounded-xl flex'>
-        <div className="w-7/12 border-r border-custom_gray rounded-lg overflow-y-scroll">
-            <div className="flex-1 border-b border-custom_gray bg-white">
+       <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
+        <div className="relative border-b p-3 flex justify-between items-center">
+            <div className={`transition-all duration-300 absolute h-0.5 w-24 bg-primary left-8 bottom-0 ${acitveTab == 1 && '!left-[135px] w-32'}`}></div>
+            <div className="flex gap-14 text-sm pl-10">
+                {
+                    ['By Tests', 'By Payouts'].map((item, idx) => (
+                        <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
+                    ))
+                }
+            </div>
+            <div className="flex items-center gap-4">
+                <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
+                <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} />
+            </div>
+        </div>
+       { 
+        acitveTab == 1 ? <div className="mt-5 text-[13px]">
+            <div className="header grid grid-cols-8 gap-3 px-5 font-medium">
+                <p className='col-span-2 line-clamp-1' >Full Name</p>
+                <p className='col-span-2 line-clamp-1' >Email Address</p>
+                <p className='col-span-3 line-clamp-2 ' >Deactivation Reason</p>
+                <p className='col-span-1' >Action</p>
+            </div>
+            <div className="data  text-text_color mt-3">
+                {
+                    dummy_deactivated.map((item,idx) => (
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid items-center grid-cols-8  gap-3 px-5 py-6 font-medium`}>
+                    <div className="flex items-center gap-2 col-span-2 line-clamp-1">
+                        <img className='w-8' src={stacey} alt="stacey" />
+                        <p className='col-span-2 line-clamp-1' >{item.name}</p>
+                    </div>
+                        <p className='col-span-2 line-clamp-1' >{item.email}</p>
+                        <p className='col-span-3 line-clamp-2 ' >{item.reason}</p>
+                        <p onClick={toggleReactivate} className='font-semibold text-light_blue cursor-pointer' >Reactivate User</p>
+                    </div>
+                    )) 
+                }
+            </div>
+        </div> :
+        <div className="mt-5 text-[13px]">
+            <div className="header grid grid-cols-6 gap-3 px-5 font-medium">
+                <p className='line-clamp-1' >Test Name</p>
+                <p className='line-clamp-1' >Date Completed</p>
+                <p className='line-clamp-1' >Referrer Name</p>
+                <p className='line-clamp-1' >Date Earned</p>
+                <p className='line-clamp-1' >Amount</p>
+                <p className=''>Action</p>
+            </div>
+            <div className="data  text-text_color mt-3">
+                {
+                    testRebates?.map((item,idx) => (
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-6  gap-3 px-5 py-6 font-medium`}>
+                    <p className='line-clamp-1' >{item.test_name}</p>
+                   <p className='line-clamp-1' >{moment(item.date_completed).format('lll')}</p>
+                    <p className='' >{item.referrer_name}</p>
+                    <p className='' >{moment(item.date_earned).format('lll')}</p>
+                    <p className='' >{ConvertToNaira(item.payout_amount)}</p>
+                    <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    </div>
+                    )) 
+                }
+
+            </div>
+        </div>
+        }
+       {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
+            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
                 <div className="flex items-center justify-between p-3 border-b">
-                    <p className='font-semibold' >Rebate Earning</p>
-                    <div className="flex items-center bg-custom_gray p-1 px-1.5 rounded-3xl">
+                    <p className='font-semibold' >Referral Details</p>
+                    <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
+                        <span>Close</span>
+                        <CgClose />
+                    </button>
+                </div>
+                <div className="flex flex-col gap-1 border-b p-5">
+                    {/* <img className='w-16 mx-auto' src={stacey} alt="stacey" /> */}
+                    <div className="flex gap-5 items-center">
+                        <img className='w-40' src={stacey} alt="stacey" />
+                        <div className="grid gap-2 text-sm">
+                            <p className=' font-semibold text-lg' >Stacey Jacobs</p>
+                            <div className="flex flex-col ">
+                                <p className='font-medium' >Email Address</p>
+                                <p className='line-clamp-1 underline text-light_blue' >earnestine_macejkovic89@yahoo.com</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <p className='font-medium' >Phone Number</p>
+                                <p className='line-clamp-1' >299-470-4508</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="relative pt-5 border-b pb-5">
+                    <div className={`transition-all duration-300 absolute h-0.5 w-28 bg-primary left-2.5 bottom-0 ${acitveInnerTab == 1 && '!left-[131px] !w-20'} ${acitveInnerTab == 2 && '!left-[220px] w-[95px]'}`}></div>
+                    <div className="flex gap-7 text-sm pl-4">
                         {
-                            ['Yearly','6 Months','Monthly','Weekly','Daily'].map((item,idx) => (
-                                <button key={idx} className={`rounded-3xl text-xs px-2  py-1.5 ${idx ==0 && 'shadow bg-white'}`} >{item}</button>
+                            ['Rebate History', 'Referrals', 'User Details'].map((item, idx) => (
+                                <button onClick={() => setActiveInnerTab(idx)} className={`opacity-70  ${acitveInnerTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
                             ))
                         }
                     </div>
                 </div>
-                <div className="p-5">
-                    <p className='text-sm flex items-center gap-2' >Total Earnings <FiEye /> </p>
-                    <div className="flex items-center gap-2">
-                        <p className='font-semibold text-xl my-3'>₦3,009,100</p>
-                        <div className="flex text-sm items-cente gap-1">
-                            <div className="text-green-500 font-medium flex items-center gap-1">
-                                <BsArrowUpRight color='' />
-                                <span className='' >20%</span>
-                            </div>
-                            <span>compared to yesterday.</span>
-                        </div>
-                    </div>
-                    <div className="mt-5 -ml-10 min-w-[400px] h-[250px]">
-                        <BarChart />
-                    </div>
-                </div>
-            </div>
-            <div className={`pt-2 text-[13px] bg-white`}>
-                <div className="relative border-b p-3 flex justify-between items-center">
-                        <p className='font-semibold text-base opacity-90' >Withdrawal Requests</p>
-                        <div className="flex items-center gap-4">
-                            <button onClick={toggleSchedule} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-6 py-2 text-sm">
-                                <span>Set Payment Schedule</span>
-                            </button>
-                        </div>
-                </div>
-                <div className="mt-4 header grid grid-cols-5 gap-3 px-5 font-medium">
-                    <p className='line-clamp-1 col-span-2' >Referral</p>
-                    <p className='line-clamp-1' >Date</p>
-                    <p className='' >Rebate</p>
-                    <p className='' >Action</p>
-                </div>
-                <div className="data text-text_color mt-3">
-                    {
-                        dummyDetails.map((item,idx) => (
-                        <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-5 gap-3 px-5 py-6 font-medium`}>
-                        <p className='line-clamp-1 col-span-2' >{item.refer}</p>
-                        <p className='line-clamp-1' >{item.date}</p>
-                        <p className='' >{item.amount}</p>
-                        <p onClick={toggleOpenRequest} className='font-semibold text-light_blue cursor-pointer pl-2' >View Details</p>
-                        </div>
-                        )) 
-                    }
-
-                </div>
-            </div>
-        </div>
-        <div className="w-5/12 overflow-y-scroll">
-            <div className="relative border-b p-3 py-4 flex justify-between items-center">
-                <p className='font-semibold text-base opacity-90'>Transactions</p>
-                <div className="flex items-center gap-4">
-                    <button onClick={toggleViewPayment} className="text-light_blue font-medium underline text-sm">
-                        <span>View payment history</span>
-                    </button>
-                </div>
-            </div>
-            <div className="p-5">
-                        <div className="grid gap-4">
+                {acitveInnerTab !== 2 ? <div className="p-5 text-sm">
+                    <div className="mt-3 grid grid-cols-2 gap-5">
                         {
-                            transactions.map((item,idx) => (
-                                <div key={idx} className='flex gap-3' >
-                                    <img className='rounded-full size-12' src={earn} alt="image" />
-                                    <div className="text-sm">
-                                        {/* <p className='font-medium' >{item.title}</p> */}
-                                        <p className='my-1 text-[13px]' >{item.desc}</p>
-                                        <p className='text-text_color text-xs' >{item.time}</p>
-                                    </div>
+                            test_stats.map((item,idx) => (
+                                <div key={idx} className='border rounded-lg p-3' >
+                                    <p className='font-semibold text-lg'>{item.value}</p>
+                                    <p className='text-xs' >{item.title}</p>
                                 </div>
                             ))
                         }
-                        </div>
-            </div>
-        </div>
-        {
-            openRequest ? 
-                <div className='bg-black/50 fixed inset-0 grid place-content-center' >
-                    <div className="bg-white w-[350px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
-                    <img className='w-12 m-auto' src={stacey} alt="reactivate" />
-                    <p className='text-base font-semibold mb-3' >Diana Sipes</p>
-                    <div className="flex items-center justify-between gap-4">
-                        <p>Withdrawal Amount</p>
-                        <p className='font-medium text-sm'>₦ 28,850</p>
                     </div>
-                    <div className="flex items-center justify-between gap-5">
-                        <p>Date</p>
-                        <p className='font-medium text-sm'>Oct. 31, 2017 | 02:32 PM</p>
-                    </div>
-                    <div className="mt-10 flex items-center gap-3">
-                    <Button onClick={toggleOpenRequest} className={'!px-4 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                    <Button onClick={toggleOpenRequest} className={'!px-4 '} title={'Approve Request'} />
-                    </div>
-                    </div>
-                </div> : null
-            }
-            {
-            schedule ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
-                    <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
-                        {/* <img className='w-12 m-auto' src={rescheduleImg} alt="delete" /> */}
-                        <p className='text-base font-semibold' >Set Payment Schedule</p>
-                        <div className="grid gap-5 text-left mt-5">
-                            <Select placeholders={'Select Day'} options={[{label:'Monday',value:1}]} label={'Day of The Week'} />
-                            <Input type={'time'} label={'Time'} />
-                        </div>
-                        <div className="mt-10 flex items-center gap-5 ">
-                            <Button onClick={toggleSchedule} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                            <Button onClick={toggleSchedule} className={'!px-5 !bg-black text-white'} title={'Set Schedule'} />
-                        </div>
-                    </div>
-                </div> : null
-            }
-            </div>
-            :
-            <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
-                <div className="relative border-b p-3 flex justify-between items-center">
-                    <div className="relative p-3 flex justify-between items-center">
-                        <button onClick={toggleViewPayment} className="flex items-center gap-2">
-                            <BiArrowBack />
-                            <p className='font-semibold text-base opacity-90' >{'Back To Rebates'}</p>
-                        </button>
-                    </div>
-                    <Button onClick={null} className={'!px-7 !bg-light_blue !text-sm !w-fit'} title={'Export as CSV'} />
-                </div>
-                <div className="bg-white mt-5 text-[13px]">
+                </div> : null }
+                <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 0 && '!block'}`}>
                     <div className="header grid grid-cols-6 gap-3 px-5 font-medium">
-                        <p className='' >Date</p>
-                        <p className='col-span-2 line-clamp-1' >Recepient</p>
-                        <p className='' >Payment Type</p>
-                        <p className='' >Amount</p>
+                        <p className='line-clamp-1' >Date</p>
+                        <p className='line-clamp-1' >Referral</p>
+                        <p className='' >Test</p>
+                        <p className='' >Rebate</p>
+                        <p className='' >Status</p>
                         <p className='' >Action</p>
                     </div>
-                    <div className="data  text-text_color mt-3">
+                    <div className="data  text-text_color mt-3 mb-10">
                         {
-                            dummy.map((item,idx) => (
+                            dummyDetails.map((item,idx) => (
                             <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-6  gap-3 px-5 py-6 font-medium`}>
-                            <p className='' >{item.phone}</p>
-                            <div className="flex items-center gap-2 col-span-2 line-clamp-1">
-                                <img className='w-8' src={stacey} alt="stacey" />
-                                <p className='line-clamp-1' >{item.name}</p>
-                            </div>
+                            <p className='line-clamp-1' >{item.date}</p>
+                            <p className='line-clamp-1' >{item.refer}</p>
                             <p className='' >{item.test}</p>
-                            <p className='' >{item.rebate}</p>
-                            <p onClick={null} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
+                            <p className='' >{item.amount}</p>
+                            <p className='' >{item.status}</p>
+                            <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
                             </div>
                             )) 
                         }
 
                     </div>
                 </div>
+                <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 1 && '!block'}`}>
+                    <div className="header grid grid-cols-5 gap-3 px-5 font-medium">
+                        <p className='line-clamp-1 col-span-2' >Referral</p>
+                        <p className='' >Recurring</p>
+                        <p className='' >Completed Tests</p>
+                        <p className='' >Action</p>
+                    </div>
+                    <div className="data  text-text_color mt-3 mb-10">
+                        {
+                            dummyDetails2.map((item,idx) => (
+                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-5 gap-3 px-5 py-6 font-medium`}>
+                            <p className='line-clamp-1 col-span-2' >{item.refer}</p>
+                            <p className='line-clamp-1' >{item.recurring}</p>
+                            <p className='' >{item.completed_tests}</p>
+                            <p onClick={null} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
+                            </div>
+                            )) 
+                        }
+
+                    </div>
+                </div>
+                <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 2 && '!block'} pb-5`}>
+                     <div className="px-5 text-base">
+                        <p className='text-base font-semibold'>Other Information</p>
+                        <div className="flex gap-2 mt-3 text-sm">
+                            <p className='font-medium' >Registration Date:</p>
+                            <p className='line-clamp-1' >July 12, 2024</p>
+                        </div>
+                        <div className="flex gap-2 mt-3 text-sm">
+                            <p className='font-medium' >Hospital Name:</p>
+                            <p className='line-clamp-1' >John Doe Hospital</p>
+                        </div>
+                        <div className="flex gap-2 mt-3 text-sm">
+                            <p className='font-medium' >Location:</p>
+                            <p className='line-clamp-1' >N/A</p>
+                        </div>
+                        <div className="flex gap-2 mt-3 text-sm">
+                            <p className='font-medium' >Professinal Title:</p>
+                            <p className='line-clamp-1' >Gynecologist</p>
+                        </div>
+                    </div>
+                    <div className="mt-10 px-5 text-base">
+                        <p className='text-base font-semibold'>Payout Information</p>
+                        <div className="flex gap-2 mt-3 text-sm">
+                            <p className='font-medium' >Account Name:</p>
+                            <p className='line-clamp-1' >John Doe</p>
+                        </div>
+                        <div className="flex gap-2 mt-3 text-sm">
+                            <p className='font-medium' >Account Number:</p>
+                            <p className='line-clamp-1' > 1234 - 5678 - 901</p>
+                        </div>
+                        <div className="flex gap-2 mt-3 text-sm">
+                            <p className='font-medium' >Bank Name:</p>
+                            <p className='line-clamp-1' >Lifebridge Bank PLC</p>
+                        </div>
+                        <button onClick={toggleDeactivate} className="flex text-red-700 font-semibold items-center gap-2 my-6 text-sm">
+                            <BiTrash size={18} className='' /> <span>Deactivate Account</span>
+                        </button>
+                    </div>
+                   
+                </div>
             </div>
+        </div> : null}
+        {
+            reactivate ? 
+               <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+                 <div className="bg-white w-[350px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                   <img className='w-12 m-auto' src={reactivateIcon} alt="reactivate" />
+                   <p className='text-base font-semibold' >Reactivate User</p>
+                   <p className='text-sm' >Are you sure you want to reactivate this user?</p>
+                   <div className="mt-10 flex items-center gap-5 ">
+                   <Button onClick={toggleReactivate} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                   <Button onClick={toggleReactivate} className={'!px-5 !bg-light_blue'} title={'Yes Proceed'} />
+                   </div>
+                 </div>
+               </div> : null
         }
+        {
+            deactivate ? 
+               <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+                 <div className="bg-white w-[350px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                   <img className='w-12 m-auto' src={deactivateIcon} alt="delete" />
+                   <p className='text-base font-semibold' >Deactivate User</p>
+                   <div className='text-left mt-7'>
+                     <Input label={'Deactivation reason'} placeholder={'Enter reason..'} />
+                   </div>
+                   <div className="mt-10 flex items-center gap-5 ">
+                   <Button onClick={toggleDeactivate} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                   <Button onClick={toggleDeactivate} className={'!px-5 bg-red-600'} title={'Yes Proceed'} />
+                   </div>
+                 </div>
+               </div> : null
+        }
+    </div>
     </>
   )
 }

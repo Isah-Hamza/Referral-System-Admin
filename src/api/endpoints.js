@@ -56,7 +56,11 @@ const endpoints = {
     UPLOADED_RESULTS:'/admin/result/uploaded',
     RESULT_DETAILS:'/admin/result/details',
     UPLOAD_RESULT:'/admin/result/upload',
-  }
+  },
+  rebate:{
+    REBATE_BY_TESTS:'/admin/rebate-by-test', 
+    REBATE_BY_PAYOUTS:'/admin/rebate-by-payout', 
+  },
   // payment:{
   //   ALL_TRANSACTIONS:'all-transactions'
   // },
