@@ -48,7 +48,7 @@ const Reschedule = (data) => {
 
 const MakePayment = (data) => {
   return axiosClient()
-    .post(`${endpoints.appointments.MAKE_PAYMENT}`, data)
+    .put(`${endpoints.appointments.MAKE_PAYMENT}`, data)
     .then((res) => res)
     .catch((error) => Promise.reject(error));
 }

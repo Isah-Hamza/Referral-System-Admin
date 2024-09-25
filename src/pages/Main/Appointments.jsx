@@ -72,6 +72,19 @@ const Appointments = () => {
         }
     })
 
+    const {handleSubmit:handleSubmitPayment, getFieldProps:getFieldPropsPayment} = useFormik({
+        enableReinitialize:true,
+        initialValues:{
+            admin_id:localStorage.getItem('referrer-admin-id'),
+            receipt_id:'',
+            appointment_id:id,
+            amount:'',
+        },
+        onSubmit:values => {
+            makePayment(values);
+        }
+    })
+
     const today_booking = [
         {
             name:'Felix Otti',
@@ -174,10 +187,12 @@ const Appointments = () => {
         
     const { isLoading:makingPayment, mutate:makePayment}  = useMutation(AppointmentService.MakePayment, {
         onSuccess:res => {
-            successToast(res.data.message)
+            successToast(res.data.message);
+            toggleMarkPaid();
+            getAppoinment(id);
         },
         onError: e=> {
-            errorToast(e.message);
+            errorToast(e.errors);
         }
         });
 
@@ -517,19 +532,19 @@ const Appointments = () => {
         }
         {
            markPaid ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
-                <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                <form onSubmit={handleSubmitPayment} className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                     <img className='w-12 m-auto' src={paid} alt="delete" />
                     <p className='text-base font-semibold' >Test Payment Not Made Yet.</p>
                     <p className='text-sm' >Add the amount paid by this patient.</p>
                     <div className="mt-5 text-left grid gap-3">
-                        <Input className={'!px-3'} label={'Amount'} type={'number'} />
-                        <Input className={'!px-3'} label={'Receipt'} />
+                        <Input {...getFieldPropsPayment('amount')} className={'!px-3'} label={'Amount'} type={'number'} />
+                        <Input {...getFieldPropsPayment('receipt_id')} className={'!px-3'} label={'Receipt'} />
                     </div>
                     <div className="mt-10 flex items-center gap-5 ">
-                        <Button onClick={toggleMarkPaid} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                        <Button onClick={toggleMarkPaid} className={'!px-5 bg-green-700'} title={'Yes Proceed'} />
+                        <Button type='button' onClick={toggleMarkPaid} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                        <Button type='submit' className={'!px-5 bg-green-700'} title={'Yes Proceed'} />
                     </div>
-                </div>
+                </form>
             </div> : null
         }
         {
