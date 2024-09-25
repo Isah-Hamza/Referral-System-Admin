@@ -171,6 +171,15 @@ const Appointments = () => {
             errorToast(e.response.data.errors.date[0]);
         }
         });
+        
+    const { isLoading:makingPayment, mutate:makePayment}  = useMutation(AppointmentService.MakePayment, {
+        onSuccess:res => {
+            successToast(res.data.message)
+        },
+        onError: e=> {
+            errorToast(e.message);
+        }
+        });
 
         const viewAppointment = (id) => {
             setId(id);
@@ -377,7 +386,7 @@ const Appointments = () => {
                                 } */}
                                 {
                                     appointment?.appointments?.appointment_status == 'Not Checked In' ?
-                                    <button onClick={toggleCheckin} className="flex-1 justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
+                                    <button onClick={appointment?.appointments?.payment_status == 'Not Paid' ? toggleMarkPaid : toggleCheckin} className="flex-1 justify-center bg-light_blue text-white border rounded-3xl flex items-center gap-3 font-medium pl-7  py-2 text-sm">
                                         <span>Check Patient In</span>
                                     </button>
                                     : appointment?.appointments?.appointment_status == 'Checked In' ?
@@ -510,11 +519,15 @@ const Appointments = () => {
            markPaid ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
                 <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                     <img className='w-12 m-auto' src={paid} alt="delete" />
-                    <p className='text-base font-semibold' >Mark as Paid</p>
-                    <p className='text-sm' >Confirm that this user has made a payment. Their status will change to "Paid”</p>
+                    <p className='text-base font-semibold' >Test Payment Not Made Yet.</p>
+                    <p className='text-sm' >Add the amount paid by this patient.</p>
+                    <div className="mt-5 text-left grid gap-3">
+                        <Input className={'!px-3'} label={'Amount'} type={'number'} />
+                        <Input className={'!px-3'} label={'Receipt'} />
+                    </div>
                     <div className="mt-10 flex items-center gap-5 ">
-                        <Button onClick={toggleFollowUp} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                        <Button onClick={toggleFollowUp} className={'!px-5 bg-green-700'} title={'Yes Proceed'} />
+                        <Button onClick={toggleMarkPaid} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                        <Button onClick={toggleMarkPaid} className={'!px-5 bg-green-700'} title={'Yes Proceed'} />
                     </div>
                 </div>
             </div> : null
@@ -543,7 +556,7 @@ const Appointments = () => {
     </div>
     }
     {
-        (checkingIn || followingUp || rescheduling || missing) ? <LoadingModal /> : null
+        (makingPayment || checkingIn || followingUp || rescheduling || missing) ? <LoadingModal /> : null
     }
   </>
   )

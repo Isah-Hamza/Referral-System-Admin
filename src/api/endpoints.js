@@ -35,6 +35,7 @@ const endpoints = {
     RESCHEDULE:'/admin/appointments/reschedule',
     TIME_SLOTS:'patient/appointments/available-slots',
     MISS_APPOINTMENT:'/admin/appointments/cancel',
+    MAKE_PAYMENT:'/admin/appointments/make-payment',
   },
   tests:{
     TESTS:'/admin/test/all',

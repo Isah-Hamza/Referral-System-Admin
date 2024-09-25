@@ -46,6 +46,13 @@ const Reschedule = (data) => {
     .catch((error) => Promise.reject(error));
 }
 
+const MakePayment = (data) => {
+  return axiosClient()
+    .post(`${endpoints.appointments.MAKE_PAYMENT}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 
 const GetTimeSlots = (date) => {
   return axiosClient()
@@ -65,6 +72,6 @@ const missAppoitment = (payload) => {
 
 export default {
   GetUpcomingAppointments, GetAllAppointments, GetAppointment, CheckIn, FollowUp, GetTimeSlots, Reschedule,
-  missAppoitment,
+  missAppoitment, MakePayment
 };
 
