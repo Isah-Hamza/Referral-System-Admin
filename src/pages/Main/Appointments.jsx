@@ -535,10 +535,24 @@ const Appointments = () => {
                 <form onSubmit={handleSubmitPayment} className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                     <img className='w-12 m-auto' src={paid} alt="delete" />
                     <p className='text-base font-semibold' >Test Payment Not Made Yet.</p>
-                    <p className='text-sm' >Add the amount paid by this patient.</p>
+                    <p className='text-sm -mt-2' >Add the amount paid by this patient.</p>
                     <div className="mt-5 text-left grid gap-3">
                         <Input {...getFieldPropsPayment('amount')} className={'!px-3'} label={'Amount'} type={'number'} />
                         <Input {...getFieldPropsPayment('receipt_id')} className={'!px-3'} label={'Receipt'} />
+                    </div>
+                    <div className="mt-3">
+                        <div className="flex justify-between items-center">
+                            <p>Outstanding Payment</p>
+                            <p className='font-medium' >{ConvertToNaira(Number(appointment?.total_amount))}</p>
+                        </div>
+                        <div className="border-b my-3 pb-2 flex justify-between items-center">
+                            <p>Amount Paid</p>
+                            <p className='font-medium' >{ConvertToNaira(0)}</p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <p>Amount Due</p>
+                            <p className='font-medium' >{ConvertToNaira(Number(appointment?.total_amount))}</p>
+                        </div>
                     </div>
                     <div className="mt-10 flex items-center gap-5 ">
                         <Button type='button' onClick={toggleMarkPaid} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
