@@ -192,6 +192,10 @@ const Appointments = () => {
             getAppoinment(id);
         },
         onError: e=> {
+            if(e.errors.receipt_id){
+                errorToast(e.errors.receipt_id);
+                return;
+            }
             errorToast(e.errors);
         }
         });
