@@ -17,6 +17,8 @@ import earn from '../assets/images/Earn.svg';
 import { CgClose } from 'react-icons/cg';
 import { useQuery } from 'react-query';
 import Dashboard from '../services/Dashboard';
+import { IoLogOut } from 'react-icons/io5';
+import { REMOVE_FROM_LOCALSTORAGE } from '../utils/Helper';
 
 const MainLayout = () => {
     const navigate = useNavigate();
@@ -116,6 +118,14 @@ const MainLayout = () => {
             setActivities(res.data.notifications);
             }
     });
+
+    const logout = () => {
+        REMOVE_FROM_LOCALSTORAGE('referrer-data');
+        REMOVE_FROM_LOCALSTORAGE('referrer-token');
+        REMOVE_FROM_LOCALSTORAGE('referrer-admin-token');
+        REMOVE_FROM_LOCALSTORAGE('referrer-admin-id');
+        navigate('/')
+    }
         
   useEffect(() => {
 
@@ -169,10 +179,15 @@ const MainLayout = () => {
                 <p className='text-base font-semibold' >{headerInfo.header}</p>
                 <p className='text-sm' >{headerInfo.sub}</p>
             </div>
+            <div className="flex gap-2 items-center">
+            <button onClick={logout} className="min-w-10 min-h-10 bg-[#ededed] grid place-content-center rounded-full">
+                <IoLogOut size={20} color='red' />
+            </button>
             <button onClick={toggleActivities} className="text-sm flex items-center gap-2 px-4 p-2 rounded-3xl bg-custom_gray">
                 <BsBellFill />
                 <span>Activities</span>
             </button>
+            </div>
         </div>
         <Outlet />
         {

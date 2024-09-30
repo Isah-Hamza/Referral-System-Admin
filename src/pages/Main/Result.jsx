@@ -44,33 +44,6 @@ const Results = () => {
     const [id,setId] = useState(0);
     const [item, setItem] = useState(null);
     const [file, setFile] = useState(null);
-
-    const today_booking = [
-        {
-            name:'Felix Otti',
-            tests: 4,
-            time:'10:00am - 11:00am',
-            status:'paid',
-        },
-        {
-            name:'Christine Jones',
-            tests: 4,
-            time:'02:00pm - 02:30pm',
-            status:'unpaid',
-        },
-        {
-            name:'Felix Otti',
-            tests: 4,
-            time:'10:00am - 11:00am',
-            status:'paid',
-        },
-        {
-            name:'Christine Jones',
-            tests: 4,
-            time:'02:00pm - 02:30pm',
-            status:'unpaid',
-        },
-    ]
     
     const selectedTests = [
         {
@@ -144,7 +117,7 @@ const Results = () => {
     }, [previewUrl])
 
 
-    if(loadingAwaiting || loadingUploaded ){
+    if(loadingAwaiting || loadingUploaded){
         return <PageLoading adjustHeight={true} />
     }
 
@@ -171,22 +144,30 @@ const Results = () => {
             </div>
         </div>
         <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 ) && '!block'}`}>
-            <div className="header grid grid-cols-9 gap-3 px-5 font-medium">
+            <div className="header grid grid-cols-12 gap-3 px-5 font-medium">
                 <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Assigned Test</p>
                 <p className='col-span-2 line-clamp-1' >Test Date</p>
+                <p className='col-span-2 line-clamp-1' >Due Date</p>
+                <p className='col-span-2' >Status</p>
                 <p className='' >Action</p>
             </div>
             <div className="data text-text_color mt-3">
                 {
                     awaitingResults?.map((item,idx) => (
-                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-9  gap-3 px-5 py-6 font-medium`}>
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-12 gap-3 px-5 py-6 font-medium`}>
                     <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
                     <p className='col-span-2 line-clamp-1' >{item.full_name}</p>
-                    <p className='col-span-2 line-clamp-1 pr-5' >{item.assigned_test}</p>
+                    <p className='col-span-2 line-clamp-1' >{item.assigned_test}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.test_date).format('lll')}</p> 
-                    <p onClick={() =>{ setId(item.result_id); toggleViewDetails();}} className='col-span-2 font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p className='col-span-2 line-clamp-1' >{moment(item.due_date).format('lll')}</p>
+                    <p className='col-span-2 line-clamp-1' >
+                        {item.due_status == 'Far' ? <div className='bg-green-500 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Far</div> : null}
+                        {item.due_status == 'Over Due' ? <div className='bg-red-500 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Over Due</div> : null}
+                        {item.due_status == 'Due Soon' ? <div className='bg-yellow-400 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Due Soon</div> : null}
+                    </p> 
+                    <p onClick={() =>{ setId(item.result_id); toggleViewDetails();}} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -343,7 +324,7 @@ const Results = () => {
                                     // previewImage.style.display = 'block';
                                 }
                             }} 
-                            hidden type="file" name="file" id="file" />
+                            hidden accept='image/png,image/jpg,image/jpeg,image/webp' type="file" name="file" id="file" />
                             <label htmlFor='file' 
                             className="cursor-pointer justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
                                 <BiTestTube size={18} />
@@ -379,31 +360,7 @@ const Results = () => {
                 </div>
             }
         </div> : null}
-        {
-            date ? <div onClick={() => setDate()} className='bg-white/80 inset-0 fixed grid place-content-center'>
-                        <div className="bg-white shadow border p-5 rounded-lg w-[400px]">
-                            <div className="flex justify-between items-center gap-5">
-                                <p className='text-sm font-semibold mt-1' >Scheduled For The Day</p>
-                                <p className='text-sm  mt-1' >Tuesday | January 02 2025</p>
 
-                            </div>
-                            <div className="grid gap-3 mt-5">
-                                {
-                                    today_booking.map((item,idx) => (
-                                        <div className='text-sm p-3 px-2 rounded-md border' key={idx}>
-                                            <div className="flex items-center justify-between gap-5">
-                                                <p className='font-medium mb-1'>{item.name}</p>
-                                                <p className={`text-white p-1  rounded-xl text-xs w-[50px] text-center ${item.status == 'paid' ? 'bg-primary' : 'bg-yellow-400'}`} >{item.status}</p>
-                                            </div>
-                                            <p className='text-xs line-clamp-1' >{item.tests} Test(s) booked &bull; {item.time} </p>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        </div>
-
-            </div> : null
-        }
         {
            uploadTest ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
                 <div className="relative grid grid-cols-3 overflow-hidden bg-[#ededed] w-[1000px] max-h-[95vh] my-auto  rounded-2xl gap-3 text-sm">
@@ -415,24 +372,7 @@ const Results = () => {
                             <p className='font-semibold opacity-90 '>Uploaded Tets</p>
                             <button className='underline'>upload more</button>
                         </div>
-                        <div className="my-7 grid grid-cols-2 gap-3 gap-y-7 px-5">
-                            {
-                                [1,2,3].map(item => (
-                                    <div key={item}>
-                                        <div className="relative">
-                                            <img className='max-h-[80vh]' src={preview} alt="preview" />
-                                            <button className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
-                                                <BsFillTrashFill size={15} color='red' />
-                                            </button>  
-                                        </div>
-                                        <div className="flex items-center justify-between gap-3">
-                                            <p>Stacey MRI Test</p>
-                                            <FaEdit />
-                                        </div>
-                                    </div>
-                                ))
-                            }
-                        </div>
+
                         <div className="mt-auto p-5 grid grid-cols-2 gap-5">
                             <button onClick={toggleUploadTest} className="justify-center border rounded-3xl flex items-center gap-2 font-medium py-2 text-sm">
                                 <span>Close</span>
