@@ -62,21 +62,21 @@ const MainLayout = () => {
             }
         },
         {
-            title:'Results',
-            link:'results',
-            icon: LuSheet,
-            info:{
-                header:'Result Management',
-                sub:'View a list of all patients with completed tests.',
-            }
-        },
-        {
             title:'Tests',
             link:'tests',
             icon: LuTestTube,
             info:{
                 header:'Test Management',
                 sub:'Manage and organize test categories and sub-tests.',
+            }
+        },
+        {
+            title:'Results',
+            link:'results',
+            icon: LuSheet,
+            info:{
+                header:'Result Management',
+                sub:'View a list of all patients with completed tests.',
             }
         },
         {
