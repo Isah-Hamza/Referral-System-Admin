@@ -99,7 +99,11 @@ const MainLayout = () => {
         },
         {
             title:'Reports',
-            link:'#',
+            link:'',
+            info:{
+                header:'Reports',
+                sub:'View comprehensive reports',
+            },
             icon:FcStatistics,
         },
         {
