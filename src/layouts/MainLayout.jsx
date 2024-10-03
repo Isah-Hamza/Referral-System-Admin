@@ -26,8 +26,11 @@ const MainLayout = () => {
     const [showActivities, setShowActivities] = useState(false);
     const [activitiess, setActivities] = useState([]);
     const adminObj = JSON.parse(window.localStorage.getItem('referrer-admin'));
-    // const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department;
+    // const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
+    // const department = 'Customer Service Unit';
+    // const department = 'Result Unit';
     const department = 'Rebate Unit';
+    // const department = 'Test Unit';
 
     const [headerInfo, setHeaderInfo] = useState({
         header:'Dashboard Overview',

@@ -43,6 +43,13 @@ const Dashboard = () => {
 
     const navigate = useNavigate('');
 
+        // const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
+        // const department = 'Customer Support Unit';
+        // const department = 'Result Unit';
+        // const department = 'Test Unit';
+        const department = 'Rebate Unit';
+
+
     const admin_id = window.localStorage.getItem('referrer-admin-id');
     
     const { isLoading:loadingDashboardStats }  = useQuery('dashboard-stats', () => DashboardServices.GetDashboardStats(admin_id), {
@@ -84,7 +91,7 @@ const Dashboard = () => {
   return (
     <>
         <div className="mt-2">
-            <div className="grid grid-cols-4 gap-5">
+            { department == 'Administration' ? <div className="grid grid-cols-4 gap-5">
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Total Referrals</p>
                     <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
@@ -135,14 +142,54 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> : null}
+            { department == 'Rebate Unit' ? <div className="grid grid-cols-2 gap-5">
+                <div className="bg-white rounded-lg p-5 border">
+                    <p>Monthly Rebate Earned</p>
+                    <p className='font-semibold text-xl my-3'>{ ConvertToNaira(Number(dashboardStats?.month_earning?.total_earning_month))}</p>
+                    <div className="flex text-sm items-center gap-1 mt-5">
+                        {
+                          dashboardStats?.month_earning?.option == 'increase' ?
+                              <div className="text-green-500 font-medium flex items-center gap-1">
+                                <BsArrowUpRight color='' />
+                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}%</span>
+                            </div> :
+                              <div className="text-red-500 font-medium flex items-center gap-1">
+                                <BsArrowDownRight color='' />
+                                <span className='' >{ dashboardStats?.month_earning?.percentage_change}%</span>
+                            </div> 
+                        }
+                        <span>vs last month</span>
+                    </div>
+                </div>
+                <div className="bg-white rounded-lg p-5 border">
+                    <p>Total Payouts Settled</p>
+                    <p className='font-semibold text-xl my-3'>₦{dashboardStats?.total_payout_settled}</p>
+                    <div className="flex text-sm items-center gap-1 mt-5">
+                        <span>Payment</span>
+                        <div className="text-green-500 font-medium flex items-center gap-1">
+                            <span className='' >Every Friday</span>
+                        </div>
+                    </div>
+                </div>
+            </div> : null}
             <div className="flex gap-5 mt-5">
                 <div className="bg-white min-w-[35%] h-full p-5 rounded-lg border">
                     <div className="flex items-center justify-between pb-3 border-b">
-                        <p className='font-semibold' >Referrals Stats</p>
+                        {
+                         (department == 'Customer Support Unit' || department == 'Administration') ?
+                         <p className='font-semibold' >Referrals Stats</p> : 
+                          (department == 'Test Unit' || department == 'Result Unit') ? 
+                          <p className='font-semibold' >Daily Test Analysis</p> : null
+                       }
                     </div>
                     <div className="mt-3">
-                        <p className='text-sm' >Analysis of pending & completed referrals</p>
+                       {
+                         (department == 'Customer Support Unit' || department == 'Administration') ?
+                          <p className='text-sm' >Analysis of pending & completed referrals</p> : 
+                         ( department == 'Test Unit' || department == 'Result Unit' ) ? 
+                          <p className='text-sm' >Analysis of daily pending & completed tests </p> : null
+                       }
                         <div className="flex flex-col">
                             <div className=" -ml-10 h-[250px]">
                                 <PieChart completed = {referralStats?.completed} pending={referralStats?.pending} />
@@ -162,11 +209,11 @@ const Dashboard = () => {
                                     </div>
                                     <p className='pl-'>{referralStats?.pending}</p>
                                 </div>
-                            </div>
+                            </div> 
                         </div>
                     </div>
                 </div>
-                <div className="flex-1 rounded-lg border border-custom_gray bg-white">
+              {department == 'Administration' ?  <div className="flex-1 rounded-lg border border-custom_gray bg-white">
                     <div className="flex items-center justify-between p-3 border-b">
                         <p className='font-semibold' >Rebate Earning</p>
                         <div className="flex items-center bg-custom_gray p-1 px-1.5 rounded-3xl">
@@ -183,9 +230,65 @@ const Dashboard = () => {
                             <BarChart data = {rebateChart?.rebate_earnings} />
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="flex gap-5 mt-5">
+                </div>: null}
+                {
+                    department == 'Customer Support Unit' ? 
+                    <div className="w-full grid gap-5">
+                         <div className="w-full bg-white rounded-lg p-5 border">
+                            <p>Total Referrals</p>
+                            <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
+                            <div className="flex items-center justify-between gap-5 mt-5">
+                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
+                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                    <span>View All</span>
+                                    <MdArrowForward />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="w-full bg-white rounded-lg p-5 border">
+                            <p>Total Booked Appointments</p>
+                            <p className='font-semibold text-xl my-3'>{appointmentStats?.total_appointments}</p>
+                            <div className="flex items-center justify-between gap-5 mt-5">
+                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
+                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                    <span>View All</span>
+                                    <MdArrowForward />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    : null
+                }
+                {
+                    (department == 'Test Unit' || department == 'Result Unit') ? 
+                    <div className="w-full grid gap-5">
+                         <div className="w-full bg-white rounded-lg p-5 border">
+                            <p>Total Sub Tests</p>
+                            <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
+                            <div className="flex items-center justify-between gap-5 mt-5">
+                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
+                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                    <span>View All</span>
+                                    <MdArrowForward />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="w-full bg-white rounded-lg p-5 border">
+                            <p>Total Test Categories</p>
+                            <p className='font-semibold text-xl my-3'>{appointmentStats?.total_appointments}</p>
+                            <div className="flex items-center justify-between gap-5 mt-5">
+                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
+                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                    <span>View All</span>
+                                    <MdArrowForward />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    : null
+                }
+            </div> 
+            { (department == 'Administration' || department == 'Customer Support Unit') ? <div className="flex gap-5 mt-5">
                 <div className="flex-1 bg-white rounded-xl border pb-3">
                     <div className="flex items-center justify-between p-3 border-b">
                         <p className='font-semibold' >Calendar Appointments</p>
@@ -223,7 +326,7 @@ const Dashboard = () => {
                     </div>
                         <img className='absolute right-0 bottom-0' src={design} alt="" />
                 </div>
-            </div>
+            </div> : null}
         </div>
         {/* <div className="w-4/6 max-h-[calc(100vh-115px)] overflow-y-auto">
             <div className="top flex gap-3">
