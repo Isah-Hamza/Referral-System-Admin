@@ -138,8 +138,8 @@ const MainLayout = () => {
     if(active_item == 'dashboard') setActiveTab(0);
     if(active_item == 'referrals') setActiveTab(1);
     if(active_item == 'appointments') setActiveTab(2);
-    if(active_item == 'results') setActiveTab(3);
-    if(active_item == 'tests') setActiveTab(4);
+    if(active_item == 'results') setActiveTab(4);
+    if(active_item == 'tests') setActiveTab(3);
     if(active_item == 'referrers') setActiveTab(5);
     if(active_item == 'rebates') setActiveTab(6);
     if(active_item == 'settings') setActiveTab(8);
