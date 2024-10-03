@@ -174,7 +174,7 @@ const Dashboard = () => {
                 </div>
             </div> : null}
             <div className="flex gap-5 mt-5">
-                <div className="bg-white min-w-[35%] h-full p-5 rounded-lg border">
+                { department !== 'Rebate Unit' ? <div className="bg-white min-w-[35%] h-full p-5 rounded-lg border">
                     <div className="flex items-center justify-between pb-3 border-b">
                         {
                          (department == 'Customer Support Unit' || department == 'Administration') ?
@@ -212,8 +212,8 @@ const Dashboard = () => {
                             </div> 
                         </div>
                     </div>
-                </div>
-              {department == 'Administration' ?  <div className="flex-1 rounded-lg border border-custom_gray bg-white">
+                </div> : null}
+              {(department == 'Administration' || department == 'Rebate Unit') ?  <div className="flex-1 rounded-lg border border-custom_gray bg-white">
                     <div className="flex items-center justify-between p-3 border-b">
                         <p className='font-semibold' >Rebate Earning</p>
                         <div className="flex items-center bg-custom_gray p-1 px-1.5 rounded-3xl">

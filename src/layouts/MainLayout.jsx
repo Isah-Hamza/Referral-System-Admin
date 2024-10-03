@@ -181,7 +181,7 @@ const MainLayout = () => {
             <img src={admin} alt="admin" />
             <div className='text-sm'>
                 <p className='font-semibold capitalize line-clamp-1' >{adminObj.full_name}</p>
-                <p className='capitalize'>{adminObj.type}</p>
+                <p className='capitalize'>{adminObj.role}</p>
             </div>
             <span className='block ml-auto'><BiCaretDown /></span>
         </button>
