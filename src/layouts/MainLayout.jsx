@@ -26,6 +26,8 @@ const MainLayout = () => {
     const [showActivities, setShowActivities] = useState(false);
     const [activitiess, setActivities] = useState([]);
     const adminObj = JSON.parse(window.localStorage.getItem('referrer-admin'));
+    // const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department;
+    const department = 'Rebate Unit';
 
     const [headerInfo, setHeaderInfo] = useState({
         header:'Dashboard Overview',
@@ -42,7 +44,8 @@ const MainLayout = () => {
             info: {
                 header:'Dashboard Overview',
                 sub:'Manage and analyze your patient statistics.',
-            }
+            },
+            deparments:['Administration','Test Unit','Result Unit','Customer Service Unit','Rebate Unit']
         },
         {
             title:'Referrals',
@@ -51,7 +54,9 @@ const MainLayout = () => {
             info:{
                 header:'Referrals Management',
                 sub:'View a list of all referred patients, including those who have not yet booked an appointment.',
-            }
+            },
+            deparments:['Administration','Customer Service Unit']
+
         },
         {
             title:'Appointments',
@@ -60,7 +65,9 @@ const MainLayout = () => {
             info:{
                 header:'Appointment Management',
                 sub:'Track and manage all patient appointments.',
-            }
+            },
+            deparments:['Administration','Customer Service Unit']
+
         },
         {
             title:'Tests',
@@ -69,7 +76,9 @@ const MainLayout = () => {
             info:{
                 header:'Test Management',
                 sub:'Manage and organize test categories and sub-tests.',
-            }
+            },
+            deparments:['Administration','Test Unit']
+
         },
         {
             title:'Results',
@@ -78,7 +87,9 @@ const MainLayout = () => {
             info:{
                 header:'Result Management',
                 sub:'View a list of all patients with completed tests.',
-            }
+            },
+            deparments:['Administration','Result Unit']
+
         },
         {
             title:'Referrers',
@@ -87,7 +98,9 @@ const MainLayout = () => {
             info:{
                 header:'Referrer Management',
                 sub:'View and manage a list of all registered doctors/referrers.',
-            }
+            },
+            deparments:['Administration']
+
         },
         {
             title:'Rebates',
@@ -96,7 +109,8 @@ const MainLayout = () => {
             info:{
                 header:'Rebate Management',
                 sub:'View the total amount earned by referrers.',
-            }
+            },
+            deparments:['Administration','Rebate Unit']
         },
         {
             title:'Reports',
@@ -105,6 +119,7 @@ const MainLayout = () => {
                 header:'Reports',
                 sub:'View comprehensive reports',
             },
+            deparments:['Administration'],
             icon:FcStatistics,
         },
         {
@@ -114,9 +129,14 @@ const MainLayout = () => {
             info:{
                 header:'Settings',
                 sub:'Customize and manage your account and platform preferences.',
-            }
+            },
+            deparments:['Administration','Test Unit','Result Unit','Customer Service Unit','Rebate Unit']
         },
     ]
+
+    const filterDepartmentalTabs = (department) => {
+        return tabs.filter(tab => tab.deparments.includes(department));
+    }
 
     const { isLoading:loadingActivities }  = useQuery('activities', Dashboard.GetNotifications, {
         onSuccess:res => {
@@ -164,7 +184,7 @@ const MainLayout = () => {
         </button>
         <div className="grid gap-1.5 mt-5">
             {
-                tabs.map((item,idx) => (
+                filterDepartmentalTabs(department).map((item,idx) => (
                     <button onClick={() => {
                         navigate(item.link);
                         setActiveTab(idx);
