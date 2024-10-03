@@ -25,6 +25,7 @@ const MainLayout = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [showActivities, setShowActivities] = useState(false);
     const [activitiess, setActivities] = useState([]);
+    const adminObj = JSON.parse(window.localStorage.getItem('referrer-admin'));
 
     const [headerInfo, setHeaderInfo] = useState({
         header:'Dashboard Overview',
@@ -99,7 +100,7 @@ const MainLayout = () => {
         },
         {
             title:'Reports',
-            link:'',
+            link:'#',
             info:{
                 header:'Reports',
                 sub:'View comprehensive reports',
@@ -156,8 +157,8 @@ const MainLayout = () => {
         <button className="mt-10 w-full text-left bg-[#C9E6FF] p-2 rounded flex items-center gap-3">
             <img src={admin} alt="admin" />
             <div className='text-sm'>
-                <p className='font-semibold' >Emmanuella Igwe</p>
-                <p>Admin</p>
+                <p className='font-semibold capitalize line-clamp-1' >{adminObj.full_name}</p>
+                <p className='capitalize'>{adminObj.type}</p>
             </div>
             <span className='block ml-auto'><BiCaretDown /></span>
         </button>
