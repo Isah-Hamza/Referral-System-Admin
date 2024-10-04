@@ -18,6 +18,7 @@ const endpoints = {
     REBATE_CHART:'admin/rebate-chart/month',
     APPOINTMENT_STATS:'admin/appointments-stats',
     ACTIVITIES:'/admin/all-notifications',
+    TEST_STATS:'/admin/department-data',
   },
   referrals:{
     GET_REFERRALS:'/admin/all-referrals',

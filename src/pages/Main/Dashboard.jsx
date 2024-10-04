@@ -40,13 +40,14 @@ const Dashboard = () => {
     const [appointmentStats,setAppointmentStats] = useState(null);
     const [date, setDate] = useState(() => moment().format('y-MM-DD'));
     const [todayBooking, setTodayBooking] = useState([]);
+    const [testStats, setTestStats] = useState(null);
 
     const navigate = useNavigate('');
 
-        const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
+        // const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
         // const department = 'Customer Support Unit';
         // const department = 'Result Unit';
-        // const department = 'Test Unit';
+        const department = 'Test Unit';
         // const department = 'Rebate Unit';
 
 
@@ -62,6 +63,12 @@ const Dashboard = () => {
     const { isLoading:loadingReferralStats }  = useQuery('referral-stats', () => DashboardServices.GetReferralStats(admin_id), {
     onSuccess:res => {
         setReferralStats(res.data);
+        }
+    });
+    
+    const { isLoading:loadingTestStats }  = useQuery('test-stats', () => DashboardServices.GetTestStats(admin_id), {
+    onSuccess:res => {
+        setTestStats(res.data);
         }
     });
     
@@ -179,7 +186,7 @@ const Dashboard = () => {
                         {
                          (department == 'Customer Support Unit' || department == 'Administration') ?
                          <p className='font-semibold' >Referrals Stats</p> : 
-                          (department == 'Test Unit' || department == 'Laboratory Service' || department == 'Radiology' || department == 'Result Unit') ? 
+                          (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
                           <p className='font-semibold' >Daily Test Analysis</p> : null
                        }
                     </div>
@@ -187,12 +194,14 @@ const Dashboard = () => {
                        {
                          (department == 'Customer Support Unit' || department == 'Administration') ?
                           <p className='text-sm' >Analysis of pending & completed referrals</p> : 
-                         ( department == 'Test Unit' || department == 'Laboratory Service' || department == 'Radiology' || department == 'Result Unit' ) ? 
+                         ( department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? 
                           <p className='text-sm' >Analysis of daily pending & completed tests </p> : null
                        }
                         <div className="flex flex-col">
                             <div className=" -ml-10 h-[250px]">
-                                <PieChart completed = {referralStats?.completed} pending={referralStats?.pending} />
+                                <PieChart 
+                                    completed = {(department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed} 
+                                    pending= { (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? testStats?.percentage?.pending_tests : referralStats?.pending} />
                             </div>
                             <div className="flex justify-center items-center text-center gap-10">
                                 <div className="">
@@ -200,14 +209,14 @@ const Dashboard = () => {
                                         <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
                                         <span>Completed</span>
                                     </div>
-                                    <p className='pl-'>{referralStats?.completed}</p>
+                                    <p className='pl-'>{ (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed}</p>
                                 </div>
                                 <div className="">
                                     <div className="text-sm flex items-center gap-1">
                                         <div className="w-2 h-2 rounded-full bg-light_blue"></div>
                                         <span>Pending</span>
                                     </div>
-                                    <p className='pl-'>{referralStats?.pending}</p>
+                                    <p className='pl-'>{(department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.pending_tests : referralStats?.pending}</p>
                                 </div>
                             </div> 
                         </div>
@@ -260,11 +269,11 @@ const Dashboard = () => {
                     : null
                 }
                 {
-                    (department == 'Test Unit' || department == 'Laboratory Service' || department == 'Radiology' || department == 'Result Unit') ? 
+                    (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
                     <div className="w-full grid gap-5">
                          <div className="w-full bg-white rounded-lg p-5 border">
                             <p>Total Sub Tests</p>
-                            <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
+                            <p className='font-semibold text-xl my-3'>{testStats?.total_medical_tests}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
                                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
                                 <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
@@ -275,7 +284,7 @@ const Dashboard = () => {
                         </div>
                         <div className="w-full bg-white rounded-lg p-5 border">
                             <p>Total Test Categories</p>
-                            <p className='font-semibold text-xl my-3'>{appointmentStats?.total_appointments}</p>
+                            <p className='font-semibold text-xl my-3'>{testStats?.total_category}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
                                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
                                 <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
