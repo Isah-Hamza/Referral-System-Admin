@@ -44,10 +44,10 @@ const Dashboard = () => {
 
     const navigate = useNavigate('');
 
-        // const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
+        const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
         // const department = 'Customer Support Unit';
         // const department = 'Result Unit';
-        const department = 'Test Unit';
+        // const department = 'Test Unit';
         // const department = 'Rebate Unit';
 
 
