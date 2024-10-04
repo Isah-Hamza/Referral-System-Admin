@@ -179,7 +179,7 @@ const Dashboard = () => {
                         {
                          (department == 'Customer Support Unit' || department == 'Administration') ?
                          <p className='font-semibold' >Referrals Stats</p> : 
-                          (department == 'Test Unit' || department == 'Result Unit') ? 
+                          (department == 'Test Unit' || department == 'Laboratory Service' || department == 'Radiology' || department == 'Result Unit') ? 
                           <p className='font-semibold' >Daily Test Analysis</p> : null
                        }
                     </div>
@@ -187,7 +187,7 @@ const Dashboard = () => {
                        {
                          (department == 'Customer Support Unit' || department == 'Administration') ?
                           <p className='text-sm' >Analysis of pending & completed referrals</p> : 
-                         ( department == 'Test Unit' || department == 'Result Unit' ) ? 
+                         ( department == 'Test Unit' || department == 'Laboratory Service' || department == 'Radiology' || department == 'Result Unit' ) ? 
                           <p className='text-sm' >Analysis of daily pending & completed tests </p> : null
                        }
                         <div className="flex flex-col">
@@ -260,7 +260,7 @@ const Dashboard = () => {
                     : null
                 }
                 {
-                    (department == 'Test Unit' || department == 'Result Unit') ? 
+                    (department == 'Test Unit' || department == 'Laboratory Service' || department == 'Radiology' || department == 'Result Unit') ? 
                     <div className="w-full grid gap-5">
                          <div className="w-full bg-white rounded-lg p-5 border">
                             <p>Total Sub Tests</p>
