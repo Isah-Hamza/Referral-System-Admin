@@ -27,6 +27,13 @@ const endpoints = {
     TEST_CATEGORIES:'category/all',
     CATEGORY_TESTS:'medical-test/view'
   },
+  referrers:{
+    GET_ACTIVE_REFERRERS:'/admin/all-active-referrers',
+    GET_INACTIVE_REFERRERS:'/admin/all-inactive-referrers',
+    GET_REFERRER_DETAILS:'/admin/referrer-details',
+    DEACTIVATE_REFERRER:'/admin/deactivate-referrer',
+    ACTIVATE_REFERRER:'/admin/activate-referrer',
+  },
   appointments:{
     UPCOMING_APPOINTMENTS:'/admin/appointments/upcoming',
     ALL_APPOINTMENTS:'admin/appointments/all',
