@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Input from '../../../components/Inputs'
 import { BiCopy, BiCopyAlt, BiPhoneIncoming, BiSearch, BiTrash, BiUser } from 'react-icons/bi'
 import Select from '../../../components/Inputs/Select'
@@ -11,12 +11,23 @@ import New from '../../../components/Referral/New'
 import { useLocation } from 'react-router-dom'
 import reactivateIcon from '../../../assets/images/reactivate.svg'
 import deactivateIcon from '../../../assets/images/deactivate_user.svg'
+import Referrer from '../../../services/Referrer'
+import { useMutation, useQuery } from 'react-query'
+import { ConvertToNaira } from '../../../utils/Helper'
+import PageLoading from '../../../Loader/PageLoading'
+import moment from 'moment'
 
 const Referrers = () => {
+    const [page,setPage] = useState(1);
+    const [reason, setReason] = useState('');
+    const [details, setDetails] = useState({});
+    const [id, setId] = useState(0);
     
     const query = useLocation().search.split('=')[1];
     const [acitveTab, setActiveTab] = useState(0);
     const [acitveInnerTab, setActiveInnerTab] = useState(0);
+    const [activeReferrers, setActiveReferrers] = useState([]);
+    const [inactiveReferrers, setInactiveReferrers] = useState([]);
 
     const [viewDetails, setViewDetails] = useState(false);
     const [reactivate, setReactivate] = useState(false);
@@ -25,103 +36,6 @@ const Referrers = () => {
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleReactivate = () => setReactivate(!reactivate);
     const toggleDeactivate = () => setDeactivate(!deactivate);
-
-    const dummy_deactivated = [
-        {
-            name:'Marcia Cronin ',
-            email:'gerald37@hotmail.com',
-            reason:'Money sky boy discussions existing growth air barn conversation looking. Points need overflow effects unpack must.',
-        },
-        {
-            name:'Luke Hudsonlee Jack',
-            email:'earnestine_macejkovic89@yahoo.com',
-            reason:"Tent status ask didn't good giant. Enable well mint metal respectively.",
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            reason:"Rundown one cloud in social is leverage place. Giant like spaces offline turn seems clean moving."
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            reason:"Disband functional solutionize solutionize community plane. Indicators fruit running call pushback individual important space one."
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            reason:"Cob offline banner rehydrate about just. Idea strategy got me thought encourage."
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            reason:"Dangerous build we've solutions nobody sorry dive. Spaces deep hanging new group hard."
-        },
-        {
-            name:'Stacey Jacobs',
-            email:'mohammad.schimmel@gmail.com',
-            reason:"Build roll that's crack but functional boardroom expectations so third. Break place dogpile scope line reality bed future-proof."
-        },
-    ]
-
-    const dummy = [
-        {
-            name:'Marcia Cronin ',
-            email:'gerald37@hotmail.com',
-            phone:'601-671-8795',
-            gender:'Female',
-            test:'41',
-            rebate:'₦121,000',
-        },
-        {
-            name:'Luke Hudsonlee Jack',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'528-323-1027',
-            gender:'Male',
-            test:'3',
-            rebate:'₦103,000',
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'366-430-1102',
-            gender:'Male',
-            test:'23',
-            rebate:'₦34,500',
-        },
-        {
-            name:'Stacey Jacobs Volkswagon',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'448-970-7550',
-            gender:'Female',
-            test:'2',
-            rebate:'₦21,000',
-        },
-        {
-            name:'Luke Hudson',
-            email:'earnestine_macejkovic89@yahoo.com',
-            phone:'528-323-1027',
-            gender:'Male',
-            test:'19',
-            rebate:'₦55,500',
-        },
-        {
-            name:'Anthony Von',
-            email:'emily.rolfson@hotmail.com',
-            phone:'366-430-1102',
-            gender:'Male',
-            test:'106',
-            rebate:'₦600,000',
-        },
-        {
-            name:'Stacey Jacobs',
-            email:'mohammad.schimmel@gmail.com',
-            phone:'448-970-7550',
-            gender:'Female',
-            test:'2',
-            rebate:'₦21,000',
-        },
-    ]
 
     const dummyDetails = [
         {
@@ -193,7 +107,37 @@ const Referrers = () => {
         },
     ]
 
-    const details = []
+    
+         
+    const { isLoading:loadingActive, isRefetching:refetchingActive, refetch:refetchActive}  = useQuery('active-referrers', () => Referrer.GetActiveReferrers({ page }), {
+        onSuccess:res => {
+            setActiveReferrers(res.data.referrals);
+            }
+        });
+         
+    const { isLoading:loadingInactive, isRefetching:refetchingInactive, refetch:refetchInactive}  = useQuery('inactive-referrers', () => Referrer.GetInactiveReferrers({ page }), {
+        onSuccess:res => {
+            setInactiveReferrers(res.data.referrals);
+            }
+        });
+
+    const { isLoading:loadingReferrer, mutate:viewReferrer }  = useMutation(Referrer.GetReferrerDetails, {
+        onSuccess:res => {
+            setDetails(res.data);
+            }
+        });
+
+    
+
+    
+    useEffect(() => {
+        if(id)   viewReferrer(id);
+    }, [id])
+
+  
+    if(loadingActive || loadingInactive ){
+        return <PageLoading adjustHeight={true} />
+    }      
 
   return (
   <>
@@ -222,14 +166,14 @@ const Referrers = () => {
             </div>
             <div className="data  text-text_color mt-3">
                 {
-                    dummy_deactivated.map((item,idx) => (
+                    inactiveReferrers?.map((item,idx) => (
                     <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid items-center grid-cols-8  gap-3 px-5 py-6 font-medium`}>
                     <div className="flex items-center gap-2 col-span-2 line-clamp-1">
                         <img className='w-8' src={stacey} alt="stacey" />
-                        <p className='col-span-2 line-clamp-1' >{item.name}</p>
+                        <p className='col-span-2 line-clamp-1' >{item.referrer_fullname}</p>
                     </div>
-                        <p className='col-span-2 line-clamp-1' >{item.email}</p>
-                        <p className='col-span-3 line-clamp-2 ' >{item.reason}</p>
+                        <p className='col-span-2 line-clamp-1' >{item.referrer_email}</p>
+                        <p className='col-span-3 line-clamp-2 ' >{item.deactivated_reason}</p>
                         <p onClick={toggleReactivate} className='font-semibold text-light_blue cursor-pointer' >Reactivate User</p>
                     </div>
                     )) 
@@ -248,17 +192,17 @@ const Referrers = () => {
             </div>
             <div className="data  text-text_color mt-3">
                 {
-                    dummy.map((item,idx) => (
+                    activeReferrers?.map((item,idx) => (
                     <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-8  gap-3 px-5 py-6 font-medium`}>
                     <div className="flex items-center gap-2 col-span-2 line-clamp-1">
                         <img className='w-8' src={stacey} alt="stacey" />
-                        <p className='line-clamp-1' >{item.name}</p>
+                        <p className='line-clamp-1' >{item.referrer_fullname}</p>
                     </div>
-                    <p className='col-span-2 line-clamp-1' >{item.email}</p>
-                    <p className='' >{item.phone}</p>
-                    <p className='' >{item.test}</p>
-                    <p className='' >{item.rebate}</p>
-                    <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p className='col-span-2 line-clamp-1' >{item.referrer_email}</p>
+                    <p className='' >{item.referrer_phone}</p>
+                    <p className='' >{item.total_referrals}</p>
+                    <p className='' >{ ConvertToNaira(item.total_rebate)}</p>
+                    <p onClick={()=> { setId(item.referrer_id); toggleViewDetails()}} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -266,7 +210,13 @@ const Referrers = () => {
             </div>
         </div>
         }
-       {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
+       {viewDetails ? 
+       <div className="fixed inset-0 bg-black/70 flex justify-end">
+        {
+            loadingReferrer ? 
+            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+                <PageLoading />
+            </div> :
             <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
                 <div className="flex items-center justify-between p-3 border-b">
                     <p className='font-semibold' >Referral Details</p>
@@ -280,14 +230,14 @@ const Referrers = () => {
                     <div className="flex gap-5 items-center">
                         <img className='w-40' src={stacey} alt="stacey" />
                         <div className="grid gap-2 text-sm">
-                            <p className=' font-semibold text-lg' >Stacey Jacobs</p>
+                            <p className=' font-semibold text-lg' >{details?.full_name}</p>
                             <div className="flex flex-col ">
                                 <p className='font-medium' >Email Address</p>
-                                <p className='line-clamp-1 underline text-light_blue' >earnestine_macejkovic89@yahoo.com</p>
+                                <p className='line-clamp-1 underline text-light_blue' >{details?.email}</p>
                             </div>
                             <div className="flex flex-col">
                                 <p className='font-medium' >Phone Number</p>
-                                <p className='line-clamp-1' >299-470-4508</p>
+                                <p className='line-clamp-1' >{details?.phone_number}</p>
                             </div>
                         </div>
                     </div>
@@ -365,34 +315,34 @@ const Referrers = () => {
                         <p className='text-base font-semibold'>Other Information</p>
                         <div className="flex gap-2 mt-3 text-sm">
                             <p className='font-medium' >Registration Date:</p>
-                            <p className='line-clamp-1' >July 12, 2024</p>
+                            <p className='line-clamp-1' >{ moment(details?.reg_date).format('ll')}</p>
                         </div>
                         <div className="flex gap-2 mt-3 text-sm">
                             <p className='font-medium' >Hospital Name:</p>
-                            <p className='line-clamp-1' >John Doe Hospital</p>
+                            <p className='line-clamp-1' >{details?.hospital_name}</p>
                         </div>
                         <div className="flex gap-2 mt-3 text-sm">
                             <p className='font-medium' >Location:</p>
-                            <p className='line-clamp-1' >N/A</p>
+                            <p className='line-clamp-1' >{details?.location}</p>
                         </div>
                         <div className="flex gap-2 mt-3 text-sm">
                             <p className='font-medium' >Professinal Title:</p>
-                            <p className='line-clamp-1' >Gynecologist</p>
+                            <p className='line-clamp-1' >{details?.professional_title}</p>
                         </div>
                     </div>
                     <div className="mt-10 px-5 text-base">
                         <p className='text-base font-semibold'>Payout Information</p>
                         <div className="flex gap-2 mt-3 text-sm">
                             <p className='font-medium' >Account Name:</p>
-                            <p className='line-clamp-1' >John Doe</p>
+                            <p className='line-clamp-1' >{details?.account_name ?? '-'}</p>
                         </div>
                         <div className="flex gap-2 mt-3 text-sm">
                             <p className='font-medium' >Account Number:</p>
-                            <p className='line-clamp-1' > 1234 - 5678 - 901</p>
+                            <p className='line-clamp-1' > {details?.account_number ?? '-'}</p>
                         </div>
                         <div className="flex gap-2 mt-3 text-sm">
                             <p className='font-medium' >Bank Name:</p>
-                            <p className='line-clamp-1' >Lifebridge Bank PLC</p>
+                            <p className='line-clamp-1' >{details?.bank_name ?? '-'}</p>
                         </div>
                         <button onClick={toggleDeactivate} className="flex text-red-700 font-semibold items-center gap-2 my-6 text-sm">
                             <BiTrash size={18} className='' /> <span>Deactivate Account</span>
@@ -401,6 +351,7 @@ const Referrers = () => {
                    
                 </div>
             </div>
+        }
         </div> : null}
         {
             reactivate ? 

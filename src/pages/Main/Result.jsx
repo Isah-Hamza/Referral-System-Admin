@@ -112,10 +112,6 @@ const Results = () => {
         if(id)   viewResult(id);
     }, [id])
 
-    useEffect(() => {
-        console.log(previewUrl)
-    }, [previewUrl])
-
 
     if(loadingAwaiting || loadingUploaded){
         return <PageLoading adjustHeight={true} />
