@@ -221,7 +221,7 @@ const Referrers = () => {
                     </div>
                         <p className='col-span-2 line-clamp-1' >{item.referrer_email}</p>
                         <p className='col-span-3 line-clamp-2 ' >{item.deactivated_reason}</p>
-                        <p onClick={toggleReactivate} className='font-semibold text-light_blue cursor-pointer' >Reactivate User</p>
+                        <p onClick={() => { setId(item.referrer_id); toggleReactivate()}} className='font-semibold text-light_blue cursor-pointer' >Reactivate User</p>
                     </div>
                     )) 
                 }
