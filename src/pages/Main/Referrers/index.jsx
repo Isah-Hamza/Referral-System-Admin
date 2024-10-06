@@ -22,6 +22,8 @@ const Referrers = () => {
     const [page,setPage] = useState(1);
     const [reason, setReason] = useState('');
     const [details, setDetails] = useState({});
+    const [referralHistory, setReferralHistory] = useState({});
+    const [rebateHistory, setRebateHistory] = useState({});
     const [id, setId] = useState(0);
     
     const query = useLocation().search.split('=')[1];
@@ -128,6 +130,18 @@ const Referrers = () => {
             }
         });
 
+    const { isLoading:loadingReferrerHistory, mutate:viewReferrerHistory }  = useMutation(Referrer.GetReferralHistory, {
+        onSuccess:res => {
+            setReferralHistory(res.data);
+            }
+        });
+
+    const { isLoading:loadingRebateHistory, mutate:viewRebateHistory }  = useMutation(Referrer.GetRebateHistory, {
+        onSuccess:res => {
+            setRebateHistory(res.data);
+            }
+        });
+
     const { isLoading:deactivating, mutate:deactivateReferrer }  = useMutation(Referrer.DeactivateReferrer, {
         onSuccess:res => {
             successToast(res.data.message);
@@ -160,7 +174,11 @@ const Referrers = () => {
 
     
     useEffect(() => {
-        if(id)   viewReferrer(id);
+        if(id) {
+             viewReferrer(id);
+             viewRebateHistory(id);
+             viewReferrerHistory(id);
+        } 
     }, [id])
 
   
@@ -242,7 +260,7 @@ const Referrers = () => {
        {viewDetails ? 
        <div className="fixed inset-0 bg-black/70 flex justify-end">
         {
-            loadingReferrer ? 
+            (loadingReferrer || loadingRebateHistory || loadingReferrerHistory) ? 
             <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
                 <PageLoading />
             </div> :
@@ -304,12 +322,12 @@ const Referrers = () => {
                     </div>
                     <div className="data  text-text_color mt-3 mb-10">
                         {
-                            dummyDetails.map((item,idx) => (
+                            rebateHistory?.referrals?.map((item,idx) => (
                             <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-6  gap-3 px-5 py-6 font-medium`}>
                             <p className='line-clamp-1' >{item.date}</p>
-                            <p className='line-clamp-1' >{item.refer}</p>
-                            <p className='' >{item.test}</p>
-                            <p className='' >{item.amount}</p>
+                            <p className='line-clamp-1' >{item.patient_name}</p>
+                            <p className='' >{item.completed_test}</p>
+                            <p className='' >{ConvertToNaira(item.rebate_earned)}</p>
                             <p className='' >{item.status}</p>
                             <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
                             </div>
@@ -327,10 +345,10 @@ const Referrers = () => {
                     </div>
                     <div className="data  text-text_color mt-3 mb-10">
                         {
-                            dummyDetails2.map((item,idx) => (
+                            referralHistory?.referrals?.map((item,idx) => (
                             <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-5 gap-3 px-5 py-6 font-medium`}>
-                            <p className='line-clamp-1 col-span-2' >{item.refer}</p>
-                            <p className='line-clamp-1' >{item.recurring}</p>
+                            <p className='line-clamp-1 col-span-2' >{item.patient_name}</p>
+                            <p className='line-clamp-1' >{item.recur}</p>
                             <p className='' >{item.completed_tests}</p>
                             <p onClick={null} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
                             </div>
