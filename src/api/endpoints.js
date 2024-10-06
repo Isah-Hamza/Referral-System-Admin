@@ -33,6 +33,8 @@ const endpoints = {
     GET_REFERRER_DETAILS:'/admin/referrer-details',
     DEACTIVATE_REFERRER:'/admin/deactivate-referrer',
     ACTIVATE_REFERRER:'/admin/activate-referrer',
+    GET_REBATE_HISTORY:'/admin/rebate-history',
+    GET_REFERRAL_HISTORY:'/admin/referral-history',
   },
   appointments:{
     UPCOMING_APPOINTMENTS:'/admin/appointments/upcoming',

@@ -13,9 +13,10 @@ import reactivateIcon from '../../../assets/images/reactivate.svg'
 import deactivateIcon from '../../../assets/images/deactivate_user.svg'
 import Referrer from '../../../services/Referrer'
 import { useMutation, useQuery } from 'react-query'
-import { ConvertToNaira } from '../../../utils/Helper'
+import { ConvertToNaira, errorToast, successToast } from '../../../utils/Helper'
 import PageLoading from '../../../Loader/PageLoading'
 import moment from 'moment'
+import LoadingModal from '../../../Loader/LoadingModal'
 
 const Referrers = () => {
     const [page,setPage] = useState(1);
@@ -125,6 +126,34 @@ const Referrers = () => {
         onSuccess:res => {
             setDetails(res.data);
             }
+        });
+
+    const { isLoading:deactivating, mutate:deactivateReferrer }  = useMutation(Referrer.DeactivateReferrer, {
+        onSuccess:res => {
+            successToast(res.data.message);
+            toggleDeactivate();
+            toggleViewDetails();
+            refetchActive();
+            refetchInactive();
+            setReason('');
+            setActiveTab(1);
+        },
+        onError:e => {
+            errorToast(e.target.value);
+        }
+        });
+
+    const { isLoading:reactivating, mutate:reactivateReferrer }  = useMutation(Referrer.ActivateReferrer, {
+        onSuccess:res => {
+            successToast(res.data.message);
+            toggleReactivate();
+            refetchActive();
+            refetchInactive();
+            setActiveTab(0);
+            },
+        onError:e => {
+            errorToast(e.target.value);
+        }
         });
 
     
@@ -362,28 +391,31 @@ const Referrers = () => {
                    <p className='text-sm' >Are you sure you want to reactivate this user?</p>
                    <div className="mt-10 flex items-center gap-5 ">
                    <Button onClick={toggleReactivate} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                   <Button onClick={toggleReactivate} className={'!px-5 !bg-light_blue'} title={'Yes Proceed'} />
+                   <Button onClick={()=>reactivateReferrer({doctor_id:id})} className={'!px-5 !bg-light_blue'} title={'Yes Proceed'} />
                    </div>
                  </div>
                </div> : null
         }
         {
             deactivate ? 
-               <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+               <form onSubmit={(e)=>{e.preventDefault();deactivateReferrer({ doctor_id:id, reason })}} className='bg-black/50 fixed inset-0 grid place-content-center' >
                  <div className="bg-white w-[350px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                    <img className='w-12 m-auto' src={deactivateIcon} alt="delete" />
                    <p className='text-base font-semibold' >Deactivate User</p>
                    <div className='text-left mt-7'>
-                     <Input label={'Deactivation reason'} placeholder={'Enter reason..'} />
+                     <Input value={reason} onChange={e=>setReason(e.target.value)} label={'Deactivation reason'} placeholder={'Enter reason..'} />
                    </div>
                    <div className="mt-10 flex items-center gap-5 ">
-                   <Button onClick={toggleDeactivate} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                   <Button onClick={toggleDeactivate} className={'!px-5 bg-red-600'} title={'Yes Proceed'} />
+                   <Button type='button' onClick={toggleDeactivate} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                   <Button type='submit' disabled={!reason} className={'!px-5 bg-red-600'} title={'Yes Proceed'} />
                    </div>
                  </div>
-               </div> : null
+               </form> : null
         }
     </div>
+    {
+        (deactivating || reactivating) ? <LoadingModal /> : null
+    }
   </>
   )
 }

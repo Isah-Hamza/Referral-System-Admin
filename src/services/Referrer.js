@@ -24,6 +24,20 @@ const GetReferrerDetails = (doctor_id) => {
     .catch((error) => Promise.reject(error));
 }
 
+const GetRebateHistory = (doctor_id) => {
+  return axiosClient()
+    .get(`${endpoints.referrers.GET_REBATE_HISTORY}?doctor_id=${doctor_id}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const GetReferralHistory = (doctor_id) => {
+  return axiosClient()
+    .get(`${endpoints.referrers.GET_REFERRAL_HISTORY}?doctor_id=${doctor_id}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const ActivateReferrer = (data) => {
   return axiosClient()
     .put(`${endpoints.referrers.ACTIVATE_REFERRER}`,data)
@@ -40,6 +54,7 @@ const DeactivateReferrer = (data) => {
 
 
 export default {
-  GetActiveReferrers, GetInactiveReferrers, GetReferrerDetails, ActivateReferrer, DeactivateReferrer
+  GetActiveReferrers, GetInactiveReferrers, GetReferrerDetails, ActivateReferrer, DeactivateReferrer,
+  GetRebateHistory, GetReferralHistory
 };
 
