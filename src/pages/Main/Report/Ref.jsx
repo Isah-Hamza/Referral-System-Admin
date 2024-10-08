@@ -89,38 +89,38 @@ const Ref = () => {
       </div>
       <div className="mt-7 flex gap-5">
         <div className="w-3/5">
-        <div className="w-full bg-white h-full p-5 rounded-lg border">
-                <div className="flex items-center justify-between pb-3 border-b">
-                      <p className='font-semibold' >Comparative Analysis</p>
-                </div>
-                <div className="mt-3"> 
-                      <p className='text-sm' >Comparison of patient referrals, booked appointments, and payments made by referrers. </p> 
-                    <div className="">
-                      <div className="mb-2 flex justify-center items-center text-center gap-10">
-                          <div className="">
-                              <div className="text-sm flex items-center gap-1">
-                                  <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
-                                  <span>Referral</span>
-                              </div>
-                          </div>
-                          <div className="">
-                              <div className="text-sm flex items-center gap-1">
-                                  <div className="w-2 h-2 rounded-full bg-light_blue"></div>
-                                  <span>Appointment</span>
-                              </div>
-                          </div>
-                          <div className="">
-                              <div className="text-sm flex items-center gap-1">
-                                  <div className="w-2 h-2 rounded-full bg-slate-400"></div>
-                                  <span>Payment Mode</span>
-                              </div>
-                          </div>
-                      </div> 
-                      <div className="-ml-7 w-[110%] h-[300px]">
-                        <MultipleBarChart />
-                      </div>
+            <div className="w-full bg-white h-full p-5 rounded-lg border">
+                    <div className="flex items-center justify-between pb-3 border-b">
+                        <p className='font-semibold' >Comparative Analysis</p>
                     </div>
-                </div>
+                    <div className="mt-3"> 
+                        <p className='text-sm' >Comparison of patient referrals, booked appointments, and payments made by referrers. </p> 
+                        <div className="">
+                        <div className="mb-2 flex justify-center items-center text-center gap-10">
+                            <div className="">
+                                <div className="text-sm flex items-center gap-1">
+                                    <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
+                                    <span>Referral</span>
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className="text-sm flex items-center gap-1">
+                                    <div className="w-2 h-2 rounded-full bg-light_blue"></div>
+                                    <span>Appointment</span>
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className="text-sm flex items-center gap-1">
+                                    <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                                    <span>Payment Mode</span>
+                                </div>
+                            </div>
+                        </div> 
+                        <div className="-ml-7 w-[110%] h-[300px]">
+                            <MultipleBarChart />
+                        </div>
+                        </div>
+                    </div>
             </div> 
         </div>
         <div className="w-2/5">
@@ -129,31 +129,31 @@ const Ref = () => {
                     <p className='font-semibold' >Referral Stats</p>
               </div>
               <div className="mt-3"> 
-                    <p className='text-sm' >Analysis of pending & completed referrals. </p> 
-                    <div className="flex flex-col mt-10">
-                            <div className="justify-center items-center text-center -ml-10 h-[250px]">
-                                <PieChart
-                                    completed = {40} 
-                                    pending= { 50} 
-                                    />
+                <p className='text-sm' >Analysis of pending & completed referrals. </p> 
+                <div className="flex flex-col mt-10">
+                    <div className="justify-center items-center text-center -ml-10 h-[250px]">
+                        <PieChart
+                            completed = {40} 
+                            pending= { 50} 
+                            />
+                    </div>
+                    <div className="flex justify-center items-center text-center gap-10">
+                        <div className="">
+                            <div className="text-sm flex items-center gap-1">
+                                <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
+                                <span>Completed</span>
                             </div>
-                            <div className="flex justify-center items-center text-center gap-10">
-                                <div className="">
-                                    <div className="text-sm flex items-center gap-1">
-                                        <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
-                                        <span>Completed</span>
-                                    </div>
-                                    <p className='pl-'>{ 40}</p>
-                                </div>
-                                <div className="">
-                                    <div className="text-sm flex items-center gap-1">
-                                        <div className="w-2 h-2 rounded-full bg-light_blue"></div>
-                                        <span>Pending</span>
-                                    </div>
-                                    <p className='pl-'>{44}</p>
-                                </div>
-                            </div> 
+                            <p className='pl-'>{ 40}</p>
                         </div>
+                        <div className="">
+                            <div className="text-sm flex items-center gap-1">
+                                <div className="w-2 h-2 rounded-full bg-light_blue"></div>
+                                <span>Pending</span>
+                            </div>
+                            <p className='pl-'>{44}</p>
+                        </div>
+                    </div> 
+                </div>
               </div>
           </div>
         </div>
