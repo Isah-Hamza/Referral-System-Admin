@@ -18,6 +18,7 @@ import Profile from './pages/Main/Profile';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Report from './pages/Main/Report';
 
 export const queryClient = new QueryClient();
 function App() {
@@ -58,6 +59,10 @@ function App() {
     {
       path:'/settings',
       Component:Profile,
+    },
+    {
+      path:'/report',
+      Component:Report,
     },
   ]
 

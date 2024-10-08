@@ -117,7 +117,7 @@ const MainLayout = () => {
         },
         {
             title:'Reports',
-            link:'#',
+            link:'report',
             info:{
                 header:'Reports',
                 sub:'View comprehensive reports',
@@ -166,6 +166,7 @@ const MainLayout = () => {
     if(active_item == 'tests') setActiveTab(3);
     if(active_item == 'referrers') setActiveTab(5);
     if(active_item == 'rebates') setActiveTab(6);
+    if(active_item == 'report') setActiveTab(7);
     if(active_item == 'settings') setActiveTab(8);
 
     // setActiveLink(active_item);
