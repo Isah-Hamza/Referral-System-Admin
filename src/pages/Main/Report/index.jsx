@@ -6,6 +6,7 @@ import MultipleBarChart from '../../../components/Chart/MultipleBarCharts';
 import PieChart from '../../../components/Chart/PieChart';
 import Ref from './Ref';
 import Appoint from './Appoint';
+import Reb from './Reb';
 
 const Report = () => {
 
@@ -31,7 +32,9 @@ const Report = () => {
       </div>
       {
         activeTab == 0 ? <Ref /> :
-        activeTab == 1 ? <Appoint /> : null
+        activeTab == 1 ? <Appoint /> : 
+        activeTab == 2 ? <Reb /> :
+        null
       }
       
     </div>
