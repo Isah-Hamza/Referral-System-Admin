@@ -7,6 +7,7 @@ import PieChart from '../../../components/Chart/PieChart';
 import Ref from './Ref';
 import Appoint from './Appoint';
 import Reb from './Reb';
+import TestAndResult from './TestAndResult';
 
 const Report = () => {
 
@@ -34,6 +35,7 @@ const Report = () => {
         activeTab == 0 ? <Ref /> :
         activeTab == 1 ? <Appoint /> : 
         activeTab == 2 ? <Reb /> :
+        activeTab == 3 ? <TestAndResult /> :
         null
       }
       
