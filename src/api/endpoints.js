@@ -72,25 +72,12 @@ const endpoints = {
     REBATE_BY_TESTS:'/admin/rebate-by-test', 
     REBATE_BY_PAYOUTS:'/admin/rebate-by-payout', 
   },
-  // payment:{
-  //   ALL_TRANSACTIONS:'all-transactions'
-  // },
-  // profile:{
-  //   GET_PROFILE:'doctor/profile-details',
-  //   UPDATE_PASSWORD:'doctor/password-update',
-  //   UPDATE_ACCOUNT:'doctor/account-update',
-  //   UPDATE_PROFILE:'doctor/profile-update',
-  // },
-  // patient:{
-  //   MANUAL_BOOKIGN:'patient/manual-booking',
-  //   ALl_DOCTORS:'patient/all-doctors',
-  //   TIME_SLOTS:'patient/appointments/available-slots',
-  //   BOOK_APPOINTMENT:'patient/book-appointment',
-  //   INITIATE_PAYMENT:'payments/initialize',
-  //   PATIENT_DETAILS:'patient/details',
-  //   PATIENT_ALL_DETAILS:'patient/all-details',
-  //   CONFIRM_DETAILS:'patient/confirm-details',
-  // }
+ settings:{
+   ADMIN_PROFILE:'/admin/profile',
+   UPDATE_PROFILE:'/admin/profile-update',
+   UPDATE_PASSWORD:'/admin/reset-password',
+   GET_DEPARTMENTS:'/department/all',
+ }
 };
 
 export default endpoints;
