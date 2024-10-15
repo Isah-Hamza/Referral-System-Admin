@@ -19,6 +19,7 @@ import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Report from './pages/Main/Report';
+import UserLog from './pages/Main/UserLog';
 
 export const queryClient = new QueryClient();
 function App() {
@@ -59,6 +60,10 @@ function App() {
     {
       path:'/settings',
       Component:Profile,
+    },
+    {
+      path:'/user-log',
+      Component:UserLog,
     },
     {
       path:'/report',

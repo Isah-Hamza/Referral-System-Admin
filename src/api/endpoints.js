@@ -77,6 +77,9 @@ const endpoints = {
    UPDATE_PROFILE:'/admin/profile-update',
    UPDATE_PASSWORD:'/admin/reset-password',
    GET_DEPARTMENTS:'/department/all',
+ },
+ log:{
+   USER_LOG:'/admin/user-logs', 
  }
 };
 

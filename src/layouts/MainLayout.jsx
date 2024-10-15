@@ -6,7 +6,7 @@ import avatar from '../assets/images/avatar.svg';
 import admin from '../assets/images/admin.png';
 import { BiCalendarEvent, BiCaretDown, BiUser } from 'react-icons/bi';
 import { LuSettings2, LuSheet, LuTestTube } from 'react-icons/lu';
-import { BsBellFill, BsCurrencyDollar } from 'react-icons/bs';
+import { BsActivity, BsBellFill, BsCurrencyDollar } from 'react-icons/bs';
 import { PiPlusBold } from 'react-icons/pi';
 import { FcStatistics } from 'react-icons/fc';
 
@@ -126,6 +126,16 @@ const MainLayout = () => {
             icon:FcStatistics,
         },
         {
+            title:'User Logs',
+            link:'user-log',
+            info:{
+                header:'User Log',
+                sub:'View comprehensive reports',
+            },
+            deparments:['Administration'],
+            icon:BsActivity,
+        },
+        {
             title:'Settings',
             link:'settings',
             icon:LuSettings2,
@@ -167,7 +177,8 @@ const MainLayout = () => {
     if(active_item == 'referrers') setActiveTab(5);
     if(active_item == 'rebates') setActiveTab(6);
     if(active_item == 'report') setActiveTab(7);
-    if(active_item == 'settings') setActiveTab(8);
+    if(active_item == 'user-log') setActiveTab(8);
+    if(active_item == 'settings') setActiveTab(9);
 
     // setActiveLink(active_item);
     
