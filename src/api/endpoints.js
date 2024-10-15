@@ -80,6 +80,9 @@ const endpoints = {
  },
  report:{
    REFERRAL_STATS:'/report/referral',
+   COMPARATIVE_ANALYSIS:'/report/comparative-analysis',
+   APPOINTMENT_STATS: '/report/appointment',
+   APPOINTMENT_TRENDS: '/report/appointment-trends',
  },
  log:{
    USER_LOG:'/admin/user-logs', 

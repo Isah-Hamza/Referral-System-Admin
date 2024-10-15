@@ -10,8 +10,15 @@ const RefStats = () => {
     .catch((error) => Promise.reject(error));
 }
 
+const ComparativeAnalysis = () => {
+  return axiosClient()
+    .get(`${endpoints.report.COMPARATIVE_ANALYSIS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 
 export default {
-  RefStats,
+  RefStats, ComparativeAnalysis
 };
 

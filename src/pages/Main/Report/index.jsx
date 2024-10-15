@@ -14,7 +14,7 @@ import { useQuery } from 'react-query';
 const Report = () => {
 
     const [activeTab, setActiveTab] = useState(0);
-    const [refStat, setRefStat] = useState(null);
+    const [refStat, setRefStat] = useState();
     const durations = [
         {
             label:'This month',
