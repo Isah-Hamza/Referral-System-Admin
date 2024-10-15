@@ -24,11 +24,17 @@ const data = [
   
 ];
 
-const cardinal = curveCardinal.tension(0.2);
 
-export default class SampleAreaChart extends PureComponent {
+export default function SampleAreaChart({payload = []}) {
+  // const data = payload.map(item => {
+  //   if(item.department_name == 'Laboratory Services'){
+  //     return {...item, department_name:"Lab"};
+  //   }
+  //   return item
+  // });
 
-  render() {
+  const data = [payload[1], payload[0], payload[2]];
+
     return (
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
@@ -43,13 +49,11 @@ export default class SampleAreaChart extends PureComponent {
           }}
         >
           {/* <CartesianGrid strokeDasharray="3 3" /> */}
-          <XAxis dataKey="name" />
-          <YAxis />
+          <XAxis fontSize={14} fontWeight={600} dataKey="department_name" />
+          <YAxis fontSize={12} fontWeight={600} axisLine={false} />
           <Tooltip />
-          <Area type="monotone" dataKey="uv" stroke="red" fill="#ff0000" fillOpacity={0.05} />
-          {/* <Area type={cardinal} dataKey="uv" stroke="red" fill="#ff0000" fillOpacity={0.05} /> */}
+          <Area type="monotone" fontSize={12} dataKey="missed_appointments" stroke="red" fill="#ff0000" fillOpacity={0.05} />
         </AreaChart>
       </ResponsiveContainer>
     );
   }
-}

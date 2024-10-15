@@ -1,9 +1,12 @@
-import React, { PureComponent, useState } from 'react';
+import React, { useState } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
 
-
-const COLORS = [ '#00C49F', '#0088FE','#FFBB28', '#FF8042'];
-
+const colors = [
+  '#b9af7b', '#093a61', '#5a0128', '#e19f93', '#31fa43', 
+  '#0de11c', '#ec40fd', '#d3fbdf', '#43b97a', '#45323e', 
+  '#27c537', '#421f0f', '#209d2e', '#904533', '#01f8b2', 
+  '#6a61c8', '#2c30c5', '#35a04f', '#016f21', '#e0e2ee'
+]
 
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
@@ -51,18 +54,10 @@ const renderActiveShape = (props) => {
   );
 };
 
-export default function NoShowPieChart({ pending, completed }){
+export default function NoShowPieChart({ payload }){
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const data = [
-    { name: 'Completed', value: completed },
-    { name: 'Pending', value: pending },
-    { name: 'Completed', value: completed },
-    { name: 'Pending', value: pending },
-    { name: 'Completed', value: completed },
-    { name: 'Pending', value: pending },
-  ];
 
   const onPieEnter = (_, index) => {
     setActiveIndex(index);
@@ -70,21 +65,22 @@ export default function NoShowPieChart({ pending, completed }){
 
     return (
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={200} height={200}>
+        <PieChart width={200} height={200} >
           <Pie
             activeIndex={activeIndex}
             // activeShape={renderActiveShape}
-            data={data}
+            data={payload}
             cx="50%"
             cy="50%"
             innerRadius={30}
             outerRadius={100}
             fill={"#8884d8"}
-            dataKey="value"
+            dataKey="count"
             onMouseEnter={onPieEnter}
+            label={true}
           >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            {payload?.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={colors[index]} values={entry?.count} />
             ))}
             </Pie>
         </PieChart>

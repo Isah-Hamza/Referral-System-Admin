@@ -60,7 +60,6 @@ const endpoints = {
     UPDATE_TEST:'/medical-test/update',
     DISABLE_TEST:'/medical-test/disable',
     ENABLE_TEST:'/medical-test/enable',
-
   },
   result:{
     AWAITING_RESULTS:'/admin/result/awaiting',
@@ -83,6 +82,8 @@ const endpoints = {
    COMPARATIVE_ANALYSIS:'/report/comparative-analysis',
    APPOINTMENT_STATS: '/report/appointment',
    APPOINTMENT_TRENDS: '/report/appointment-trends',
+   NO_SHOW_RATE: '/report/no-show-rate',
+   NO_SHOW_ANALYSIS: '/report/no-show-analysis',
  },
  log:{
    USER_LOG:'/admin/user-logs', 

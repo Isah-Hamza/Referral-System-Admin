@@ -1,12 +1,38 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { MdArrowForward } from 'react-icons/md'
 import MultipleBarChart from '../../../components/Chart/MultipleBarCharts'
 import MultipleBarChartWeekly from '../../../components/Chart/MultipleBarChartsWeekly'
 import SampleAreaChart from '../../../components/Chart/AreaChart'
 import PieChart from '../../../components/Chart/PieChart'
 import NoShowPieChart from '../../../components/Chart/NoShowPieChart'
+import Report from '../../../services/Report'
+import { useQuery } from 'react-query'
 
 const Appoint = ({appointmentStat,appointmentTrend}) => {
+    const [analysis, setAnaylysis] = useState();
+    const [rate, setRate] = useState();
+    const done = useRef(false);
+
+    const colors = [
+        '#b9af7b', '#093a61', '#5a0128', '#e19f93', '#31fa43', 
+        '#0de11c', '#ec40fd', '#d3fbdf', '#43b97a', '#45323e', 
+        '#27c537', '#421f0f', '#209d2e', '#904533', '#01f8b2', 
+        '#6a61c8', '#2c30c5', '#35a04f', '#016f21', '#e0e2ee'
+      ]
+    
+    const { isLoading:loadingRate, isRefetching:refetchingRate, refetch:refetchRate}  = useQuery(['no-show-rate'], Report.NoShowRate, {
+        onSuccess:res => {
+            setRate(res.data.data);
+          }
+    });
+    
+    const { isLoading:loadingAnalysis, isRefetching:refetchingAnalysis, refetch:refetchAnalysis}  = useQuery(['no-show-analysis'], Report.NoShowAnalysis, {
+        onSuccess:res => {
+            setAnaylysis(res.data.data);
+          }
+    });
+
+
   return (
     <div className='mt-7'>
       <div className="grid grid-cols-11 gap-5">
@@ -89,7 +115,7 @@ const Appoint = ({appointmentStat,appointmentTrend}) => {
             <div className="mt-3"> 
                 <p className='text-sm' >Percentage of missed appointments compared to the total appointments. </p> 
                 <div className="w-full h-[300px] mt-5">
-                  <SampleAreaChart />
+                  <SampleAreaChart payload={rate} />
                 </div>
             </div>
           </div>
@@ -98,51 +124,26 @@ const Appoint = ({appointmentStat,appointmentTrend}) => {
               <div className="flex items-center justify-between pb-3 border-b">
                     <p className='font-semibold' >No-Show Analysis</p>
               </div>
-              <div className="mt-3"> 
+              <div className="mt-3 "> 
                 <p className='text-sm' >Analysis of no-show patterns and potential causes. </p> 
                 <div className="flex gap-7 mt-10">
                     <div className="justify-center items-center text-center min-w-[200px] h-[250px]">
-                        <NoShowPieChart
-                            completed = {40} 
-                            pending= { 50} 
+                        <NoShowPieChart 
+                            payload = {analysis}
                             />
                     </div>
-                    <div className="flex flex-col  gap-5">
-                        <div className="">
-                            <div className="text-sm flex items-center gap-1">
-                                <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
-                                <span>Emergency (Family <br /> and Personal)</span>
-                            </div>
-                            <p className='pl-3'>{ 40}</p>
-                        </div>
-                        <div className="">
-                            <div className="text-sm flex items-center gap-1">
-                                <div className="w-2 h-2 rounded-full bg-light_blue"></div>
-                                <span>Double Booking </span>
-                            </div>
-                            <p className='pl-3'>{24}</p>
-                        </div>
-                        <div className="">
-                            <div className="text-sm flex items-center gap-1">
-                                <div className="w-2 h-2 rounded-full bg-light_blue"></div>
-                                <span>Work Conflict </span>
-                            </div>
-                            <p className='pl-3'>{24}</p>
-                        </div>
-                        <div className="">
-                            <div className="text-sm flex items-center gap-1">
-                                <div className="w-2 h-2 rounded-full bg-light_blue"></div>
-                                <span>Patient Forgot </span>
-                            </div>
-                            <p className='pl-3'>{19}</p>
-                        </div>
-                        <div className="">
-                            <div className="text-sm flex items-center gap-1">
-                                <div className="w-2 h-2 rounded-full bg-light_blue"></div>
-                                <span>Long Wait Times </span>
-                            </div>
-                            <p className='pl-3'>{52}</p>
-                        </div>
+                    <div className="flex flex-col max-h-[270px] overflow-y-auto gap-5">
+                        {
+                            analysis?.map((item,idx) => (
+                                <div key={idx} className="">
+                                    <div className="text-sm flex items-center gap-1">
+                                        <div style={{ backgroundColor:colors[idx]}} className="w-2 h-2 rounded-full"></div>
+                                        <span>{item?.reason_name}</span>
+                                    </div>
+                                    <p className='pl-3'>{ item?.count}</p>
+                                </div>
+                            ))
+                        }
                     </div> 
                 </div>
               </div>

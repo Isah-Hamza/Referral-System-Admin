@@ -31,8 +31,22 @@ const ComparativeAnalysis = () => {
     .catch((error) => Promise.reject(error));
 }
 
+const NoShowAnalysis = () => {
+  return axiosClient()
+    .get(`${endpoints.report.NO_SHOW_ANALYSIS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const NoShowRate = () => {
+  return axiosClient()
+    .get(`${endpoints.report.NO_SHOW_RATE}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
 
 export default {
-  RefStats, ComparativeAnalysis, AppointmentStats, AppointmentTrends
+  RefStats, ComparativeAnalysis, AppointmentStats, AppointmentTrends,
+  NoShowRate, NoShowAnalysis,
 };
 
