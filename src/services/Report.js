@@ -10,6 +10,20 @@ const RefStats = () => {
     .catch((error) => Promise.reject(error));
 }
 
+const AppointmentStats = () => {
+  return axiosClient()
+    .get(`${endpoints.report.APPOINTMENT_STATS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const AppointmentTrends = () => {
+  return axiosClient()
+    .get(`${endpoints.report.APPOINTMENT_TRENDS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const ComparativeAnalysis = () => {
   return axiosClient()
     .get(`${endpoints.report.COMPARATIVE_ANALYSIS}`)
@@ -19,6 +33,6 @@ const ComparativeAnalysis = () => {
 
 
 export default {
-  RefStats, ComparativeAnalysis
+  RefStats, ComparativeAnalysis, AppointmentStats, AppointmentTrends
 };
 

@@ -15,6 +15,9 @@ const Report = () => {
 
     const [activeTab, setActiveTab] = useState(0);
     const [refStat, setRefStat] = useState();
+    const [appointmentStat, setAppointmentStat] = useState();
+    const [appointmentTrend, setAppointmentTrend] = useState();
+
     const durations = [
         {
             label:'This month',
@@ -27,6 +30,18 @@ const Report = () => {
     const { isLoading:loadingRef, isRefetching:refetchingRef, refetch:refetchRef}  = useQuery(['ref-stats'], ReportService.RefStats, {
       onSuccess:res => {
           setRefStat(res.data);
+        }
+  });
+
+    const { isLoading:loadingAppointmentStats, isRefetching:refetchingAppointmentStats, refetch:refetchAppointemntStats}  = useQuery(['appointment-stats'], ReportService.AppointmentStats, {
+      onSuccess:res => {
+          setAppointmentStat(res.data.appointments);
+        }
+  });
+
+    const { isLoading:loadingAppointmentTrend, isRefetching:refetchingAppointmentTrend, refetch:refetchAppointemntTrend}  = useQuery(['appointment-trend'], ReportService.AppointmentTrends, {
+      onSuccess:res => {
+          setAppointmentTrend(res.data.data);
         }
   });
 
@@ -44,7 +59,7 @@ const Report = () => {
       </div>
       {
         activeTab == 0 ? <Ref {...{refStat,}} /> :
-        activeTab == 1 ? <Appoint /> : 
+        activeTab == 1 ? <Appoint {...{appointmentStat, appointmentTrend}} /> : 
         activeTab == 2 ? <Reb /> :
         activeTab == 3 ? <TestAndResult /> :
         null

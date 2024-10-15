@@ -6,14 +6,14 @@ import SampleAreaChart from '../../../components/Chart/AreaChart'
 import PieChart from '../../../components/Chart/PieChart'
 import NoShowPieChart from '../../../components/Chart/NoShowPieChart'
 
-const Appoint = () => {
+const Appoint = ({appointmentStat,appointmentTrend}) => {
   return (
     <div className='mt-7'>
       <div className="grid grid-cols-11 gap-5">
         <div className="bg-white rounded-lg px-4 p-5 border col-span-5">
               <p>Scheduled</p>
               <div className="flex items-center gap-2">
-                <p className='font-semibold text-xl my-3'>239</p>
+                <p className='font-semibold text-xl my-3'>{appointmentStat?.scheduled}</p>
                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
               </div>
               <div className="flex items-center justify-between gap-5 mt-5">
@@ -27,7 +27,7 @@ const Appoint = () => {
         <div className="bg-white rounded-lg px-4 p-5 border col-span-3">
               <p>Completed</p>
               <div className="flex items-center gap-2">
-                <p className='font-semibold text-xl my-3'>239</p>
+                <p className='font-semibold text-xl my-3'>{appointmentStat?.completed}</p>
                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
               </div>
               <div className="flex items-center justify-between gap-5 mt-5">
@@ -37,7 +37,7 @@ const Appoint = () => {
         <div className="bg-white rounded-lg px-4 p-5 border col-span-3">
               <p>Canceled</p>
               <div className="flex items-center gap-2">
-                <p className='font-semibold text-xl my-3'>239</p>
+                <p className='font-semibold text-xl my-3'>{appointmentStat?.canceled}</p>
                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
               </div>
               <div className="flex items-center justify-between gap-5 mt-5">
@@ -74,7 +74,7 @@ const Appoint = () => {
                   </div>
               </div> 
               <div className="-ml-5 w-[100%] h-[300px]">
-                  <MultipleBarChartWeekly />
+                  <MultipleBarChartWeekly payload ={appointmentTrend}/>
               </div>
               </div>
           </div>
