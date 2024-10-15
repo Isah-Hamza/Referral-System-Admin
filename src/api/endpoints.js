@@ -78,6 +78,9 @@ const endpoints = {
    UPDATE_PASSWORD:'/admin/reset-password',
    GET_DEPARTMENTS:'/department/all',
  },
+ report:{
+   REFERRAL_STATS:'/report/referral',
+ },
  log:{
    USER_LOG:'/admin/user-logs', 
  }

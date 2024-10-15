@@ -4,7 +4,7 @@ import MultipleBarChart from '../../../components/Chart/MultipleBarCharts'
 import PieChart  from '../../../components/Chart/PieChart'
 import { MdArrowForward } from 'react-icons/md'
 
-const Ref = () => {
+const Ref = ({refStat}) => {
   return (
     <div>
       <div className="mt-7 flex gap-5">
@@ -12,7 +12,7 @@ const Ref = () => {
           <div className="bg-white rounded-lg px-4 p-5 border col-span-2">
               <p>Total Referrals</p>
               <div className="flex items-center gap-2">
-                <p className='font-semibold text-xl my-3'>239</p>
+                <p className='font-semibold text-xl my-3'>{refStat.total_referrals}</p>
                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
               </div>
               <div className="flex items-center justify-between gap-5 mt-5">
@@ -27,7 +27,7 @@ const Ref = () => {
             <div className="bg-white rounded-lg px-4 p-5 border">
                 <p>Total Referrers</p>
                 <div className="flex items-center gap-2">
-                  <p className='font-semibold text-xl my-3'>239</p>
+                  <p className='font-semibold text-xl my-3'>{refStat.total_referrers}</p>
                   <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
                 </div>
                 <div className="flex items-center justify-between gap-5 mt-5">
@@ -38,7 +38,7 @@ const Ref = () => {
             <div className="bg-white rounded-lg px-4 p-5 border">
                 <p>Active Referrers</p>
                 <div className="flex items-center gap-2">
-                  <p className='font-semibold text-xl my-3'>239</p>
+                  <p className='font-semibold text-xl my-3'>{refStat.active_referrers}</p>
                   <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
                 </div>
                 <div className="flex items-center justify-between gap-5 mt-5">
