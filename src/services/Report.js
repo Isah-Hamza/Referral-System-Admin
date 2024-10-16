@@ -45,8 +45,29 @@ const NoShowRate = () => {
     .catch((error) => Promise.reject(error));
 }
 
+const RebateStats = () => {
+  return axiosClient()
+    .get(`${endpoints.report.REBATE_STATS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const RebateTopEarners = () => {
+  return axiosClient()
+    .get(`${endpoints.report.REBATE_TOP_TEN_EARNERS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const RebateEarningChart = () => {
+  return axiosClient()
+    .get(`${endpoints.report.REBATE_EARNINGS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 export default {
   RefStats, ComparativeAnalysis, AppointmentStats, AppointmentTrends,
-  NoShowRate, NoShowAnalysis,
+  NoShowRate, NoShowAnalysis, RebateStats, RebateTopEarners, RebateEarningChart,
 };
 

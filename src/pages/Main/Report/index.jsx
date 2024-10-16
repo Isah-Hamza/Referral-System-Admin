@@ -15,6 +15,7 @@ const Report = () => {
 
     const [activeTab, setActiveTab] = useState(0);
     const [refStat, setRefStat] = useState();
+    const [rebateStats, setRebateStats] = useState();
     const [appointmentStat, setAppointmentStat] = useState();
     const [appointmentTrend, setAppointmentTrend] = useState();
 
@@ -45,6 +46,12 @@ const Report = () => {
         }
   });
 
+    const { isLoading:loadingRebateStats, isRefetching:refetchingRebateStats, refetch:refetchRebateStats}  = useQuery(['rebate-stats'], ReportService.RebateStats, {
+      onSuccess:res => {
+          setRebateStats(res.data);
+        }
+  });
+
 
 
   return (
@@ -60,7 +67,7 @@ const Report = () => {
       {
         activeTab == 0 ? <Ref {...{refStat,}} /> :
         activeTab == 1 ? <Appoint {...{appointmentStat, appointmentTrend}} /> : 
-        activeTab == 2 ? <Reb /> :
+        activeTab == 2 ? <Reb {...{rebateStats}}/> :
         activeTab == 3 ? <TestAndResult /> :
         null
       }

@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BsArrowDownRight, BsArrowUpRight } from 'react-icons/bs'
 import { ConvertToNaira } from '../../../utils/Helper'
 import avatar from '../../../assets/images/avatar.svg';
 import BarChart from '../../../components/Chart/BarChart';
+import Report from '../../../services/Report';
+import { useQuery } from 'react-query';
 
-const Reb = () => {
+const Reb = ({rebateStats}) => {
+    const [topEarners, setTopEarners] = useState([]);
+    const [earnings, setEarnings] = useState();
+
     const data = {
         Jan:90,
         Feb: 123,
@@ -13,13 +18,28 @@ const Reb = () => {
         Jun:50,
         Aug:88
     }
+
+    
+    const { isLoading:loadingTopEarners, isRefetching:refetchingTopEarners, refetch:refetchTopEarners}  = useQuery(['top-earners'], Report.RebateTopEarners, {
+        onSuccess:res => {
+            setTopEarners(res.data.data);
+          }
+    });
+
+    
+    const { isLoading:loadingEarnings, isRefetching:refetchingEarnings, refetch:refetchEarnings}  = useQuery(['earnings-chart'], Report.RebateEarningChart, {
+        onSuccess:res => {
+            setEarnings(res.data.monthly_earnings);
+          }
+    });
+  
   return (
     <div className='mt-7'>
         <div className="grid grid-cols-10 gap-5">
             <div className="col-span-4 grid gap-5">
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Monthly Rebate Earned</p>
-                    <p className='font-semibold text-xl my-3'>{ ConvertToNaira(923110)}</p>
+                    <p className='font-semibold text-xl my-3'>{ ConvertToNaira(rebateStats?.total_rebate_earned)}</p>
                     <div className="flex text-sm items-center gap-1 mt-5">
                         {
                          true == 'increase' ?
@@ -37,7 +57,7 @@ const Reb = () => {
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Total Payouts Settled</p>
-                    <p className='font-semibold text-xl my-3'>₦3,020</p>
+                    <p className='font-semibold text-xl my-3'>{ConvertToNaira(rebateStats?.total_payout_settled)}</p>
                     <div className="flex text-sm items-center gap-1 mt-5">
                         <span>Payment</span>
                         <div className="text-green-500 font-medium flex items-center gap-1">
@@ -54,14 +74,14 @@ const Reb = () => {
                 <p className='text-sm' >Ranking of top referrers based on rebate earnings. </p> 
                 <div className="grid grid-cols-2 gap-x-10 gap-y-5 mt-5 text-sm">
                     {
-                        [1,2,3,4,5,6,7,8,9,10].map(item => (
+                        topEarners?.map((item,idx) => (
                             <div className='flex items-center justify-between  gap-10'>
                                 <div className="flex items-center gap-1">
-                                    <p>{item}.</p>
+                                    <p>{idx + 1}.</p>
                                     <img className='w-5 h-5' src={avatar} alt="avatar" />
-                                    <p>Chester Grimes</p>
+                                    <p>{item.doctor_name}</p>
                                 </div>
-                                <p className='font-semibold' >{ConvertToNaira(203933)}</p>
+                                <p className='font-semibold' >{ConvertToNaira(item?.total_earned)}</p>
                             </div>
                         ))
                     }
@@ -78,7 +98,7 @@ const Reb = () => {
                 <div className="p-5">
                     <p className='text-sm' >Earning history displayed per month</p>
                     <div className="mt-5 -ml-10 min-w-[400px] h-[250px]">
-                        <BarChart data = {data} />
+                        <BarChart data = {earnings} />
                     </div>
                 </div>
             </div>
