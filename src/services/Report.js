@@ -66,8 +66,22 @@ const RebateEarningChart = () => {
     .catch((error) => Promise.reject(error));
 }
 
+const TestStats = () => {
+  return axiosClient()
+    .get(`${endpoints.report.TEST_STATS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const TestCompletion = () => {
+  return axiosClient()
+    .get(`${endpoints.report.TEST_COMPLETION}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 export default {
   RefStats, ComparativeAnalysis, AppointmentStats, AppointmentTrends,
   NoShowRate, NoShowAnalysis, RebateStats, RebateTopEarners, RebateEarningChart,
+  TestStats, TestCompletion,
 };
-

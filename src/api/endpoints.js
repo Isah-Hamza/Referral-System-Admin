@@ -87,6 +87,8 @@ const endpoints = {
    APPOINTMENT_TRENDS: '/report/appointment-trends',
    NO_SHOW_RATE: '/report/no-show-rate',
    NO_SHOW_ANALYSIS: '/report/no-show-analysis',
+   TEST_STATS:'/report/test-details',
+   TEST_COMPLETION:'/report/test-completion',
  },
  log:{
    USER_LOG:'/admin/user-logs', 

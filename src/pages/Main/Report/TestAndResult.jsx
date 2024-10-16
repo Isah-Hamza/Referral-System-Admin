@@ -3,7 +3,7 @@ import PieChart from '../../../components/Chart/PieChart'
 import BarChart from '../../../components/Chart/BarChart'
 import SampleAreaChart from '../../../components/Chart/AreaChart'
 
-const TestAndResult = () => {
+const TestAndResult = ({testStats}) => {
 
     const data = {
         Jan:90,
