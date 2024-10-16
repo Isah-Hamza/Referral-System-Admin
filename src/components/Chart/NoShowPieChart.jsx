@@ -77,7 +77,6 @@ export default function NoShowPieChart({ payload }){
             fill={"#8884d8"}
             dataKey="count"
             onMouseEnter={onPieEnter}
-            label={true}
           >
             {payload?.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={colors[index]} values={entry?.count} />
