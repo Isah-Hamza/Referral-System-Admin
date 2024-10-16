@@ -6,6 +6,7 @@ import { MdArrowForward } from 'react-icons/md'
 import { useQuery } from 'react-query'
 import Dashboard from '../../../services/Dashboard'
 import Report from '../../../services/Report'
+import PageLoading from '../../../Loader/PageLoading'
 
 const Ref = ({refStat}) => {
 
@@ -24,6 +25,13 @@ const Ref = ({refStat}) => {
             setAnaylysis(res.data);
             }
         });
+    
+    
+    if(loadingAnalysis || loadingReferralStats ){
+        return <PageLoading adjustHeight={true} />
+    }
+        
+      
 
   return (
     <div>

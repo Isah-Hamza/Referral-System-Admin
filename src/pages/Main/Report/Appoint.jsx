@@ -7,6 +7,7 @@ import PieChart from '../../../components/Chart/PieChart'
 import NoShowPieChart from '../../../components/Chart/NoShowPieChart'
 import Report from '../../../services/Report'
 import { useQuery } from 'react-query'
+import PageLoading from '../../../Loader/PageLoading'
 
 const Appoint = ({appointmentStat,appointmentTrend}) => {
     const [analysis, setAnaylysis] = useState();
@@ -31,6 +32,10 @@ const Appoint = ({appointmentStat,appointmentTrend}) => {
             setAnaylysis(res.data.data);
           }
     });
+
+ if(loadingAnalysis || loadingRate ){
+    return <PageLoading adjustHeight={true} />
+ }
 
 
   return (

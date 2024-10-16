@@ -5,6 +5,7 @@ import avatar from '../../../assets/images/avatar.svg';
 import BarChart from '../../../components/Chart/BarChart';
 import Report from '../../../services/Report';
 import { useQuery } from 'react-query';
+import PageLoading from '../../../Loader/PageLoading';
 
 const Reb = ({rebateStats}) => {
     const [topEarners, setTopEarners] = useState([]);
@@ -32,6 +33,12 @@ const Reb = ({rebateStats}) => {
             setEarnings(res.data.monthly_earnings);
           }
     });
+
+
+    if(loadingTopEarners || loadingEarnings ){
+        return <PageLoading adjustHeight={true} />
+     }
+    
   
   return (
     <div className='mt-7'>

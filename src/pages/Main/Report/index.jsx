@@ -10,6 +10,7 @@ import Reb from './Reb';
 import TestAndResult from './TestAndResult';
 import ReportService from '../../../services/Report';
 import { useQuery } from 'react-query';
+import PageLoading from '../../../Loader/PageLoading';
 
 const Report = () => {
 
@@ -18,7 +19,7 @@ const Report = () => {
     const [rebateStats, setRebateStats] = useState();
     const [appointmentStat, setAppointmentStat] = useState();
     const [appointmentTrend, setAppointmentTrend] = useState();
-    const [testStats, SetTestStats] = useState();
+    const [testStats, setTestStats] = useState();
 
 
     const durations = [
@@ -54,14 +55,11 @@ const Report = () => {
         }
   });
 
-    const { isLoading:loadingTestSTats, isRefetching:refetchingTestStats, refetch:refetchTestStats}  = useQuery(['report-test-stats'], ReportService.TestStats, {
+    const { isLoading:loadingTestStats, isRefetching:refetchingTestStats, refetch:refetchTestStats}  = useQuery(['report-test-stats'], ReportService.TestStats, {
       onSuccess:res => {
-          SetTestStats(res.data);
+          setTestStats(res.data);
         }
   });
-
-
-
 
 
   return (
@@ -75,11 +73,18 @@ const Report = () => {
         <Select className={'min-w-[120px]'} options={durations} />
       </div>
       {
-        activeTab == 0 ? <Ref {...{refStat,}} /> :
-        activeTab == 1 ? <Appoint {...{appointmentStat, appointmentTrend}} /> : 
-        activeTab == 2 ? <Reb {...{rebateStats}}/> :
-        activeTab == 3 ? <TestAndResult {...{testStats}} /> :
-        null
+        (loadingAppointmentTrend || loadingRef || loadingAppointmentStats || loadingRebateStats || loadingTestStats) ?
+          <PageLoading adjustHeight={true} />
+          :
+          <>
+            {
+              activeTab == 0 ? <Ref {...{refStat,}} /> :
+              activeTab == 1 ? <Appoint {...{appointmentStat, appointmentTrend}} /> : 
+              activeTab == 2 ? <Reb {...{rebateStats}}/> :
+              activeTab == 3 ? <TestAndResult {...{testStats}} /> :
+              null
+            }
+          </>
       }
       
     </div>

@@ -168,7 +168,7 @@ export default function BarChart({ data:payload , test}){
         >
           <CartesianGrid vertical={false} strokeDasharray="1" />
           <XAxis fontWeight={700} fontSize={12} dataKey="name" />
-          <YAxis unit={'k'}  fontWeight={700} fontSize={12} />
+          <YAxis units={'k'}  fontWeight={700} fontSize={12} />
           <Tooltip />
           {/* <Legend /> */}
           <Bar 
