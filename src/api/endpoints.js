@@ -76,6 +76,9 @@ const endpoints = {
    UPDATE_PROFILE:'/admin/profile-update',
    UPDATE_PASSWORD:'/admin/reset-password',
    GET_DEPARTMENTS:'/department/all',
+   UPDATE_DEPARTMENT:'/department/update',
+   APPOINTMENT_SCHEDULE:'/admin/appointment-schedule',
+   UPDATE_SCHEDULE:'/admin/update-schedule',
  },
  report:{
    REFERRAL_STATS:'/report/referral',

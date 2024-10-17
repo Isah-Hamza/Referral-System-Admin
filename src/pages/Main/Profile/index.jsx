@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { BiCalendar, BiCopy, BiEdit, BiPhoneIncoming, BiSolidUserDetail, BiTrash, BiTrashAlt, BiUser } from "react-icons/bi";
-import { CgClose } from 'react-icons/cg';
+import { CgClose, CgLock } from 'react-icons/cg';
 import { CiLocationOn, CiUser } from 'react-icons/ci';
 import { MdOutlineLockPerson, MdOutlineMarkEmailUnread, MdTitle } from 'react-icons/md';
 import { PiTestTube, PiTestTubeFill, PiUserCircleDuotone } from "react-icons/pi";
 import Select from '../../../components/Inputs/Select';
-import { BsCaretRight, BsFillTrashFill } from 'react-icons/bs';
+import { BsCaretRight, BsClock, BsFillTrashFill, BsPersonAdd } from 'react-icons/bs';
 import Button from '../../../components/Button'
 import success from '../../../assets/images/success.svg';
 import { IoIosArrowForward } from "react-icons/io";
@@ -46,6 +46,7 @@ const Profile = ({  }) => {
   const [changeRole, setChangeRole] = useState(false);
   const [adminData, setAdminData] = useState();
   const [departmentss, setDepartments] = useState([])
+  const [schedules, setSchedules] = useState();
 
   const toggleSuccessful = () => setSuccessful(!successful);
   const toggleDeleteAccount = () => setDeleteAccount(!deleteAccount);
@@ -55,8 +56,6 @@ const Profile = ({  }) => {
   const toggleChangeRole = () => setChangeRole(!changeRole);
   const toggleInvite = () => setInvite(!invite);
   
-
-
   const tabs = [
     {
       title:'General',
@@ -159,6 +158,13 @@ const Profile = ({  }) => {
     toggleSuccessful();
   }
 
+  const { isLoading:loadingSchedules } = useQuery('schedules', ()=>Settings.GetSchedule(),{
+    onSuccess:res => {
+      setSchedules(res.data);
+    },
+    onError:e=>errorToast('error fetching admin data'),
+  })
+
   const { isLoading:loadingProfile } = useQuery('profile', ()=>Settings.GetProfile(adminID),{
     onSuccess:res => {
       setAdminData(res.data);
@@ -260,6 +266,68 @@ const { mutate:changePassword, isLoading:changingPassword } = useMutation(Settin
         updateBank(values);
     }
 })
+
+const intervalOptions = [
+  {
+    label:'30 Mins',
+    value:30,
+  },
+  {
+    label:'40 Mins',
+    value:40,
+  },
+  {
+    label:'50 Mins',
+    value:50,
+  },
+  {
+    label:'60 Mins',
+    value:60,
+  },
+]
+
+const slotOptions = [
+  {
+    label:'1 Person',
+    value:1,
+  },
+  {
+    label:'2 Person',
+    value:2,
+  },
+  {
+    label:'3 Person',
+    value:3,
+  },
+  {
+    label:'4 Person',
+    value:4,
+  },
+  {
+    label:'5 Person',
+    value:5,
+  },
+  {
+    label:'6 Person',
+    value:6,
+  },
+  {
+    label:'7 Person',
+    value:7,
+  },
+  {
+    label:'8 Person',
+    value:8,
+  },
+  {
+    label:'9 Person',
+    value:9,
+  },
+  {
+    label:'10 Person',
+    value:10,
+  },
+]
 
   return (
     <div className='w-full bg-white rounded-xl flex' >
@@ -391,6 +459,37 @@ const { mutate:changePassword, isLoading:changingPassword } = useMutation(Settin
 
                   </div>
                 </div>
+              </div>
+            </div>
+            :activeTab == 3 ? 
+            <div className='p-10 pt-7'>
+                <div className="flex justify-between">
+                  <div id='patient' className="">
+                    <p className='font-semibold mb-1' >Appointment Settings</p>
+                    <p className='text-sm' >Set up and manage your appointment timeline and schedules.</p>
+                  </div>
+              </div>
+              <div className="grid grid-cols-2 gap-7 mt-5">
+                <Select value={schedules?.session_interval} className={'!rounded-3xl'} label={'Session Interval'} options={intervalOptions} icon={<BsClock size={22} />}/>
+                <Select value={schedules?.patient_per_slot} className={'!rounded-3xl'} label={'No. of Patients allowed per slot'} options={slotOptions} icon={<BsPersonAdd size={22} />}/>
+              </div>
+              <div className="mt-5 grid gap-6">
+                {
+                  schedules?.schedules?.map((item,idx) => (
+                    <div key={idx} className="grid grid-cols-10 items-center gap-5">
+                      <div className="col-span-2 mt-3 flex items-center gap-1 text-sm">
+                        <input defaultChecked={item.status == 'active'} type="checkbox" className='accent-primary' id={item.day} />
+                        <label htmlFor={item.day}>{item.day}</label>
+                      </div>
+                      <div className="col-span-4">
+                        <Input defaultValue={item.start_time} type='time' className='col-span-3 !rounded-3xl !py-2' containerClass='cols-'  label={'Start Time'} />
+                      </div>
+                      <div className="col-span-4">
+                        <Input defaultValue={item.end_time} type='time' className='col-span-3 !rounded-3xl !py-2'  label={'End Time'} />
+                      </div>
+                    </div>
+                  ))
+                }
               </div>
             </div>
             : activeTab == 4 ? 

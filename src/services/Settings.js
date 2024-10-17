@@ -10,6 +10,13 @@ const GetProfile = (admin_id) => {
     .catch((error) => Promise.reject(error));
 }
 
+const GetSchedule = () => {
+  return axiosClient()
+    .get(`${endpoints.settings.APPOINTMENT_SCHEDULE}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const GetDepartments = () => {
   return axiosClient()
     .get(`${endpoints.settings.GET_DEPARTMENTS}`)
@@ -31,6 +38,13 @@ const UpdateBank = (data) => {
     .catch((error) => Promise.reject(error));
 }
 
+const UpdateSchedule = (data) => {
+  return axiosClient()
+    .post(`${endpoints.settings.UPDATE_SCHEDULE}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const UpdatePassword = (data) => {
   return axiosClient()
     .post(`${endpoints.settings.UPDATE_PASSWORD}`, data)
@@ -40,6 +54,7 @@ const UpdatePassword = (data) => {
 
 
 export default {
-  GetProfile, UpdateProfile, GetDepartments,UpdateBank,UpdatePassword
+  GetProfile, UpdateProfile, GetDepartments,UpdateBank,UpdatePassword, GetSchedule, UpdateSchedule
+
 };
 
