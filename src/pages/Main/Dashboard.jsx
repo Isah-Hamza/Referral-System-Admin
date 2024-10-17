@@ -45,7 +45,7 @@ const Dashboard = () => {
     const navigate = useNavigate('');
 
         const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
-        // const department = 'Customer Support Unit';
+        // const department = 'Customer Service Unit';
         // const department = 'Result Unit';
         // const department = 'Test Unit';
         // const department = 'Rebate Unit';
@@ -184,7 +184,7 @@ const Dashboard = () => {
                 { department !== 'Rebate Unit' ? <div className="bg-white min-w-[35%] h-full p-5 rounded-lg border">
                     <div className="flex items-center justify-between pb-3 border-b">
                         {
-                         (department == 'Customer Support Unit' || department == 'Administration') ?
+                         (department == 'Customer Service Unit' || department == 'Administration') ?
                          <p className='font-semibold' >Referrals Stats</p> : 
                           (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
                           <p className='font-semibold' >Daily Test Analysis</p> : null
@@ -192,7 +192,7 @@ const Dashboard = () => {
                     </div>
                     <div className="mt-3">
                        {
-                         (department == 'Customer Support Unit' || department == 'Administration') ?
+                         (department == 'Customer Service Unit' || department == 'Administration') ?
                           <p className='text-sm' >Analysis of pending & completed referrals</p> : 
                          ( department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? 
                           <p className='text-sm' >Analysis of daily pending & completed tests </p> : null
@@ -241,7 +241,7 @@ const Dashboard = () => {
                     </div>
                 </div>: null}
                 {
-                    department == 'Customer Support Unit' ? 
+                    department == 'Customer Service Unit' ? 
                     <div className="w-full grid gap-5">
                          <div className="w-full bg-white rounded-lg p-5 border">
                             <p>Total Referrals</p>
@@ -297,7 +297,7 @@ const Dashboard = () => {
                     : null
                 }
             </div> 
-            { (department == 'Administration' || department == 'Customer Support Unit') ? <div className="flex gap-5 mt-5">
+            { (department == 'Administration' || department == 'Customer Service Unit') ? <div className="flex gap-5 mt-5">
                 <div className="flex-1 bg-white rounded-xl border pb-3">
                     <div className="flex items-center justify-between p-3 border-b">
                         <p className='font-semibold' >Calendar Appointments</p>
