@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BiCalendar, BiCopy, BiEdit, BiPhoneIncoming, BiSolidUserDetail, BiTrash, BiTrashAlt, BiUser } from "react-icons/bi";
 import { CgClose, CgLock } from 'react-icons/cg';
 import { CiLocationOn, CiUser } from 'react-icons/ci';
@@ -27,13 +27,14 @@ import { errorToast, successToast } from '../../../utils/Helper';
 import { useFormik } from 'formik';
 import LoadingModal from '../../../Loader/LoadingModal';
 import * as Yup from 'yup';
+import moment from 'moment';
 
 
 export const CustomValidationError = ({ text='An error occured' }) => (
   <span className='text-xs text-red-700' >{text}</span>
 )
 
-const Profile = ({  }) => {
+const Profile = ({}) => {
   const adminID = window.localStorage.getItem('referrer-admin-id');
   const [activeTab, setActiveTab] = useState(0);
   const [successful, setSuccessful] = useState(false);
@@ -46,6 +47,7 @@ const Profile = ({  }) => {
   const [changeRole, setChangeRole] = useState(false);
   const [adminData, setAdminData] = useState();
   const [departmentss, setDepartments] = useState([])
+  const [appointment, setAppointment] = useState();
   const [schedules, setSchedules] = useState();
 
   const toggleSuccessful = () => setSuccessful(!successful);
@@ -158,9 +160,9 @@ const Profile = ({  }) => {
     toggleSuccessful();
   }
 
-  const { isLoading:loadingSchedules } = useQuery('schedules', ()=>Settings.GetSchedule(),{
+  const { isLoading:loadingSchedules , refetch:refetchSchedule } = useQuery('schedules', ()=>Settings.GetSchedule(),{
     onSuccess:res => {
-      setSchedules(res.data);
+      setAppointment(res.data);
     },
     onError:e=>errorToast('error fetching admin data'),
   })
@@ -245,6 +247,34 @@ const { mutate:changePassword, isLoading:changingPassword } = useMutation(Settin
       errorToast(e.error);
   }
 })
+ 
+  
+const { mutate:updateScheduleMutate, isLoading:updatingSchedule } = useMutation(Settings.UpdateSchedule, {
+  onSuccess:res => {
+      refetchSchedule();
+      successToast(res.data.message);
+      
+  },
+  onError:e => {
+      errorToast(e.error);
+  }
+})
+
+const updateSchedule = () => {
+  const data = {
+    schedules:schedules.schedules.map(item => {
+      return ({
+        ...item,
+        start_time: (item.start_time).substring(0,5),
+        end_time: (item.end_time).substring(0,5),
+        status: item.status == 'active' ? 1 : 0,
+      })
+    }),
+    session_interval:schedules.session_interval,
+    patient_per_slot:schedules.patient_per_slot,
+  }
+  updateScheduleMutate(data);
+}
 
   const profile = {};
   const { touched, values, errors, handleSubmit:handleSubmitBank, getFieldProps:getfieldPropsBank, setFieldValue:setFieldValueBank} = useFormik({
@@ -328,6 +358,48 @@ const slotOptions = [
     value:10,
   },
 ]
+
+const handleStartChange = (value, id) => {
+  const res = schedules.schedules?.map(item => {
+    if(item.day_id == id){
+      return ({...item, start_time:value})
+    }else
+    return item;
+  })
+  setSchedules(prev => ({...prev, schedules: res}));
+}
+
+const handleEndChange = (value, id) => {
+  const res = schedules.schedules?.map(item => {
+    if(item.day_id == id){
+      return ({...item, end_time:value})
+    }else
+    return item;
+  })
+  setSchedules(prev => ({...prev, schedules: res}));
+}
+
+const toggleDay = (value, id) => {
+  console.log(value)
+  const res = schedules.schedules?.map(item => {
+    if(item.day_id == id){
+      return ({...item, status:value=='on' ? 'active' : 'inactive'})
+    }else
+    return item;
+  })
+  setSchedules(prev => ({...prev, schedules: res}));
+}
+
+useEffect(() => {
+  console.log('sch',schedules)
+}, [schedules])
+
+
+useEffect(() => {
+  console.log('sch',appointment)
+  if(appointment) setSchedules(appointment);
+}, [appointment])
+
 
   return (
     <div className='w-full bg-white rounded-xl flex' >
@@ -470,26 +542,35 @@ const slotOptions = [
                   </div>
               </div>
               <div className="grid grid-cols-2 gap-7 mt-5">
-                <Select value={schedules?.session_interval} className={'!rounded-3xl'} label={'Session Interval'} options={intervalOptions} icon={<BsClock size={22} />}/>
-                <Select value={schedules?.patient_per_slot} className={'!rounded-3xl'} label={'No. of Patients allowed per slot'} options={slotOptions} icon={<BsPersonAdd size={22} />}/>
+                <Select value={schedules?.session_interval} onChange={e => setSchedules(prev => ({...prev, session_interval:e.target.value}))} className={'!rounded-3xl'} label={'Session Interval'} options={intervalOptions} icon={<BsClock size={22} />}/>
+                <Select value={schedules?.patient_per_slot} onChange={e => setSchedules(prev => ({...prev, patient_per_slot:e.target.value}))} className={'!rounded-3xl'} label={'No. of Patients allowed per slot'} options={slotOptions} icon={<BsPersonAdd size={22} />}/>
               </div>
               <div className="mt-5 grid gap-6">
                 {
                   schedules?.schedules?.map((item,idx) => (
                     <div key={idx} className="grid grid-cols-10 items-center gap-5">
                       <div className="col-span-2 mt-3 flex items-center gap-1 text-sm">
-                        <input defaultChecked={item.status == 'active'} type="checkbox" className='accent-primary' id={item.day} />
+                        <input onChange={(e) => toggleDay(e.target.value, item.day_id)} defaultChecked={item.status == 'active'} type="checkbox" className='accent-primary' id={item.day} />
                         <label htmlFor={item.day}>{item.day}</label>
                       </div>
                       <div className="col-span-4">
-                        <Input defaultValue={item.start_time} type='time' className='col-span-3 !rounded-3xl !py-2' containerClass='cols-'  label={'Start Time'} />
+                        <Input 
+                        // defaultValue={item.start_time} 
+                          value={item.start_time}
+                          onChange={e => handleStartChange(e.target.value, item.day_id)}
+                         type='time' className='col-span-3 !rounded-3xl !py-2' containerClass='cols-'  label={'Start Time'} />
                       </div>
                       <div className="col-span-4">
-                        <Input defaultValue={item.end_time} type='time' className='col-span-3 !rounded-3xl !py-2'  label={'End Time'} />
+                        <Input value={item.end_time} 
+                        onChange={e => handleEndChange(e.target.value, item.day_id)}
+                        type='time' className='col-span-3 !rounded-3xl !py-2'  label={'End Time'} />
                       </div>
                     </div>
                   ))
                 }
+              </div>
+              <div className='w-fit mt-10' >
+                <Button onClick={updateSchedule} className={'px-14'} title={'Update Schedule'} />
               </div>
             </div>
             : activeTab == 4 ? 
@@ -643,7 +724,7 @@ const slotOptions = [
               </div> : null
       }
       {
-         (updatingProfile || changingPassword) ? <LoadingModal /> : null
+         ( updatingSchedule || updatingProfile || changingPassword) ? <LoadingModal /> : null
       }
     </div>
   )
