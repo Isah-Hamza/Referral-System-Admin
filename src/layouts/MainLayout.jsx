@@ -48,7 +48,7 @@ const MainLayout = () => {
                 header:'Dashboard Overview',
                 sub:'Manage and analyze your patient statistics.',
             },
-            deparments:['Administration','Test Unit', 'Laboratory Services', 'Radiology', 'Result Unit','Customer Service Unit','Rebate Unit']
+            deparments:['Administration','Test Unit','Endoscopy', 'Laboratory Services', 'Radiology', 'Result Unit','Customer Service Unit','Rebate Unit']
         },
         {
             title:'Referrals',
@@ -80,7 +80,7 @@ const MainLayout = () => {
                 header:'Test Management',
                 sub:'Manage and organize test categories and sub-tests.',
             },
-            deparments:['Administration','Test Unit', 'Laboratory Services' ,'Radiology']
+            deparments:['Administration','Test Unit', 'Endoscopy','Laboratory Services' ,'Radiology']
 
         },
         {
@@ -143,7 +143,7 @@ const MainLayout = () => {
                 header:'Settings',
                 sub:'Customize and manage your account and platform preferences.',
             },
-            deparments:['Administration','Test Unit', 'Laboratory Services', 'Radiology','Result Unit','Customer Service Unit','Rebate Unit']
+            deparments:['Administration','Test Unit', 'Endoscopy','Laboratory Services', 'Radiology','Result Unit','Customer Service Unit','Rebate Unit']
         },
     ]
 

@@ -186,7 +186,7 @@ const Dashboard = () => {
                         {
                          (department == 'Customer Service Unit' || department == 'Administration') ?
                          <p className='font-semibold' >Referrals Stats</p> : 
-                          (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
+                          (department == 'Endoscopy' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
                           <p className='font-semibold' >Daily Test Analysis</p> : null
                        }
                     </div>
@@ -194,14 +194,14 @@ const Dashboard = () => {
                        {
                          (department == 'Customer Service Unit' || department == 'Administration') ?
                           <p className='text-sm' >Analysis of pending & completed referrals</p> : 
-                         ( department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? 
+                         ( department == 'Endoscopy' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? 
                           <p className='text-sm' >Analysis of daily pending & completed tests </p> : null
                        }
                         <div className="flex flex-col">
                             <div className=" -ml-10 h-[250px]">
                                 <PieChart 
-                                    completed = {(department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed} 
-                                    pending= { (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? testStats?.percentage?.pending_tests : referralStats?.pending} />
+                                    completed = {(department == 'Endoscopy' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed} 
+                                    pending= { (department == 'Endoscopy' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? testStats?.percentage?.pending_tests : referralStats?.pending} />
                             </div>
                             <div className="flex justify-center items-center text-center gap-10">
                                 <div className="">
@@ -209,14 +209,14 @@ const Dashboard = () => {
                                         <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
                                         <span>Completed</span>
                                     </div>
-                                    <p className='pl-'>{ (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed}</p>
+                                    <p className='pl-'>{ (department == 'Endoscopy' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed}</p>
                                 </div>
                                 <div className="">
                                     <div className="text-sm flex items-center gap-1">
                                         <div className="w-2 h-2 rounded-full bg-light_blue"></div>
                                         <span>Pending</span>
                                     </div>
-                                    <p className='pl-'>{(department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.pending_tests : referralStats?.pending}</p>
+                                    <p className='pl-'>{(department == 'Endoscopy' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.pending_tests : referralStats?.pending}</p>
                                 </div>
                             </div> 
                         </div>
@@ -269,7 +269,7 @@ const Dashboard = () => {
                     : null
                 }
                 {
-                    (department == 'Test Unit' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
+                    (department == 'Endoscopy' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
                     <div className="w-full grid gap-5">
                          <div className="w-full bg-white rounded-lg p-5 border">
                             <p>Total Sub Tests</p>
