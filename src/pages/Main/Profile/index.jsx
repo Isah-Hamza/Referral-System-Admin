@@ -47,6 +47,7 @@ const Profile = ({}) => {
   const [changeRole, setChangeRole] = useState(false);
   const [adminData, setAdminData] = useState();
   const [departmentss, setDepartments] = useState([])
+  const [subAdmins, setSubAdmins] = useState([])
   const [appointment, setAppointment] = useState();
   const [schedules, setSchedules] = useState();
 
@@ -179,6 +180,13 @@ const Profile = ({}) => {
       setDepartments(res.data.departments);
     },
     onError:e=>errorToast('error fetching departments'),
+  })
+
+  const { isLoading:loadingSubAdmins } = useQuery('sub-admins', ()=>Settings.GetSubAdmins(),{
+    onSuccess:res => {
+      setSubAdmins(res.data.admins);
+    },
+    onError:e=>errorToast('error fetching admins'),
   })
 
   const { isLoading:updatingProfile, mutate:updateProfile } = useMutation(Settings.UpdateProfile, {
@@ -490,16 +498,16 @@ useEffect(() => {
                   </div>
                   <div className="data text-text_color mt-3">
                       {
-                          dummy.map((item,idx) => (
+                          subAdmins?.map((item,idx) => (
                           <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} grid items-center grid-cols-9 gap-3 px-5 py-6 font-medium`}>
                               <div className='col-span-3 overflow-x-hidden flex items-center gap-1' >
                                   <img className='w-8' src={avatar} alt="user" />
                                   <div className="">
-                                    <p className='line-clamp-1'>{item.user}</p>
+                                    <p className='line-clamp-1'>{item.full_name}</p>
                                     <p className='line-clamp-1'>{item.email}</p>
                                   </div>
                                 </div>
-                                <p className='line-clamp-1 col-span-2'>{item.phone}</p>
+                                <p className='line-clamp-1 col-span-2'>{item.phone_number}</p>
                                 <p className='line-clamp-1 col-span-3'>{item.role}</p>
                               <button onClick={(e) => handleClickEllipses(e,idx)} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
                                       { idx == activeItem ? 
