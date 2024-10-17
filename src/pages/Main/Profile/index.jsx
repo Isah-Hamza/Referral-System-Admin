@@ -391,12 +391,6 @@ const toggleDay = (value, id) => {
 }
 
 useEffect(() => {
-  console.log('sch',schedules)
-}, [schedules])
-
-
-useEffect(() => {
-  console.log('sch',appointment)
   if(appointment) setSchedules(appointment);
 }, [appointment])
 

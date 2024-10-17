@@ -24,9 +24,23 @@ const GetDepartments = () => {
     .catch((error) => Promise.reject(error));
 }
 
+const GetSubAdmins = () => {
+  return axiosClient()
+    .get(`${endpoints.settings.GET_SUBADMINS}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const UpdateProfile = (data) => {
   return axiosClient()
     .post(`${endpoints.settings.UPDATE_PROFILE}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const InviteSubAdmin = (data) => {
+  return axiosClient()
+    .post(`${endpoints.settings.INVITE_SUBADMIN}`, data)
     .then((res) => res)
     .catch((error) => Promise.reject(error));
 }
@@ -54,7 +68,7 @@ const UpdatePassword = (data) => {
 
 
 export default {
-  GetProfile, UpdateProfile, GetDepartments,UpdateBank,UpdatePassword, GetSchedule, UpdateSchedule
-
+  GetProfile, UpdateProfile, GetDepartments,UpdateBank,UpdatePassword, GetSchedule, UpdateSchedule,
+  GetSubAdmins, InviteSubAdmin
 };
 
