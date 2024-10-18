@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BiCalendar, BiCopy, BiEdit, BiPhoneIncoming, BiSolidUserDetail, BiTrash, BiTrashAlt, BiUser } from "react-icons/bi";
+import { BiCalendar, BiCopy, BiEdit, BiPhoneIncoming, BiPlus, BiSolidUserDetail, BiTrash, BiTrashAlt, BiUser } from "react-icons/bi";
 import { CgClose, CgLock } from 'react-icons/cg';
 import { CiLocationOn, CiUser } from 'react-icons/ci';
 import { MdOutlineLockPerson, MdOutlineMarkEmailUnread, MdTitle } from 'react-icons/md';
@@ -47,9 +47,17 @@ const Profile = ({}) => {
   const [changeRole, setChangeRole] = useState(false);
   const [adminData, setAdminData] = useState();
   const [departmentss, setDepartments] = useState([])
-  const [subAdmins, setSubAdmins] = useState([])
+  const [departmentsOption, setDepartmentOption] = useState([])
+
+  const [subAdmins, setSubAdmins] = useState([]);
   const [appointment, setAppointment] = useState();
   const [schedules, setSchedules] = useState();
+  const [invites, setInvites] = useState([
+    {
+      email:"",
+      role_id:"",
+    }
+  ]);
 
   const toggleSuccessful = () => setSuccessful(!successful);
   const toggleDeleteAccount = () => setDeleteAccount(!deleteAccount);
@@ -93,21 +101,6 @@ const Profile = ({}) => {
       onClick:() => {
         console.log('clicked')
         document.querySelector('#test').scrollIntoView()},
-    },
-  ]
-
-  const departments = [
-    {
-      name:'Radiology Department',
-      users:4,
-    },
-    {
-      name:'Laboratory Department',
-      users:4,
-    },
-    {
-      name:'Endoscopy',
-      users:4,
     },
   ]
 
@@ -178,11 +171,17 @@ const Profile = ({}) => {
   const { isLoading:loadingDepartments } = useQuery('departments', ()=>Settings.GetDepartments(),{
     onSuccess:res => {
       setDepartments(res.data.departments);
+      setDepartmentOption(res.data.departments.map(item => (
+        {
+          label:item.name,
+          value:item.department_id,
+        }
+      )))
     },
     onError:e=>errorToast('error fetching departments'),
   })
 
-  const { isLoading:loadingSubAdmins } = useQuery('sub-admins', ()=>Settings.GetSubAdmins(),{
+  const { isLoading:loadingSubAdmins , refetch:refetchSubAdmins} = useQuery('sub-admins', ()=>Settings.GetSubAdmins(),{
     onSuccess:res => {
       setSubAdmins(res.data.admins);
     },
@@ -265,6 +264,19 @@ const { mutate:updateScheduleMutate, isLoading:updatingSchedule } = useMutation(
   },
   onError:e => {
       errorToast(e.error);
+  }
+})
+  
+const { mutate:sendInviteMutate, isLoading:sendingInvite } = useMutation(Settings.InviteSubAdmin, {
+  onSuccess:res => {
+      toggleInvite();
+      setInvites([ { email:'',role_id:'' }]);
+      refetchSubAdmins();
+      successToast(res.data.message);
+  },
+  onError:e => {
+    const firstError = Object.entries(e.errors)[0][1][0];
+    errorToast(firstError); 
   }
 })
 
@@ -396,6 +408,20 @@ const toggleDay = (value, id) => {
     return item;
   })
   setSchedules(prev => ({...prev, schedules: res}));
+}
+
+const addMoreUser = () => {
+  const template = { email:'',role_id:'' };
+  setInvites(prev => [...prev, template]);
+}
+
+const removeUser = (idx) => {
+  setInvites(prev => prev.filter((item,id) => id !== idx));
+}
+
+const sendInvites = () => {
+  const data = invites.filter(item => item.email  && item.role_id);
+  sendInviteMutate({subadmins:data});
 }
 
 useEffect(() => {
@@ -712,21 +738,49 @@ useEffect(() => {
       {
           invite ? 
               <div className='bg-black/50 fixed inset-0 grid place-content-center' >
-                  <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                  <div className="bg-white w-[500px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                     <img className='w-12 m-auto' src={inviteImg} alt="reactivate" />
                     <p className='text-base font-semibold mb-3' >Invite New User(s)</p>
-                    <div className="text-left">
-                      <Select label={'Roles'} options={[{label:'Radiology-Result Unit', value:'1'}]} icon={<RiBankCard2Line size={22} />}/>
+                    <div className="">
+                      {
+                        invites.map((item,idx) => (
+                          <div key={idx} className="mb-2 flex items-center text-left w-full">
+                            <div className="flex-1">
+                            <Input value={item.email} onChange={(e) => {
+                              const res = invites.map((it,id)=> {
+                                if(idx == id) return { ...it, email:e.target.value}
+                                else return it
+                              })
+                              setInvites(res);
+                            }} 
+                            className={'!py-3 mt-[2.5px] text-left flex-1 min-w-[200px] !rounded-none !rounded-l-3xl '} placeholder={'itshamzy@gmail.com'} />
+                            </div>
+                            <Select value={item.role_id}
+                            onChange={(e) => {
+                              const res = invites.map((it,id)=> {
+                                if(idx == id) return { ...it, role_id:e.target.value}
+                                else return it
+                              })
+                              setInvites(res);
+                            }} 
+                             className={'text-left !rounded-none !rounded-r-3xl '} options={departmentsOption} icon={<RiBankCard2Line size={22} />}/>
+                             { invites.length >= 2 ? <CgClose onClick={()=>removeUser(idx)} size={18} className='block ml-2 mt-1 cursor-pointer' /> : null}
+                          </div>
+                        ))
+                      }
                     </div>
-                    <div className="mt-10 flex items-center gap-3">
-                    <Button onClick={toggleInvite} className={'!px-4 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                    <Button onClick={toggleInvite} className={'!px-4 !bg-light_blue'} title={'Send Invite(s)'} />
+                    <button onClick={addMoreUser} className='text-sm  to-primary flex items-center gap-1 font-medium'>
+                      <BiPlus size={16} /> Add More Users
+                    </button>
+                    <div className="mt-10 flex items-center gap-3 ">
+                      <Button onClick={toggleInvite} className={'!px-4 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                      <Button onClick={sendInvites} className={'!px-4 !bg-light_blue'} title={'Send Invite(s)'} />
                     </div>
                   </div>
               </div> : null
       }
       {
-         ( updatingSchedule || updatingProfile || changingPassword) ? <LoadingModal /> : null
+         (sendingInvite || updatingSchedule || updatingProfile || changingPassword) ? <LoadingModal /> : null
       }
     </div>
   )

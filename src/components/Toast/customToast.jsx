@@ -10,7 +10,6 @@ const customToastComponent = (msg, error = false) => {
 
   );
 
-  console.log(msg);
   if (error)
     toast(<CustomErrorToast mssg={msg} id={id}  />, {
       position: 'top-right',
