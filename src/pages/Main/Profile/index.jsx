@@ -28,6 +28,7 @@ import { useFormik } from 'formik';
 import LoadingModal from '../../../Loader/LoadingModal';
 import * as Yup from 'yup';
 import moment from 'moment';
+import PageLoading from '../../../Loader/PageLoading';
 
 
 export const CustomValidationError = ({ text='An error occured' }) => (
@@ -448,159 +449,191 @@ useEffect(() => {
           </div>
           <div className='h-[calc(100vh-120px)] overflow-y-auto flex-1'>
             { activeTab == 0 ? 
-            <form onSubmit={handleSubmit} className=" p-10 pt-7">
-              <div className="flex justify-between">
-                  <div id='patient' className="">
-                    <p className='font-semibold mb-1' >Profile Details</p>
-                    <p className='text-sm' >Manage your profile.</p>
+            <> 
+              {
+                loadingProfile ?
+                <div className="w-full h-full">
+                  <PageLoading adjustHeight />
+                </div> :
+                <form onSubmit={handleSubmit} className=" p-10 pt-7">
+                  <div className="flex justify-between">
+                      <div id='patient' className="">
+                        <p className='font-semibold mb-1' >Profile Details</p>
+                        <p className='text-sm' >Manage your profile.</p>
+                      </div>
                   </div>
-              </div>
-              <div className="mt-10 flex gap-5 items-center">
-                <img className='w-24' src={avatar} alt="user" />
-                <div className="grid gap-1">
-                  <p className='font-medium' >Profile Picture</p>
-                  <p className='text-text_color text-sm' >PNG, JPG, GIF max size of 5MB</p>
-                </div>
-              </div>
-              <div className="mt-10 grid grid-cols-2 gap-5 max-w-[600px]">
-                <div className="">
-                    <Input {...getFieldProps('first_name')} label={'First Name'} placeholder={'John Doe'} icon={<CiUser size={24} />}/>
-                </div>
-                <div className="">
-                    <Input {...getFieldProps('last_name')} label={'Last Name'} placeholder={'Doe'} icon={<CiUser size={24} />}/>
-                </div>
-                <div className=" col-span-2">
-                    <Input disabled={true} {...getFieldProps('email')} label={'Email Address'} placeholder={'support@lifebridge.com'} type={'email'} icon={<MdOutlineMarkEmailUnread size={22} />}/>
-                </div>
-                <div className=" col-span-2">
-                    <Input {...getFieldProps('phone_number')} label={'Phone Number'} placeholder={'Phone Number'} icon={<BiPhoneIncoming size={24} />}/>
-                </div>
-              </div>
-              <div className='w-fit mt-10' >
-                <Button type='submit' className={'px-14'} title={'Update Details'} />
-              </div>
-            </form>
+                  <div className="mt-10 flex gap-5 items-center">
+                    <img className='w-24' src={avatar} alt="user" />
+                    <div className="grid gap-1">
+                      <p className='font-medium' >Profile Picture</p>
+                      <p className='text-text_color text-sm' >PNG, JPG, GIF max size of 5MB</p>
+                    </div>
+                  </div>
+                  <div className="mt-10 grid grid-cols-2 gap-5 max-w-[600px]">
+                    <div className="">
+                        <Input {...getFieldProps('first_name')} label={'First Name'} placeholder={'John Doe'} icon={<CiUser size={24} />}/>
+                    </div>
+                    <div className="">
+                        <Input {...getFieldProps('last_name')} label={'Last Name'} placeholder={'Doe'} icon={<CiUser size={24} />}/>
+                    </div>
+                    <div className=" col-span-2">
+                        <Input disabled={true} {...getFieldProps('email')} label={'Email Address'} placeholder={'support@lifebridge.com'} type={'email'} icon={<MdOutlineMarkEmailUnread size={22} />}/>
+                    </div>
+                    <div className=" col-span-2">
+                        <Input {...getFieldProps('phone_number')} label={'Phone Number'} placeholder={'Phone Number'} icon={<BiPhoneIncoming size={24} />}/>
+                    </div>
+                  </div>
+                  <div className='w-fit mt-10' >
+                    <Button type='submit' className={'px-14'} title={'Update Details'} />
+                  </div>
+                </form>
+              }
+            </>
             : activeTab == 1 ?
-            <div className="p-7">
-              <div className="flex items-center justify-between gap-5">
-              <div className="">
-                  <p className='text-base font-semibold' >Departments</p>
-                  <p className='text-sm' >Set up and manage your respective departments.</p>
-              </div>
-              <Button onClick={toggleNewCategory} className={'!text-sm px-5 !w-fit !bg-light_blue'} title={'Add New Department'}  /> 
-              </div>
-              <div className="grid grid-cols-2 w-full gap-5 mt-7">
-                {
-                    departmentss?.map((item,idx) => (
-                        <div key={idx} className='border rounded-xl p-5 bg-[#fcfcfd]' >
-                            <p className='text-sm font-medium mb-1'>{item.name}</p>
-                            <p>{item?.admin_count} user(s)</p>
-                            <div className="mt-7 flex items-center justify-end gap-5">
-                                <div className="flex items-center gap-3">
-                                    <button onClick={toggleEditCategory}><FaEdit className='opacity-80'  size={16 }/></button>
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                }
-            </div>
-            </div>
-            : activeTab == 2 ?
-            <div className="p-7">
-              <div className="flex items-center justify-between gap-5">
-              <div className="">
-                  <p className='text-base font-semibold' >User Roles & Permissions</p>
-                  <p className='text-sm' >Manage user access levels and roles.</p>
-              </div>
-              <Button onClick={toggleInvite} className={'!text-sm px-5 !w-fit !bg-light_blue'} title={'Invite New User'}  /> 
-              </div>
-              <div className="mt-10">
-                <div className={`mt-5 text-[13px]`}>
-                  <div className="header grid grid-cols-9 gap-3 px-5 font-medium">
-                      <p className='col-span-3 line-clamp-1' >User Info</p>
-                      <p className='line-clamp-2 col-span-2' >Phone Number</p>
-                      <p className='line-clamp-2 col-span-3' >Assigned Role</p>
-                      <p className='' >Action</p>
-                  </div>
-                  <div className="data text-text_color mt-3">
-                      {
-                          subAdmins?.map((item,idx) => (
-                          <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} grid items-center grid-cols-9 gap-3 px-5 py-6 font-medium`}>
-                              <div className='col-span-3 overflow-x-hidden flex items-center gap-1' >
-                                  <img className='w-8' src={avatar} alt="user" />
-                                  <div className="">
-                                    <p className='line-clamp-1'>{item.full_name}</p>
-                                    <p className='line-clamp-1'>{item.email}</p>
-                                  </div>
-                                </div>
-                                <p className='line-clamp-1 col-span-2'>{item.phone_number}</p>
-                                <p className='line-clamp-1 col-span-3'>{item.role}</p>
-                              <button onClick={(e) => handleClickEllipses(e,idx)} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
-                                      { idx == activeItem ? 
-                                          <div className="z-10 origin-top-right absolute right-5 mt-2 w-40 rounded-md shadow-lg bg-white">
-                                              <div className="bg-white py-2 p-2 w-full relative z-10">
-                                                  <button 
-                                                      onClick={toggleChangeRole} 
-                                                      className="whitespace-nowrap flex items-center gap-2 w-full rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
-                                                      <BiEdit size={17} /> Change Role
-                                                  </button> 
-                                                  <button 
-                                                      onClick={null} 
-                                                      className="whitespace-nowrap flex items-center gap-2 text-red-700 w-full rounded-md px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
-                                                      <BiTrash size={17} /> Delete User
-                                                  </button> 
-                                              </div>
-                                          </div> : null
-                                      }
-                              </button>
-                          </div>
-                          )) 
-                      }
-
-                  </div>
+            <> 
+            {
+              loadingDepartments ?
+              <div className="w-full h-full">
+                <PageLoading adjustHeight />
+              </div> :
+              <div className="p-7">
+                <div className="flex items-center justify-between gap-5">
+                <div className="">
+                    <p className='text-base font-semibold' >Departments</p>
+                    <p className='text-sm' >Set up and manage your respective departments.</p>
                 </div>
+                <Button onClick={toggleNewCategory} className={'!text-sm px-5 !w-fit !bg-light_blue'} title={'Add New Department'}  /> 
+                </div>
+                <div className="grid grid-cols-2 w-full gap-5 mt-7">
+                  {
+                      departmentss?.map((item,idx) => (
+                          <div key={idx} className='border rounded-xl p-5 bg-[#fcfcfd]' >
+                              <p className='text-sm font-medium mb-1'>{item.name}</p>
+                              <p>{item?.admin_count} user(s)</p>
+                              <div className="mt-7 flex items-center justify-end gap-5">
+                                  <div className="flex items-center gap-3">
+                                      <button onClick={toggleEditCategory}><FaEdit className='opacity-80'  size={16 }/></button>
+                                  </div>
+                              </div>
+                          </div>
+                      ))
+                  }
               </div>
-            </div>
-            :activeTab == 3 ? 
-            <div className='p-10 pt-7'>
-                <div className="flex justify-between">
-                  <div id='patient' className="">
-                    <p className='font-semibold mb-1' >Appointment Settings</p>
-                    <p className='text-sm' >Set up and manage your appointment timeline and schedules.</p>
+              </div>
+            }
+          </>
+            : activeTab == 2 ?
+            <> 
+              {
+                loadingSubAdmins ?
+                <div className="w-full h-full">
+                  <PageLoading adjustHeight />
+                </div> :
+                <div className="p-7">
+                  <div className="flex items-center justify-between gap-5">
+                  <div className="">
+                      <p className='text-base font-semibold' >User Roles & Permissions</p>
+                      <p className='text-sm' >Manage user access levels and roles.</p>
                   </div>
-              </div>
-              <div className="grid grid-cols-2 gap-7 mt-5">
-                <Select value={schedules?.session_interval} onChange={e => setSchedules(prev => ({...prev, session_interval:e.target.value}))} className={'!rounded-3xl'} label={'Session Interval'} options={intervalOptions} icon={<BsClock size={22} />}/>
-                <Select value={schedules?.patient_per_slot} onChange={e => setSchedules(prev => ({...prev, patient_per_slot:e.target.value}))} className={'!rounded-3xl'} label={'No. of Patients allowed per slot'} options={slotOptions} icon={<BsPersonAdd size={22} />}/>
-              </div>
-              <div className="mt-5 grid gap-6">
-                {
-                  schedules?.schedules?.map((item,idx) => (
-                    <div key={idx} className="grid grid-cols-10 items-center gap-5">
-                      <div className="col-span-2 mt-3 flex items-center gap-1 text-sm">
-                        <input onChange={(e) => toggleDay(e.target.value, item.day_id)} defaultChecked={item.status == 'active'} type="checkbox" className='accent-primary' id={item.day} />
-                        <label htmlFor={item.day}>{item.day}</label>
+                  <Button onClick={toggleInvite} className={'!text-sm px-5 !w-fit !bg-light_blue'} title={'Invite New User'}  /> 
+                  </div>
+                  <div className="mt-10">
+                    <div className={`mt-5 text-[13px]`}>
+                      <div className="header grid grid-cols-9 gap-3 px-5 font-medium">
+                          <p className='col-span-3 line-clamp-1' >User Info</p>
+                          <p className='line-clamp-2 col-span-2' >Phone Number</p>
+                          <p className='line-clamp-2 col-span-3' >Assigned Role</p>
+                          <p className='' >Action</p>
                       </div>
-                      <div className="col-span-4">
-                        <Input 
-                        // defaultValue={item.start_time} 
-                          value={item.start_time}
-                          onChange={e => handleStartChange(e.target.value, item.day_id)}
-                         type='time' className='col-span-3 !rounded-3xl !py-2' containerClass='cols-'  label={'Start Time'} />
-                      </div>
-                      <div className="col-span-4">
-                        <Input value={item.end_time} 
-                        onChange={e => handleEndChange(e.target.value, item.day_id)}
-                        type='time' className='col-span-3 !rounded-3xl !py-2'  label={'End Time'} />
+                      <div className="data text-text_color mt-3">
+                          {
+                              subAdmins?.map((item,idx) => (
+                              <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} grid items-center grid-cols-9 gap-3 px-5 py-6 font-medium`}>
+                                  <div className='col-span-3 overflow-x-hidden flex items-center gap-1' >
+                                      <img className='w-8' src={avatar} alt="user" />
+                                      <div className="">
+                                        <p className='line-clamp-1'>{item.full_name}</p>
+                                        <p className='line-clamp-1'>{item.email}</p>
+                                      </div>
+                                    </div>
+                                    <p className='line-clamp-1 col-span-2'>{item.phone_number ?? '-'}</p>
+                                    <p className='line-clamp-1 col-span-3'>{item.role}</p>
+                                  <button onClick={(e) => handleClickEllipses(e,idx)} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
+                                          { idx == activeItem ? 
+                                              <div className="z-10 origin-top-right absolute right-5 mt-2 w-40 rounded-md shadow-lg bg-white">
+                                                  <div className="bg-white py-2 p-2 w-full relative z-10">
+                                                      <button 
+                                                          onClick={toggleChangeRole} 
+                                                          className="whitespace-nowrap flex items-center gap-2 w-full rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                                          <BiEdit size={17} /> Change Role
+                                                      </button> 
+                                                      <button 
+                                                          onClick={null} 
+                                                          className="whitespace-nowrap flex items-center gap-2 text-red-700 w-full rounded-md px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                                                          <BiTrash size={17} /> Delete User
+                                                      </button> 
+                                                  </div>
+                                              </div> : null
+                                          }
+                                  </button>
+                              </div>
+                              )) 
+                          }
+
                       </div>
                     </div>
-                  ))
-                }
+                  </div>
+                </div>
+              }
+          </>
+            :activeTab == 3 ? 
+            <> 
+            {
+              loadingSchedules ?
+              <div className="w-full h-full">
+                <PageLoading adjustHeight />
+              </div> :
+              <div className='p-10 pt-7'>
+                  <div className="flex justify-between">
+                    <div id='patient' className="">
+                      <p className='font-semibold mb-1' >Appointment Settings</p>
+                      <p className='text-sm' >Set up and manage your appointment timeline and schedules.</p>
+                    </div>
+                </div>
+                <div className="grid grid-cols-2 gap-7 mt-5">
+                  <Select value={schedules?.session_interval} onChange={e => setSchedules(prev => ({...prev, session_interval:e.target.value}))} className={'!rounded-3xl'} label={'Session Interval'} options={intervalOptions} icon={<BsClock size={22} />}/>
+                  <Select value={schedules?.patient_per_slot} onChange={e => setSchedules(prev => ({...prev, patient_per_slot:e.target.value}))} className={'!rounded-3xl'} label={'No. of Patients allowed per slot'} options={slotOptions} icon={<BsPersonAdd size={22} />}/>
+                </div>
+                <div className="mt-5 grid gap-6">
+                  {
+                    schedules?.schedules?.map((item,idx) => (
+                      <div key={idx} className="grid grid-cols-10 items-center gap-5">
+                        <div className="col-span-2 mt-3 flex items-center gap-1 text-sm">
+                          <input onChange={(e) => toggleDay(e.target.value, item.day_id)} defaultChecked={item.status == 'active'} type="checkbox" className='accent-primary' id={item.day} />
+                          <label htmlFor={item.day}>{item.day}</label>
+                        </div>
+                        <div className="col-span-4">
+                          <Input 
+                          // defaultValue={item.start_time} 
+                            value={item.start_time}
+                            onChange={e => handleStartChange(e.target.value, item.day_id)}
+                          type='time' className='col-span-3 !rounded-3xl !py-2' containerClass='cols-'  label={'Start Time'} />
+                        </div>
+                        <div className="col-span-4">
+                          <Input value={item.end_time} 
+                          onChange={e => handleEndChange(e.target.value, item.day_id)}
+                          type='time' className='col-span-3 !rounded-3xl !py-2'  label={'End Time'} />
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+                <div className='w-fit mt-10' >
+                  <Button onClick={updateSchedule} className={'px-14'} title={'Update Schedule'} />
+                </div>
               </div>
-              <div className='w-fit mt-10' >
-                <Button onClick={updateSchedule} className={'px-14'} title={'Update Schedule'} />
-              </div>
-            </div>
+            }
+          </>
             : activeTab == 4 ? 
             <div className=" p-10 pt-7">
               <div className="flex justify-between">
