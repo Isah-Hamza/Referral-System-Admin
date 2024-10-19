@@ -320,12 +320,20 @@ const updateSchedule = () => {
 
 const intervalOptions = [
   {
+    label:'15 Mins',
+    value:15,
+  },
+  {
     label:'30 Mins',
     value:30,
   },
   {
     label:'40 Mins',
     value:40,
+  },
+  {
+    label:'45 Mins',
+    value:45,
   },
   {
     label:'50 Mins',
