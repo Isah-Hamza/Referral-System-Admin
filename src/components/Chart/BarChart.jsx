@@ -172,6 +172,10 @@ export default function BarChart({ data:payload , test}){
           <Tooltip />
           {/* <Legend /> */}
           <Bar 
+            background={'#ff0000'}
+            style={{ }}
+            // capHeight={400}
+
             dataKey="pv"  
             barSize={22}
             fill="#18100F" 

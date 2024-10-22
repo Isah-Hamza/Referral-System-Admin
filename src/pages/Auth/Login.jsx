@@ -68,7 +68,7 @@ const { touched, errors, values, getFieldProps, handleSubmit } = useFormik({
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl max-w-[400px] py-6">
               <div className='px-7 border-red-600 border-l-8' >
                   <h4 className='font-semibold text-xl' >Welcome back, Admin</h4>
-                  <p className='text-sm text-text_color'>Manage referrers, earnings, bookings, and patient referrals efficiently today.</p>
+                  <p className='text-sm text-text_color'>Manage referrers, earnings, bookings, and patient referrals efficientlly today.</p>
               </div>
               <div className="px-7">
                 <div className="mt-10">
