@@ -86,6 +86,10 @@ const endpoints = {
    UPDATE_SCHEDULE:'/admin/update-schedule',
    GET_SUBADMINS:'/admin/all-admins',
    INVITE_SUBADMIN:'/admin/invite-subadmin',
+   CHANGE_ROLE:'/admin/change-role',
+   REMOVE_SUBADMIN:'/admin/delete-subadmin',
+
+
  },
  report:{
    REFERRAL_STATS:'/report/referral',

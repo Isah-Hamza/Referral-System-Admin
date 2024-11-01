@@ -45,6 +45,20 @@ const InviteSubAdmin = (data) => {
     .catch((error) => Promise.reject(error));
 }
 
+const RemoveSubAdmin = (data) => {
+  return axiosClient()
+    .post(`${endpoints.settings.REMOVE_SUBADMIN}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const ChangeRole = (data) => {
+  return axiosClient()
+    .post(`${endpoints.settings.CHANGE_ROLE}`, data)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const UpdateBank = (data) => {
   return axiosClient()
     .post(`${endpoints.settings.UPDATE_BANK}`, data)
@@ -69,6 +83,6 @@ const UpdatePassword = (data) => {
 
 export default {
   GetProfile, UpdateProfile, GetDepartments,UpdateBank,UpdatePassword, GetSchedule, UpdateSchedule,
-  GetSubAdmins, InviteSubAdmin
+  GetSubAdmins, InviteSubAdmin, ChangeRole, RemoveSubAdmin,
 };
 

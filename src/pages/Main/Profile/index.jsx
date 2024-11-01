@@ -54,6 +54,7 @@ const Profile = ({}) => {
   const [editCategory2, setEditCategory2] = useState(false);
 
   const [deleteCategory, setDeleteCategory] = useState(false);
+  const [selectedAdminId, setSelectedAdminId] = useState(0);
 
   const [activeItem, setActiveItem] = useState(-1);
   const [changeRole, setChangeRole] = useState(false);
@@ -66,6 +67,7 @@ const Profile = ({}) => {
   const [subAdmins, setSubAdmins] = useState([]);
   const [appointment, setAppointment] = useState();
   const [schedules, setSchedules] = useState();
+  const [selectedDept, setSelectedDept] = useState('');
   const [invites, setInvites] = useState([
     {
       email:"",
@@ -123,11 +125,17 @@ const Profile = ({}) => {
     },
   ]
 
-  const handleClickEllipses = (e,id) => {
-    if(activeItem == id)
+  const handleClickEllipses = (e,id,adminObj) => {
+  // console.log(adminObj);
+    if(activeItem == id){
       setActiveItem(-1);
+      setSelectedAdminId(adminObj);
+    }
     else
+    {
       setActiveItem(id);
+      setSelectedAdminId(adminObj);
+    }
   }
 
   const dummy = [
@@ -205,6 +213,28 @@ const Profile = ({}) => {
         setCategories(res.data.categories);
         }
     });
+
+    const { isLoading:changingRole, mutate:changeRoleMutate}  = useMutation(Settings.ChangeRole, {
+      onSuccess:res => {
+          toggleChangeRole()
+          successToast(res.data.message);
+          refetchSubAdmins();
+          },
+          onError:e => {
+              errorToast(e.message);
+          }
+      });
+
+    const { isLoading:deletingUser, mutate:deleteUserMutate}  = useMutation(Settings.RemoveSubAdmin, {
+      onSuccess:res => {
+          // toggleChangeRole()
+          successToast(res.data.message);
+          refetchSubAdmins();
+          },
+          onError:e => {
+              errorToast(e.message);
+          }
+      });
 
     const { isLoading:creatingCat, mutate:createCategory}  = useMutation(Tests.CreateCategory, {
       onSuccess:res => {
@@ -615,7 +645,7 @@ useEffect(() => {
                                     </div>
                                     <p className='line-clamp-1 col-span-2'>{item.phone_number ?? '-'}</p>
                                     <p className='line-clamp-1 col-span-3'>{item.role}</p>
-                                  <button onClick={(e) => handleClickEllipses(e,idx)} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
+                                  <button onClick={(e) => handleClickEllipses(e,idx,item)} className='relative z-50' ><FaEllipsisH className='opacity-60 ' />
                                           { idx == activeItem ? 
                                               <div className="z-10 origin-top-right absolute right-5 mt-2 w-40 rounded-md shadow-lg bg-white">
                                                   <div className="bg-white py-2 p-2 w-full relative z-10">
@@ -625,7 +655,7 @@ useEffect(() => {
                                                           <BiEdit size={17} /> Change Role
                                                       </button> 
                                                       <button 
-                                                          onClick={null} 
+                                                          onClick={() => deleteUserMutate({ subadmin_id: selectedAdminId?.admin_id})} 
                                                           className="whitespace-nowrap flex items-center gap-2 text-red-700 w-full rounded-md px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
                                                           <BiTrash size={17} /> Delete User
                                                       </button> 
@@ -856,13 +886,16 @@ useEffect(() => {
                 <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
                   <p className='font-medium text-base text-center mb-2'>User Permissions</p>
                   <img className='w-12 m-auto' src={stacey} alt="reactivate" />
-                  <p className='text-base font-semibold mb-3' >Diana Sipes</p>
+                  <p className='text-base font-semibold mb-3' >{selectedAdminId?.full_name}</p>
                   <div className="text-left">
-                    <Select label={'Roles'} options={[{label:'Radiology-Result Unit', value:'1'}]} icon={<RiBankCard2Line size={22} />}/>
+                    <Select onChange={e => setSelectedDept(e.target.value)} label={'Roles'} options={departmentsOption} icon={<RiBankCard2Line size={22} />}/>
                   </div>
                   <div className="mt-10 flex items-center gap-3">
                     <Button onClick={toggleChangeRole} className={'!px-4 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
-                    <Button onClick={toggleChangeRole} className={'!px-4 '} title={'Change Role'} />
+                    <Button onClick={() =>changeRoleMutate({
+                      subadmin_id:selectedAdminId.admin_id,
+                      role_id:selectedDept,
+                    })} className={'!px-4 '} title={'Change Role'} />
                   </div>
                 </div>
             </div> : null
@@ -913,7 +946,7 @@ useEffect(() => {
       }
 
       {
-         (sendingInvite || updatingSchedule || updatingProfile || changingPassword || updatingCat) ? <LoadingModal /> : null
+         (deletingUser || changingRole || sendingInvite || updatingSchedule || updatingProfile || changingPassword || updatingCat) ? <LoadingModal /> : null
       }
     </div>
   )
