@@ -49,10 +49,10 @@ const Appoint = ({appointmentStat,appointmentTrend}) => {
               </div>
               <div className="flex items-center justify-between gap-5 mt-5">
                   <p className='text-sm py-0.5' >Compared to last month</p>
-                  <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                  {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                       <span>View All</span>
                       <MdArrowForward />
-                  </button>
+                  </button> */}
               </div>
         </div>
         <div className="bg-white rounded-lg px-4 p-5 border col-span-3">

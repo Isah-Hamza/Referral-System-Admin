@@ -117,7 +117,6 @@ const Tests = () => {
                     errorToast(e.message);
                 }
             });
-            
 
         const viewTestDetails = (id) => {
             setId(id);
@@ -125,7 +124,6 @@ const Tests = () => {
         }
         
         
-
     useEffect(() => {
         if(id) viewTestMutate(id);
     }, [id])
@@ -152,7 +150,7 @@ const Tests = () => {
             <div className={`transition-all duration-300 absolute h-0.5 w-28 bg-primary left-7 bottom-0 ${acitveTab == 1 && '!left-[150px] w-28'} ${acitveTab == 2 && '!left-[260px] w-40'} `}></div>
             <div className="flex gap-14 text-sm pl-5">
                 {
-                    ['Pending Tests', 'All Tests','Test Categories'].map((item, idx) => (
+                    ['Pending Tests', 'All Tests'].map((item, idx) => (
                         <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
                     ))
                 }
@@ -219,27 +217,6 @@ const Tests = () => {
                 }
 
             </div>
-        </div>
-        <div className={`p-5 text-[13px] hidden ${(acitveTab == 2 ) && '!block'}`}>
-           <div className="grid grid-cols-3 gap-5">
-            {
-                categories?.map((item,idx) => (
-                    <div className='border rounded-xl p-5 bg-[#fcfcfd]' >
-                        <p className='line-clamp-2 text-base font-semibold'>{item.name}</p>
-                        <p>{item.tests_count} Test(s)</p>
-                        <div className="mt-7 flex items-center justify-between gap-5">
-                            <button onClick={() => navigate(`${item.cat_id}`, { state: { 'category':item } })} className='flex items-center gap-1 font-medium text-primary' >
-                                <span>View Details</span> <BsArrowRight /> 
-                            </button>
-                            <div className="flex items-center gap-3">
-                                <button onClick={() => { setCatTitle(item.name); toggleEditCategory(); setCatId(item.cat_id) }}><FaEdit className='opacity-80'  size={16 }/></button>
-                                <button onClick={toggleDeleteCategory}> <BsTrash size={15 } /></button>
-                            </div>
-                        </div>
-                    </div>
-                ))
-            }
-           </div>
         </div>
         {/* <div className={`mt-5 text-[13px] hidden ${acitveTab == 2 && '!block' }`}>
             <Calendar className={'min-w-[700px] !leading-[6] !text-lg'} onChange={setDate}  />
@@ -330,7 +307,7 @@ const Tests = () => {
                     </div>
                     <div className="bg-white flex flex-col overflow-y-auto">
                         <div className="p-3 flex items-center gap-5 justify-between">
-                            <p className='font-semibold opacity-90 '>Uploaded Tets</p>
+                            <p className='font-semibold opacity-90 '>Uploaded Tests</p>
                             <button className='underline'>upload more</button>
                         </div>
                         <div className="my-7 grid grid-cols-2 gap-3 gap-y-7 px-5">

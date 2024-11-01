@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import BarChart from '../../../components/Chart/BarChart'
 import { BsArrowUpRight } from 'react-icons/bs'
 import { FiEye } from 'react-icons/fi'
@@ -14,7 +14,7 @@ import Select from '../../../components/Inputs/Select';
 import Input from '../../../components/Inputs';
 import { BiArrowBack, BiSearch, BiTrash } from 'react-icons/bi';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import RebateService from '../../../services/Rebate';
 import moment from 'moment';
 import { ConvertToNaira } from '../../../utils/Helper';
@@ -30,6 +30,8 @@ const Rebate = () => {
     const [viewDetails, setViewDetails] = useState(false);
     const [reactivate, setReactivate] = useState(false);
     const [deactivate, setDeactivate] = useState(false);
+    const [id, setId] = useState(0);
+    const [rebateDetails, setRebateDetails] = useState(null);
 
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleReactivate = () => setReactivate(!reactivate);
@@ -121,7 +123,21 @@ const Rebate = () => {
         },
     ]
 
+    const viewRebateDetails = (id) => {
+        setId(id);
+        toggleViewDetails();
+    }
 
+                
+    const { isLoading:loadingRebateDetails, mutate:viewRebateMutate}  = useMutation(RebateService.RebateDetails, {
+        onSuccess:res => {
+            setRebateDetails(res.data);
+            }
+        });
+
+    useEffect(() => {
+        if(id) viewRebateMutate(id);
+    }, [id])
     
     if(loadingByTests || loadingByRebates || fetchingTests || fetchingPayouts){
         return <PageLoading adjustHeight={true} />
@@ -187,7 +203,7 @@ const Rebate = () => {
                     <p className='' >{item.referrer_name}</p>
                     <p className='' >{moment(item.date_earned).format('lll')}</p>
                     <p className='' >{ConvertToNaira(item.payout_amount)}</p>
-                    <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
+                    <p onClick={() => viewRebateDetails(item.trnx_id)} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 
                 }
@@ -196,140 +212,99 @@ const Rebate = () => {
         </div>
         }
        {viewDetails ? <div className="fixed inset-0 bg-black/70 flex justify-end">
-            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
-                <div className="flex items-center justify-between p-3 border-b">
-                    <p className='font-semibold' >Referral Details</p>
-                    <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
-                        <span>Close</span>
-                        <CgClose />
-                    </button>
-                </div>
-                <div className="flex flex-col gap-1 border-b p-5">
-                    {/* <img className='w-16 mx-auto' src={stacey} alt="stacey" /> */}
-                    <div className="flex gap-5 items-center">
-                        <img className='w-40' src={stacey} alt="stacey" />
-                        <div className="grid gap-2 text-sm">
-                            <p className=' font-semibold text-lg' >Stacey Jacobs</p>
-                            <div className="flex flex-col ">
-                                <p className='font-medium' >Email Address</p>
-                                <p className='line-clamp-1 underline text-light_blue' >earnestine_macejkovic89@yahoo.com</p>
-                            </div>
-                            <div className="flex flex-col">
-                                <p className='font-medium' >Phone Number</p>
-                                <p className='line-clamp-1' >299-470-4508</p>
-                            </div>
+            {
+                    loadingRebateDetails ? 
+                    <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
+                            <PageLoading />
                         </div>
-                    </div>
-                </div>
-                <div className="relative pt-5 border-b pb-5">
-                    <div className={`transition-all duration-300 absolute h-0.5 w-28 bg-primary left-2.5 bottom-0 ${acitveInnerTab == 1 && '!left-[131px] !w-20'} ${acitveInnerTab == 2 && '!left-[220px] w-[95px]'}`}></div>
-                    <div className="flex gap-7 text-sm pl-4">
-                        {
-                            ['Rebate History', 'Referrals', 'User Details'].map((item, idx) => (
-                                <button onClick={() => setActiveInnerTab(idx)} className={`opacity-70  ${acitveInnerTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
-                            ))
-                        }
-                    </div>
-                </div>
-                {acitveInnerTab !== 2 ? <div className="p-5 text-sm">
-                    <div className="mt-3 grid grid-cols-2 gap-5">
-                        {
-                            test_stats.map((item,idx) => (
-                                <div key={idx} className='border rounded-lg p-3' >
-                                    <p className='font-semibold text-lg'>{item.value}</p>
-                                    <p className='text-xs' >{item.title}</p>
+                        :
+                <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+                    
+                    <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+                        <div className="flex items-center justify-between p-3 border-b">
+                            <p className='font-semibold' >Referral Details</p>
+                            <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
+                                <span>Close</span>
+                                <CgClose />
+                            </button>
+                        </div>
+                        <div className="flex flex-col gap-1 border-b p-5">
+                            <img className='w-16 mx-auto' src={stacey} alt="stacey" />
+                            <p className='text-center font-medium' >{rebateDetails?.referrer_name}</p>
+                            {/* <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
+                                <div className="flex flex-col justify-center text-center">
+                                    <div className="mx-auto mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <MdOutlineEmail />
+                                    </div>
+                                    <p className='font-semibold' >Email Address</p>
+                                    <p className='line-clamp-1 underline text-light_blue' >{appointment?.patient?.patient_email}</p>
                                 </div>
-                            ))
-                        }
-                    </div>
-                </div> : null }
-                <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 0 && '!block'}`}>
-                    <div className="header grid grid-cols-6 gap-3 px-5 font-medium">
-                        <p className='line-clamp-1' >Date</p>
-                        <p className='line-clamp-1' >Referral</p>
-                        <p className='' >Test</p>
-                        <p className='' >Rebate</p>
-                        <p className='' >Status</p>
-                        <p className='' >Action</p>
-                    </div>
-                    <div className="data  text-text_color mt-3 mb-10">
-                        {
-                            dummyDetails.map((item,idx) => (
-                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-6  gap-3 px-5 py-6 font-medium`}>
-                            <p className='line-clamp-1' >{item.date}</p>
-                            <p className='line-clamp-1' >{item.refer}</p>
-                            <p className='' >{item.test}</p>
-                            <p className='' >{item.amount}</p>
-                            <p className='' >{item.status}</p>
-                            <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <BiPhoneIncoming />
+                                    </div>
+                                    <p className='font-semibold' >Phone Number</p>
+                                    <p className='line-clamp-1' >{appointment?.patient?.patient_phone}</p>
+                                </div>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    <div className="mb-2 text-center w-6 h-6 rounded-full grid place-content-center bg-custom_gray">
+                                        <BiUser />
+                                    </div>
+                                    <p className='font-semibold' >Gender</p>
+                                    <p className='line-clamp-1' >{appointment?.patient?.patient_gender}</p>
+                                </div>
+                            </div> */}
+                        </div>
+                        <div className="p-5 text-sm">
+                            <p className='font-semibold' >Test Type</p>
+                            <div className="mt-3  gap-2"> 
+                                <div  className="bg-white rounded-md border p-3 text-sm">
+                                    <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
+                                        <p className='line-clamp-2' >{rebateDetails?.test?.test_name}</p>
+                                        <p className='text-3xl opacity-70' >1</p>
+                                    </div>
+                                    <div className="flex text-sm items-center justify-between gap-2">
+                                        <p className='line-clamp-2' >{rebateDetails?.test?.test_category}</p>
+                                    
+                                        <p className='text-base font-medium' >{ConvertToNaira(Number(rebateDetails?.test?.test_amount))}</p>
+                                    </div>
+                                </div>
                             </div>
-                            )) 
-                        }
+                            <div className="mt-5 mb-16 grid grid-cols-2  gap-5 gap-y-7 text-sm">
 
-                    </div>
-                </div>
-                <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 1 && '!block'}`}>
-                    <div className="header grid grid-cols-5 gap-3 px-5 font-medium">
-                        <p className='line-clamp-1 col-span-2' >Referral</p>
-                        <p className='' >Recurring</p>
-                        <p className='' >Completed Tests</p>
-                        <p className='' >Action</p>
-                    </div>
-                    <div className="data  text-text_color mt-3 mb-10">
-                        {
-                            dummyDetails2.map((item,idx) => (
-                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-5 gap-3 px-5 py-6 font-medium`}>
-                            <p className='line-clamp-1 col-span-2' >{item.refer}</p>
-                            <p className='line-clamp-1' >{item.recurring}</p>
-                            <p className='' >{item.completed_tests}</p>
-                            <p onClick={null} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Test Date</p>
+                                    <p className=' ' >{moment(rebateDetails?.test_date).format('lll')}</p>
+                                </div>
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Result status</p>
+                                    <p className=' ' >{(rebateDetails?.result_status)}</p>
+                                </div>
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Rebate Amount</p>
+                                    <p className=' ' >{ConvertToNaira(rebateDetails?.rebate_amount)}</p>
+                                </div>
+                                <div className="flex flex-col ">
+                                    <p className='font-medium' >Rebate earned status</p>
+                                    <p className=' ' >{(rebateDetails?.rebate_earned_status)}</p>
+                                </div>
+                                {/* <div className="flex flex-col ">
+                                    <p className='font-medium' >Referrer's Name</p>
+                                    <div className="w-fit flex items-center gap-2 bg-custom_gray p-1 rounded-3xl pr-3">
+                                        <img className='w-7' src={stacey} alt="stacey" />
+                                        <p className=' ' >{appointment?.appointments?.referral_name}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className='font-medium' >Invitation Code</p>
+                                    <p className=' text-primary font-semibold' >{appointment?.appointments?.invite_code}</p>
+                                </div> */}
+
                             </div>
-                            )) 
-                        }
-
-                    </div>
-                </div>
-                <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 2 && '!block'} pb-5`}>
-                     <div className="px-5 text-base">
-                        <p className='text-base font-semibold'>Other Information</p>
-                        <div className="flex gap-2 mt-3 text-sm">
-                            <p className='font-medium' >Registration Date:</p>
-                            <p className='line-clamp-1' >July 12, 2024</p>
-                        </div>
-                        <div className="flex gap-2 mt-3 text-sm">
-                            <p className='font-medium' >Hospital Name:</p>
-                            <p className='line-clamp-1' >John Doe Hospital</p>
-                        </div>
-                        <div className="flex gap-2 mt-3 text-sm">
-                            <p className='font-medium' >Location:</p>
-                            <p className='line-clamp-1' >N/A</p>
-                        </div>
-                        <div className="flex gap-2 mt-3 text-sm">
-                            <p className='font-medium' >Professinal Title:</p>
-                            <p className='line-clamp-1' >Gynecologist</p>
                         </div>
                     </div>
-                    <div className="mt-10 px-5 text-base">
-                        <p className='text-base font-semibold'>Payout Information</p>
-                        <div className="flex gap-2 mt-3 text-sm">
-                            <p className='font-medium' >Account Name:</p>
-                            <p className='line-clamp-1' >John Doe</p>
-                        </div>
-                        <div className="flex gap-2 mt-3 text-sm">
-                            <p className='font-medium' >Account Number:</p>
-                            <p className='line-clamp-1' > 1234 - 5678 - 901</p>
-                        </div>
-                        <div className="flex gap-2 mt-3 text-sm">
-                            <p className='font-medium' >Bank Name:</p>
-                            <p className='line-clamp-1' >Lifebridge Bank PLC</p>
-                        </div>
-                        <button onClick={toggleDeactivate} className="flex text-red-700 font-semibold items-center gap-2 my-6 text-sm">
-                            <BiTrash size={18} className='' /> <span>Deactivate Account</span>
-                        </button>
-                    </div>
-                   
-                </div>
-            </div>
+                </div> 
+            }
         </div> : null}
         {
             reactivate ? 

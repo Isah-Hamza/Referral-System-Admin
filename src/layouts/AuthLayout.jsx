@@ -6,6 +6,7 @@ import seamless from '../assets/images/seamless-payout.png';
 import guarantee from '../assets/images/guarantee.png';
 import efficiency from '../assets/images/effective-management.png';
 import { BsArrowUpRight } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
 const AuthLayout = ({ children }) => {
   return (
@@ -17,14 +18,14 @@ const AuthLayout = ({ children }) => {
             {children}
         </div>
         <div className="flex justify-end gap-10 text-sm">
-            <button className="underline underline-offset-2 flex items-center gap-2 text-white">
+            <Link target='_blank' to={'https://referrer.lifebridgediagnostics.com/'} className="underline underline-offset-2 flex items-center gap-2 text-white">
                 <span>Referrer Login</span>
                 <span><BsArrowUpRight /></span>
-            </button>
-            <button className="underline underline-offset-2 flex items-center gap-2 text-white">
+            </Link>
+            <Link target='_blank' to={'https://lifebridgediagnostics.com/'} className="underline underline-offset-2 flex items-center gap-2 text-white">
                 <span>Main Website</span>
                 <span><BsArrowUpRight /></span>
-            </button>
+            </Link>
         </div>
     </div>
   )

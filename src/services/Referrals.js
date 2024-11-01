@@ -10,6 +10,13 @@ const GetReferrals = ({data_per_page=20,page=1}) => {
     .catch((error) => Promise.reject(error));
 }
 
+const SearchReferrals = ({data_per_page=20,page=1,query}) => {
+  return axiosClient()
+    .get(`${endpoints.referrals.SEARCH_REFERRALS}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const GetReferral = (ref_id) => {
   return axiosClient()
     .get(`${endpoints.referrals.GET_REFERRAL}?referral_id=${ref_id}`)
@@ -17,31 +24,10 @@ const GetReferral = (ref_id) => {
     .catch((error) => Promise.reject(error));
 }
 
-// const CreateReferrer = (data) => {
-//   return axiosClient()
-//     .post(`${endpoints.referrals.CREATE_REFERRAL}`, data)
-//     .then((res) => res)
-//     .catch((error) => Promise.reject(error));
-// }
-
-//   const GetTestCategories = () => {
-//     return axiosClient()
-//       .get(`${endpoints.referrals.TEST_CATEGORIES}`)
-//       .then((res) => res)
-//       .catch((error) => Promise.reject(error));
-//   }
-
-//   const GetTests = (cat_id) => {
-//     return axiosClient()
-//       .get(`${endpoints.referrals.CATEGORY_TESTS}/${cat_id}`)
-//       .then((res) => res)
-//       .catch((error) => Promise.reject(error));
-//   }
-
 
 
 export default {
-  GetReferrals,  GetReferral,
+  GetReferrals,  GetReferral, SearchReferrals
   // CreateReferrer, GetTestCategories, GetTestCategories, GetTests
 };
 

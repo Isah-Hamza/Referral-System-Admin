@@ -10,10 +10,24 @@ const GetUpcomingAppointments = ({data_per_page=20,page=1}) => {
     .catch((error) => Promise.reject(error));
 }
 
+const SearchUpcomingAppointments = ({data_per_page=20,page=1, query}) => {
+  return axiosClient()
+    .get(`${endpoints.appointments.SEARCH_UPCOMING_APPOINTMENTS}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 
 const GetAllAppointments = ({data_per_page=20,page=1}) => {
   return axiosClient()
     .get(`${endpoints.appointments.ALL_APPOINTMENTS}?data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const SearchAllAppointments = ({data_per_page=20,page=1,query}) => {
+  return axiosClient()
+    .get(`${endpoints.appointments.SEARCH_ALL_APPOINTMENTS}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
     .then((res) => res)
     .catch((error) => Promise.reject(error));
 }
@@ -72,6 +86,6 @@ const missAppoitment = (payload) => {
 
 export default {
   GetUpcomingAppointments, GetAllAppointments, GetAppointment, CheckIn, FollowUp, GetTimeSlots, Reschedule,
-  missAppoitment, MakePayment
+  missAppoitment, MakePayment, SearchUpcomingAppointments, SearchAllAppointments
 };
 

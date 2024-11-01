@@ -200,7 +200,7 @@ const Referrers = () => {
             </div>
             <div className="flex items-center gap-4">
                 <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
-                <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} />
+                {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
             </div>
         </div>
        { 
@@ -261,10 +261,10 @@ const Referrers = () => {
        <div className="fixed inset-0 bg-black/70 flex justify-end">
         {
             (loadingReferrer || loadingRebateHistory || loadingReferrerHistory) ? 
-            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+            <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
                 <PageLoading />
             </div> :
-            <div className="bg-white w-[450px] max-h-screen overflow-y-auto">
+            <div className="bg-white w-[500px] max-h-screen overflow-y-auto">
                 <div className="flex items-center justify-between p-3 border-b">
                     <p className='font-semibold' >Referral Details</p>
                     <button onClick={toggleViewDetails} className="font-medium flex items-center gap-2">
@@ -312,24 +312,22 @@ const Referrers = () => {
                     </div>
                 </div> : null }
                 <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 0 && '!block'}`}>
-                    <div className="header grid grid-cols-6 gap-3 px-5 font-medium">
+                    <div className="header grid grid-cols-5 gap-3 px-5 font-medium">
                         <p className='line-clamp-1' >Date</p>
                         <p className='line-clamp-1' >Referral</p>
                         <p className='' >Test</p>
                         <p className='' >Rebate</p>
                         <p className='' >Status</p>
-                        <p className='' >Action</p>
                     </div>
                     <div className="data  text-text_color mt-3 mb-10">
                         {
                             rebateHistory?.referrals?.map((item,idx) => (
-                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-6  gap-3 px-5 py-6 font-medium`}>
+                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-5  gap-3 px-5 py-6 font-medium`}>
                             <p className='line-clamp-1' >{item.date}</p>
                             <p className='line-clamp-1' >{item.patient_name}</p>
-                            <p className='' >{item.completed_test}</p>
+                            <p className='' >{item.completed_test ?? '-'}</p>
                             <p className='' >{ConvertToNaira(item.rebate_earned)}</p>
                             <p className='' >{item.status}</p>
-                            <p onClick={toggleViewDetails} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
                             </div>
                             )) 
                         }
@@ -337,20 +335,18 @@ const Referrers = () => {
                     </div>
                 </div>
                 <div className={`mt-5 text-[13px] hidden ${acitveInnerTab == 1 && '!block'}`}>
-                    <div className="header grid grid-cols-5 gap-3 px-5 font-medium">
+                    <div className="header grid grid-cols-4 gap-3 px-5 font-medium">
                         <p className='line-clamp-1 col-span-2' >Referral</p>
                         <p className='' >Recurring</p>
                         <p className='' >Completed Tests</p>
-                        <p className='' >Action</p>
                     </div>
                     <div className="data  text-text_color mt-3 mb-10">
                         {
                             referralHistory?.referrals?.map((item,idx) => (
-                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-5 gap-3 px-5 py-6 font-medium`}>
+                            <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-4 gap-3 px-5 py-6 font-medium`}>
                             <p className='line-clamp-1 col-span-2' >{item.patient_name}</p>
                             <p className='line-clamp-1' >{item.recur}</p>
                             <p className='' >{item.completed_tests}</p>
-                            <p onClick={null} className='font-semibold text-light_blue cursor-pointer pl-2' >View</p>
                             </div>
                             )) 
                         }

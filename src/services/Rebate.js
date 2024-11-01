@@ -17,6 +17,13 @@ const RebateByPayouts = ({data_per_page=20,page=1}) => {
     .catch((error) => Promise.reject(error));
 }
 
+const RebateDetails = (trnx_id) => {
+  return axiosClient()
+    .get(`${endpoints.rebate.REBATE_DETAILS}?rebate_id=${trnx_id}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 export default {
-  RebateByTests, RebateByPayouts
+  RebateByTests, RebateByPayouts, RebateDetails
 };

@@ -83,10 +83,11 @@ const Category = () => {
             price:item?.price,
             turn_around_time: item?.turn_around_time ?? '',
             instruction: item?.instruction ?? '',
+            unit:item?.unit ?? "",
 
         },
         onSubmit:values => {
-            console.log(values)
+            values.turn_around_time = Number(values.turn_around_time);
             updateTest(values);
         }
     })
@@ -133,7 +134,7 @@ const Category = () => {
   return (
    <div className='mt-3 w-full border border-custom_gray rounded-xl bg-white mb-7'>
         <div className="relative border-b p-3 flex justify-between items-center">
-            <button onClick={() => navigate('/tests')} className="flex items-center gap-2">
+            <button onClick={() => navigate('/settings')} className="flex items-center gap-2">
                 <BiArrowBack />
                 <p className='font-semibold text-base opacity-90' >{category?.name}</p>
             </button>
@@ -334,7 +335,7 @@ const Category = () => {
                     </div>
                     <div className="bg-white flex flex-col overflow-y-auto">
                         <div className="p-3 flex items-center gap-5 justify-between">
-                            <p className='font-semibold opacity-90 '>Uploaded Tets</p>
+                            <p className='font-semibold opacity-90 '>Uploaded Tests</p>
                             <button className='underline'>upload more</button>
                         </div>
                         <div className="my-7 grid grid-cols-2 gap-3 gap-y-7 px-5">
@@ -385,7 +386,10 @@ const Category = () => {
                 <div className="grid grid-cols-2 gap-5 text-left mt-7">
                     <div className="col-span-2"><Input {...getFieldProps('name')} placeholder={'Retinal Curvature Correction'} icon={<LuTestTube2 className='opacity-80 ' size={17} />} type={'text'} label={'Test'} /></div>
                     <Input {...getFieldProps('price')} placeholder={'₦20,000'} icon={<BiMoney className='opacity-80' size={17} />} type={'text'} label={'Price'} />
-                    <Input  {...getFieldProps('turn_around_time')} placeholder={''} icon={<BsClock className='opacity-80' size={17} />} type={'text'} label={'Turnaround Time'} />
+                    <Input type={'number'} {...getFieldProps('turn_around_time')} placeholder={''} icon={<BsClock className='opacity-80' size={17} />} label={'Turnaround Time'} />
+                    <div className="text-left col-span-2">
+                        <Select label={'Time Unit'} {...getFieldProps('unit')} className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'Days',value:'day' }, { label:'Minutes',value:'minute' }, {label:'Hours',value:'hour'},{label:'Months',value:'month'}]} />
+                    </div>
                     <div className="text-left col-span-2">
                         <p className='font-medium mb-1'>Instruction</p>
                         <textarea 
@@ -394,7 +398,6 @@ const Category = () => {
                             placeholder='Type your test instruction here..' />
                     </div>
                 </div>
-
                 <div className="mt-10 flex items-center gap-5 ">
                     <Button onClick={ newCategory ? toggleNewCategory : toggleEditCategory} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
                     <Button type='submit' onClick={ newCategory ? toggleNewCategory : null} className={'!px-5 !bg-black text-white'} title={`${newCategory ? 'Add Test' : 'Save Changes'}`} />

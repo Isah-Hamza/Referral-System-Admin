@@ -365,7 +365,7 @@ const Results = () => {
                     </div>
                     <div className="bg-white flex flex-col overflow-y-auto">
                         <div className="p-3 flex items-center gap-5 justify-between">
-                            <p className='font-semibold opacity-90 '>Uploaded Tets</p>
+                            <p className='font-semibold opacity-90 '>Uploaded Tests</p>
                             <button className='underline'>upload more</button>
                         </div>
 

@@ -50,7 +50,7 @@ const UserLog = () => {
             </div>
             <div className="flex items-center gap-4">
                 <Input value={query} onChange={e => setQuery(e.target.value)} className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
-                <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} />
+                {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
             </div>
         </div>
         <div className="mt-5 text-[13px]">
@@ -59,7 +59,7 @@ const UserLog = () => {
                 <p className='line-clamp-1' >Activity Type</p>
                 <p className='' >Done By</p>
                 <p className='text-center' >Action Performed</p>
-                <p className='pl-3' >user/Entity</p>
+                <p className='pl-3' >User/Entity</p>
             </div>
             <div className="data  text-text_color mt-3">
                 {

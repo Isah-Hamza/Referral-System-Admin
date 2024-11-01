@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { BarChart as RechartBarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
-export default function BarChart({ data:payload , test}){
+export default function BarChart({ data:payload , test, type}){
   const data = [
     {
       name: 'Jan',
@@ -75,6 +75,51 @@ export default function BarChart({ data:payload , test}){
       uv: 1890,
       pv: payload?.Dec,
       amt: 2181,
+    },
+  ];
+
+  const weeklyData = [
+    {
+      name: 'Mon',
+      uv: 4000,
+      pv: payload?.Mon,
+      amt: 2400,
+    },
+    {
+      name: 'Tue',
+      uv: 3000,
+      pv: payload?.Tue,
+      amt: 2210,
+    },
+    {
+      name: 'Wed',
+      uv: 2000,
+      pv: payload?.Wed,
+      amt: 2290,
+    },
+    {
+      name: 'Thu',
+      uv: 2780,
+      pv: payload?.Thu,
+      amt: 2000,
+    },
+    {
+      name: 'Fri',
+      uv: 1890,
+      pv: payload?.fri,
+      amt: 2181,
+    },
+    {
+      name: 'Sat',
+      uv: 2390,
+      pv: payload?.Sat,
+      amt: 2500,
+    },
+    {
+      name: 'Sun',
+      uv: 2390,
+      pv: payload?.Sun,
+      amt: 2500,
     },
   ];
 
@@ -158,7 +203,7 @@ export default function BarChart({ data:payload , test}){
         <RechartBarChart
           width={500}
           height={300}
-          data={test ? testData : data}
+          data={test ? testData : type=='weekly' ? weeklyData : data}
           margin={{
             top: 5,
             right: 30,

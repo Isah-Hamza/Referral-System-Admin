@@ -5,7 +5,7 @@ import { CiLocationOn, CiUser } from 'react-icons/ci';
 import { MdOutlineLockPerson, MdOutlineMarkEmailUnread, MdTitle } from 'react-icons/md';
 import { PiTestTube, PiTestTubeFill, PiUserCircleDuotone } from "react-icons/pi";
 import Select from '../../../components/Inputs/Select';
-import { BsCaretRight, BsClock, BsFillTrashFill, BsPersonAdd } from 'react-icons/bs';
+import { BsArrowRight, BsCaretRight, BsClock, BsFillTrashFill, BsPersonAdd, BsTrash } from 'react-icons/bs';
 import Button from '../../../components/Button'
 import success from '../../../assets/images/success.svg';
 import { IoIosArrowForward } from "react-icons/io";
@@ -29,6 +29,8 @@ import LoadingModal from '../../../Loader/LoadingModal';
 import * as Yup from 'yup';
 import moment from 'moment';
 import PageLoading from '../../../Loader/PageLoading';
+import Tests from '../../../services/Tests';
+import { useNavigate } from 'react-router-dom';
 
 
 export const CustomValidationError = ({ text='An error occured' }) => (
@@ -36,20 +38,31 @@ export const CustomValidationError = ({ text='An error occured' }) => (
 )
 
 const Profile = ({}) => {
+  const navigate = useNavigate();
   const adminID = window.localStorage.getItem('referrer-admin-id');
+  const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
+  console.log(department)
   const [activeTab, setActiveTab] = useState(0);
   const [successful, setSuccessful] = useState(false);
   const [deleteAccount, setDeleteAccount] = useState(false);
   const [invite, setInvite] = useState(false);
 
   const [newCategory, setNewCategory] = useState(false);
+  const [newCategory2, setNewCategory2] = useState(false);
+
   const [editCategory, setEditCategory] = useState(false);
+  const [editCategory2, setEditCategory2] = useState(false);
+
+  const [deleteCategory, setDeleteCategory] = useState(false);
+
   const [activeItem, setActiveItem] = useState(-1);
   const [changeRole, setChangeRole] = useState(false);
   const [adminData, setAdminData] = useState();
   const [departmentss, setDepartments] = useState([])
   const [departmentsOption, setDepartmentOption] = useState([])
-
+  const [categories, setCategories] = useState([]);
+  const [catTitle, setCatTitle] = useState('');
+  const [catId, setCatId] = useState('');
   const [subAdmins, setSubAdmins] = useState([]);
   const [appointment, setAppointment] = useState();
   const [schedules, setSchedules] = useState();
@@ -64,10 +77,15 @@ const Profile = ({}) => {
   const toggleDeleteAccount = () => setDeleteAccount(!deleteAccount);
 
   const toggleNewCategory = () => setNewCategory(!newCategory);
+  const toggleNewCategory2 = () => setNewCategory2(!newCategory2);
+
   const toggleEditCategory = () => setEditCategory(!editCategory);
+  const toggleEditCategory2 = () => setEditCategory2(!editCategory2);
+
+  const toggleDeleteCategory = () => setDeleteCategory(!deleteCategory);
   const toggleChangeRole = () => setChangeRole(!changeRole);
   const toggleInvite = () => setInvite(!invite);
-  
+
   const tabs = [
     {
       title:'General',
@@ -75,33 +93,33 @@ const Profile = ({}) => {
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
     },
     {
-      title:'Departments',
-      icon:<PiTestTube size={20} />,
-      onClick:() => { document.querySelector('#patient').scrollIntoView() },
-    },
-    {
-      title:'User Roles & Permissions',
-      icon:<PiUserCircleDuotone size={20} />,
-      onClick:() => { document.querySelector('#patient').scrollIntoView() },
-    },
-    {
-      title:'Appointment Settings',
-      icon:<BiCalendar size={20} />,
-      onClick:() => { document.querySelector('#patient').scrollIntoView() },
-    },
-    {
-      title:'Payout Settings',
-      icon:<RiBankCardLine size={20} />,
-      onClick:() => {
-        console.log('clicked')
-        document.querySelector('#test').scrollIntoView()},
-    },
-    {
       title:'Account & Security',
       icon:<GrSettingsOption size={20} />,
       onClick:() => {
         console.log('clicked')
         document.querySelector('#test').scrollIntoView()},
+    },
+    {
+      title:'Test Categories',
+      icon:<LuTestTube2 size={20} />,
+    },
+    {
+      title:'Appointment Settings',
+      icon:<BiCalendar size={20} />,
+      onClick:() => { document.querySelector('#patient').scrollIntoView() },
+      hide: department !=='Administration',
+    },
+    {
+      title:'Departments',
+      icon:<PiTestTube size={20} />,
+      onClick:() => { document.querySelector('#patient').scrollIntoView() },
+      hide: department !=='Administration',
+    },
+    {
+      title:'User Roles & Permissions',
+      icon:<PiUserCircleDuotone size={20} />,
+      onClick:() => { document.querySelector('#patient').scrollIntoView() },
+      hide: department !=='Administration',
     },
   ]
 
@@ -181,6 +199,24 @@ const Profile = ({}) => {
     },
     onError:e=>errorToast('error fetching departments'),
   })
+
+  const { isLoading:loadingCategories, refetch:refetchCategories}  = useQuery('categories',Tests.Categories, {
+    onSuccess:res => {
+        setCategories(res.data.categories);
+        }
+    });
+
+    const { isLoading:creatingCat, mutate:createCategory}  = useMutation(Tests.CreateCategory, {
+      onSuccess:res => {
+          toggleNewCategory2();
+          successToast(res.data.message);
+          setCatTitle('');
+          refetchCategories();
+          },
+          onError:e => {
+              errorToast(e.message);
+          }
+      });
 
   const { isLoading:loadingSubAdmins , refetch:refetchSubAdmins} = useQuery('sub-admins', ()=>Settings.GetSubAdmins(),{
     onSuccess:res => {
@@ -280,6 +316,19 @@ const { mutate:sendInviteMutate, isLoading:sendingInvite } = useMutation(Setting
     errorToast(firstError); 
   }
 })
+
+const { isLoading:updatingCat, mutate:updateCategory}  = useMutation(Tests.UpdateCategory, {
+  onSuccess:res => {
+      toggleEditCategory2();
+      successToast(res.data.message);
+      setCatTitle('');
+      refetchCategories();
+      },
+      onError:e => {
+          errorToast(e.message);
+      }
+  });
+  
 
 const updateSchedule = () => {
   const data = {
@@ -446,8 +495,8 @@ useEffect(() => {
             <div className="grid gap-5 max-w-[250px]">
               {
                 tabs.map((item,idx) => (
-                  <div onClick={() =>{ setActiveTab(idx); item.onClick()}} key={idx} 
-                        className={`hover:font-medium hover:opacity-90 cursor-pointer text-sm flex items-center gap-2 rounded-3xl p-3 px-6 opacity-60 ${idx == activeTab && '!opacity-100 bg-[#f9f9f9] !font-medium'}`} >
+                  <div  onClick={() =>{ setActiveTab(idx); item.onClick()}} key={idx} 
+                        className={`hover:font-medium hover:opacity-90 cursor-pointer text-sm flex items-center gap-2 rounded-3xl p-3 px-6 opacity-60 ${idx == activeTab && '!opacity-100 bg-[#f9f9f9] !font-medium'} ${item.hide ? '!hidden' : 'block'}`} >
                     <span>{item.icon}</span>
                     <span>{item.title}</span>
                   </div>
@@ -497,7 +546,7 @@ useEffect(() => {
                 </form>
               }
             </>
-            : activeTab == 1 ?
+            : activeTab == 4 ?
             <> 
             {
               loadingDepartments ?
@@ -530,7 +579,7 @@ useEffect(() => {
               </div>
             }
           </>
-            : activeTab == 2 ?
+            : activeTab == 5 ?
             <> 
               {
                 loadingSubAdmins ?
@@ -594,6 +643,40 @@ useEffect(() => {
                 </div>
               }
           </>
+            :activeTab == 2 ? 
+            <> 
+            {
+              loadingCategories ?
+              <div className="w-full h-full">
+                <PageLoading adjustHeight />
+              </div> :
+              <div className={`p-5 text-[13px]`}>
+                <div className="mb-7">
+                      <p className='text-base font-semibold' >Test Categories</p>
+                      <p className='text-sm' >View/manage test categoreis.</p>
+                  </div>
+                <div className="grid grid-cols-3 gap-5">
+                {
+                    categories?.map((item,idx) => (
+                        <div key={idx} className='border rounded-xl p-5 bg-[#fcfcfd]' >
+                            <p className='line-clamp-2 text-base font-semibold'>{item.name}</p>
+                            <p>{item.tests_count} Test(s)</p>
+                            <div className="mt-7 flex items-center justify-between gap-5">
+                                <button onClick={() => navigate(`${item.cat_id}`, { state: { 'category':item } })} className='flex items-center gap-1 font-medium text-primary' >
+                                    <span>View Details</span> <BsArrowRight /> 
+                                </button>
+                                <div className="flex items-center gap-3">
+                                    <button onClick={() => { setCatTitle(item.name); toggleEditCategory2(); setCatId(item.cat_id) }}><FaEdit className='opacity-80'  size={16 }/></button>
+                                    <button onClick={toggleDeleteCategory}> <FaEyeSlash color='red' size={15 } /></button>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                }
+                </div>
+           </div>
+            }
+          </>
             :activeTab == 3 ? 
             <> 
             {
@@ -642,30 +725,8 @@ useEffect(() => {
               </div>
             }
           </>
-            : activeTab == 4 ? 
-            <div className=" p-10 pt-7">
-              <div className="flex justify-between">
-                  <div id='patient' className="">
-                    <p className='font-semibold mb-1' >Payout Settings</p>
-                    <p className='text-sm' >Manage your bank information.</p>
-                  </div>
-              </div>
-              <div className="mt-5 grid gap-5 max-w-[600px]">
-                <div className="mt-5">
-                      <Select label={'Bank Name'} options={[]} icon={<RiBankCard2Line size={22} />}/>
-                  </div>
-                  <div className="">
-                      <Input label={'Account Number'}  placeholder={'0232322951'} icon={<MdOutlineAccountTree size={22} />}/>
-                  </div>
-                  <div className="">
-                      <Input label={'Account Name'}  placeholder={'Isah Hamza Onipe'} icon={<BiUser size={22} />}/>
-                  </div>
-              </div>
-              <div className='w-fit mt-10' >
-                <Button className={'px-14'} title={'Update'} />
-              </div>
-            </div>
-            : activeTab == 5 ?
+
+            : activeTab == 1 ?
             <form onSubmit={handleSubmitPassword} className=" p-10 pt-7">
               <div className="flex justify-between">
                   <div id='patient' className="">
@@ -760,6 +821,36 @@ useEffect(() => {
         </div> : null
       }
       {
+          newCategory2 || editCategory2 ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+          <div className="bg-white w-[400px] p-5 rounded-xl flex flex-col justify-center text-center gap-3 text-sm">
+              <p className='text-base font-semibold' >{newCategory2 ? 'Add New' : 'Edit'} Category</p>
+              <div className="grid gap-5 text-left mt-7">
+                  <Input value={catTitle} onChange={e=>setCatTitle(e.target.value)} placeholder={'Enter title here..'} icon={<LuTestTube2 className='opacity-80' size={17} />} type={'text'} label={'Category Title'} />
+              </div>
+
+              <div className="mt-10 flex items-center gap-5 ">
+                  <Button onClick={ newCategory2 ? toggleNewCategory2 : toggleEditCategory2} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                  <Button disabled={!catTitle} onClick={ newCategory2 ?  ()=> createCategory({name:catTitle,dept_id:"330004"}) : ()=> updateCategory({name:catTitle,cat_id:catId})} className={'!px-5 !bg-black text-white'} title={`${newCategory2 ? 'Add Category' : 'Save Changes'}`} />
+              </div>
+          </div>
+      </div> : null
+        }
+        
+        {
+            deleteCategory ? 
+               <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+                 <div className="bg-white w-[350px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                   <img className='w-12 m-auto' src={deleteIcon} alt="delete" />
+                   <p className='text-base font-semibold' >Disable This Category</p>
+                   <p className='text-sm' >Are you sure you want to disable this category?</p>
+                   <div className="mt-10 flex items-center gap-5 ">
+                   <Button onClick={toggleDeleteCategory} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                   <Button onClick={toggleDeleteCategory} className={'!px-5 bg-red-600'} title={'Yes Proceed'} />
+                   </div>
+                 </div>
+               </div> : null
+        }
+      {
         changeRole ? 
             <div className='bg-black/50 fixed inset-0 grid place-content-center' >
                 <div className="bg-white w-[400px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
@@ -820,8 +911,9 @@ useEffect(() => {
                   </div>
               </div> : null
       }
+
       {
-         (sendingInvite || updatingSchedule || updatingProfile || changingPassword) ? <LoadingModal /> : null
+         (sendingInvite || updatingSchedule || updatingProfile || changingPassword || updatingCat) ? <LoadingModal /> : null
       }
     </div>
   )

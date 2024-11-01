@@ -23,6 +23,7 @@ const Referrals = () => {
     const [referrals, setReferrals] = useState([]);
     const [referral, setReferral] = useState({});
     const [refCode, setRefCode ] = useState(null);
+    const [search, setSearch] = useState('');
 
     const [viewDetails, setViewDetails] = useState(false);
     const [newReferral, setNewReferral] = useState(() => query == 'true' ? true : false);
@@ -55,6 +56,13 @@ const Referrals = () => {
             }
         });
         
+    const { isLoading:searching, mutate:searchMutate }  = useMutation(ReferralService.SearchReferrals, {
+        onSuccess:res => {
+            setReferrals(res.data.referrals);
+            console.log(res.data);
+            }
+        });
+        
     const { isLoading:loadingReferral, mutate:getReferral}  = useMutation(['referral', refCode],ReferralService.GetReferral, {
         enabled:false,
         onSuccess:res => {
@@ -63,13 +71,20 @@ const Referrals = () => {
         });
 
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        console.log(search)
+        searchMutate({query:search});
+    }
+
+
     useEffect(() => {
         getReferral(refCode);
     }, [refCode])
     
         
 
-    if(loadingReferrals || refetchingReferrals){
+    if(loadingReferrals || refetchingReferrals || searching){
         return <PageLoading adjustHeight={true} />
     }
 
@@ -87,8 +102,10 @@ const Referrals = () => {
                 }
             </div>
             <div className="flex items-center gap-4">
-                <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
-                <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} />
+                <form onSubmit={handleSearch}>
+                    <Input type={search} value={search} onChange={e => setSearch(e.target.value)} className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
+                </form>
+                {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
             </div>
         </div>
         <div className="mt-5 text-[13px]">

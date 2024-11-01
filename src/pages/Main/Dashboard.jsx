@@ -37,10 +37,12 @@ const Dashboard = () => {
     const [dashboardStats, setDashboardStats] = useState(null);
     const [referralStats, setReferralStats] = useState(null);
     const [rebateChart, setRebateChart] = useState(null);
+    const [rebateChartWeekly, setRebateChartWeekly] = useState(null);
     const [appointmentStats,setAppointmentStats] = useState(null);
     const [date, setDate] = useState(() => moment().format('y-MM-DD'));
     const [todayBooking, setTodayBooking] = useState([]);
     const [testStats, setTestStats] = useState(null);
+    const [tab, setTab] = useState(0);
 
     const navigate = useNavigate('');
 
@@ -78,6 +80,12 @@ const Dashboard = () => {
         }
     });
     
+    const { isLoading:loadingRebateChartWeekly }  = useQuery('rebate-chart-weekly', () => DashboardServices.GetRebateChartWeekly(admin_id), {
+    onSuccess:res => {
+        setRebateChartWeekly(res.data.rebate_earnings);
+        }
+    });
+    
     const { isLoading:loadingAppointmentStats }  = useQuery('appointment-stats', () => DashboardServices.GetAppointmentStats(admin_id), {
     onSuccess:res => {
         setAppointmentStats(res.data);
@@ -104,10 +112,10 @@ const Dashboard = () => {
                     <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
                     <div className="flex items-center justify-between gap-5 mt-5">
                         <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
-                        <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                        {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                             <span>View All</span>
                             <MdArrowForward />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
@@ -115,10 +123,10 @@ const Dashboard = () => {
                     <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrers}</p>
                     <div className="flex items-center justify-between gap-5 mt-5">
                         <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
-                        <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                        {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                             <span>View All</span>
                             <MdArrowForward />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
@@ -227,8 +235,8 @@ const Dashboard = () => {
                         <p className='font-semibold' >Rebate Earning</p>
                         <div className="flex items-center bg-custom_gray p-1 px-1.5 rounded-3xl">
                             {
-                                ['Monthly','Weekly','Daily'].map((item,idx) => (
-                                    <button className={`rounded-3xl text-sm px-4  py-1.5 ${idx ==0 && 'shadow bg-white'}`} >{item}</button>
+                                ['Monthly','Weekly'].map((item,idx) => (
+                                    <button onClick={() => setTab(idx)} className={`rounded-3xl text-sm px-4  py-1.5 ${idx == tab && 'shadow bg-white'}`} >{item}</button>
                                 ))
                             }
                         </div>
@@ -236,7 +244,11 @@ const Dashboard = () => {
                     <div className="p-5">
                         <p className='text-sm' >Earning history displayed per month</p>
                         <div className="mt-5 -ml-10 min-w-[400px] h-[250px]">
-                            <BarChart data = {rebateChart?.rebate_earnings} />
+                            {
+                                tab == 0 ? 
+                                <BarChart data = {rebateChart?.rebate_earnings} /> :
+                                <BarChart data = {rebateChartWeekly} type={'weekly'} />
+                            }
                         </div>
                     </div>
                 </div>: null}
@@ -248,10 +260,10 @@ const Dashboard = () => {
                             <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
                                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
-                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                         <div className="w-full bg-white rounded-lg p-5 border">
@@ -259,10 +271,10 @@ const Dashboard = () => {
                             <p className='font-semibold text-xl my-3'>{appointmentStats?.total_appointments}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
                                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
-                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     </div>
@@ -276,10 +288,10 @@ const Dashboard = () => {
                             <p className='font-semibold text-xl my-3'>{testStats?.total_medical_tests}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
                                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
-                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                         <div className="w-full bg-white rounded-lg p-5 border">
@@ -287,10 +299,10 @@ const Dashboard = () => {
                             <p className='font-semibold text-xl my-3'>{testStats?.total_category}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
                                 <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
-                                <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
+                                {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     </div>
@@ -331,7 +343,7 @@ const Dashboard = () => {
                         <p>{appointmentStats?.total_appointments} Booked</p>
                         <p>{appointmentStats?.paid_appointments} Paid</p>
                         <p>{appointmentStats?.appointments_today} Scheduled For Today</p>
-                        <Button className={'opacity-90 mt-10 text-sm'}  title='View More Details' />
+                        <Button onClick={() => navigate('/appointments')} className={'opacity-90 mt-10 text-sm'}  title='View More Details' />
                     </div>
                         <img className='absolute right-0 bottom-0' src={design} alt="" />
                 </div>

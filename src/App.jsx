@@ -46,7 +46,7 @@ function App() {
       Component:Tests,
     },
     {
-      path:'/tests/:id',
+      path:'/settings/:test-id',
       Component:Category,
     },
     {

@@ -58,6 +58,7 @@ const Appointments = () => {
     const toggleMarkPaid = () => setMarkPaid(!markPaid);
     const toggleShowMore = () => setShowMore(!showMore);
     const toggleMissed = () => setMissed(!missed);
+    const [search, setSearch] = useState('');
 
 
     const {handleSubmit, values, getFieldProps, setFieldValue} = useFormik({
@@ -204,6 +205,26 @@ const Appointments = () => {
             setId(id);
             toggleViewDetails();
         }
+
+        const { isLoading:searchingUpcoming, mutate:searchUpcoming }  = useMutation(AppointmentService.SearchUpcomingAppointments, {
+            onSuccess:res => {
+                setUpcoming(res.data.appointments);
+                }
+            });
+
+        const { isLoading:searchingAll, mutate:searchAll }  = useMutation(AppointmentService.SearchAllAppointments, {
+            onSuccess:res => {
+                setAll(res.data.appointments);
+                }
+            });
+
+    
+            const handleSearch = (e) => {
+                e.preventDefault();
+                acitveTab == 0 ? searchUpcoming({query:search}) : searchAll({query:search})
+            }
+        
+        
         
 
     useEffect(() => {
@@ -215,7 +236,7 @@ const Appointments = () => {
     }, [values.date])
 
 
-    if(loadingUpcoming || refetchingUpcoming || loadingAll || refetchingAll){
+    if(loadingUpcoming || refetchingUpcoming || loadingAll || refetchingAll || searchingAll || searchingUpcoming){
         return <PageLoading adjustHeight={true} />
     }
 
@@ -229,18 +250,17 @@ const Appointments = () => {
             <div className="flex gap-14 text-sm pl-5">
                 {
                     ['Upcoming Appointments', 'All Appointments'].map((item, idx) => (
-                        <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
+                        <button onClick={() => {setActiveTab(idx); setSearch('')}} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
                     ))
                 }
             </div>
-            <div className="flex items-center gap-4">
-                <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
+            <form onSubmit={handleSearch} className="flex items-center gap-4">
+                <Input value={search} onChange={e => setSearch(e.target.value)} className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
                 {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
-            </div>
+            </form>
         </div>
         <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 ) && '!block'}`}>
-            <div className="header grid grid-cols-9 gap-3 px-5 font-medium">
-                <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
+            <div className="header grid grid-cols-8 gap-3 px-5 font-medium">
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Email Address</p>
                 <p className='col-span-2 line-clamp-1' >Appointment Date</p>
@@ -249,8 +269,7 @@ const Appointments = () => {
             <div className="data text-text_color mt-3">
                 {
                     upcoming?.map((item,idx) => (
-                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-9  gap-3 px-5 py-6 font-medium`}>
-                    <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-8  gap-3 px-5 py-6 font-medium`}>
                     <p className='col-span-2 line-clamp-1' >{item.patient_name}</p>
                     <p className='col-span-2 line-clamp-1 pr-5' >{item.patient_email}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.appointment_date).format('lll')}</p> 
@@ -262,8 +281,7 @@ const Appointments = () => {
             </div>
         </div>
         <div className={`mt-5 text-[13px] hidden ${(acitveTab == 1 ) && '!block'}`}>
-            <div className="header grid grid-cols-11 gap-3 px-5 font-medium">
-                <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
+            <div className="header grid grid-cols-10 gap-3 px-5 font-medium">
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Appointment Schedule</p>
                 <p className='col-span-2 line-clamp-1' >Amount Paid</p>
@@ -273,8 +291,7 @@ const Appointments = () => {
             <div className="data text-text_color mt-3">
                 {
                     all?.map((item,idx) => (
-                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-11  gap-3 px-5 py-6 font-medium`}>
-                    <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-10  gap-3 px-5 py-6 font-medium`}>
                     <p className='col-span-2 line-clamp-1' >{item.patient_name}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.appointment_date).format('lll')}</p> 
                     <p className='col-span-2 line-clamp-1 pr-5' >{item.amount ?? '-'}</p>
