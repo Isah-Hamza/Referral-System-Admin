@@ -109,19 +109,19 @@ const Profile = ({}) => {
       title:'Appointment Settings',
       icon:<BiCalendar size={20} />,
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
-      hide: department !=='Administration',
+      hide: ['Administration','Audit Unit'].indexOf(department) < 0,
     },
     {
       title:'Departments',
       icon:<PiTestTube size={20} />,
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
-      hide: department !=='Administration',
+      hide: ['Administration','Audit Unit'].indexOf(department) < 0,
     },
     {
       title:'User Roles & Permissions',
       icon:<PiUserCircleDuotone size={20} />,
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
-      hide: department !=='Administration',
+      hide: ['Administration','Audit Unit'].indexOf(department) < 0,
     },
   ]
 
