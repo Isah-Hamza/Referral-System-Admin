@@ -10,6 +10,20 @@ const RebateByTests = ({data_per_page=20,page=1}) => {
     .catch((error) => Promise.reject(error));
 }
 
+const SearchRebateByTests = ({data_per_page=20,page=1,query=""}) => {
+  return axiosClient()
+    .get(`${endpoints.rebate.SEARCH_REBATE_BY_TESTS}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const SearchRebateByPayouts = ({data_per_page=20,page=1,query=""}) => {
+  return axiosClient()
+    .get(`${endpoints.rebate.SEARCH_REBATE_BY_PAYOUT}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const RebateByPayouts = ({data_per_page=20,page=1}) => {
   return axiosClient()
     .get(`${endpoints.rebate.REBATE_BY_PAYOUTS}?data_per_page=${data_per_page}&page=${page}`)
@@ -25,5 +39,5 @@ const RebateDetails = (trnx_id) => {
 }
 
 export default {
-  RebateByTests, RebateByPayouts, RebateDetails
+  RebateByTests, RebateByPayouts, RebateDetails, SearchRebateByTests, SearchRebateByPayouts
 };

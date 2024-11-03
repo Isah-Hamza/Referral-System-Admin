@@ -224,8 +224,6 @@ const Appointments = () => {
                 acitveTab == 0 ? searchUpcoming({query:search}) : searchAll({query:search})
             }
         
-        
-        
 
     useEffect(() => {
         if(id) getAppoinment(id);
@@ -256,7 +254,6 @@ const Appointments = () => {
             </div>
             <form onSubmit={handleSearch} className="flex items-center gap-4">
                 <Input value={search} onChange={e => setSearch(e.target.value)} className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
-                {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
             </form>
         </div>
         <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 ) && '!block'}`}>

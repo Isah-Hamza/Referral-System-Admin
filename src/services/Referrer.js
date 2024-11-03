@@ -10,6 +10,20 @@ const GetActiveReferrers = ({data_per_page=20,page=1}) => {
     .catch((error) => Promise.reject(error));
 }
 
+const SearchActiveReferrers = ({query="",data_per_page=20,page=1}) => {
+  return axiosClient()
+    .get(`${endpoints.referrers.SEARCH_ACTIVE_REFERRERS}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const SearchInactiveReferrers = ({query="",data_per_page=20,page=1}) => {
+  return axiosClient()
+    .get(`${endpoints.referrers.SEARCH_INACTIVE_REFERRERS}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const GetInactiveReferrers = ({data_per_page=20,page=1}) => {
   return axiosClient()
     .get(`${endpoints.referrers.GET_INACTIVE_REFERRERS}?data_per_page=${data_per_page}&page=${page}`)
@@ -55,6 +69,6 @@ const DeactivateReferrer = (data) => {
 
 export default {
   GetActiveReferrers, GetInactiveReferrers, GetReferrerDetails, ActivateReferrer, DeactivateReferrer,
-  GetRebateHistory, GetReferralHistory
+  GetRebateHistory, GetReferralHistory, SearchActiveReferrers, SearchInactiveReferrers
 };
 

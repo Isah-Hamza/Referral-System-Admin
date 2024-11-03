@@ -33,6 +33,8 @@ const Results = () => {
     const [awaitingResults, setAwaitingResults] = useState([]); 
     const [page,setPage] = useState(1);
     const [details, setDetails] = useState({});
+    const [search, setSearch] = useState('');
+
 
     const [viewDetails, setViewDetails] = useState(false);
     const [uploadTest, setUploadTest] = useState(false);
@@ -85,21 +87,6 @@ const Results = () => {
         }
         });
 
-    const downloadFile = (fileUrl, fileName) => {
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = 'blob';
-        xhr.onload = function () {
-        var a = document.createElement('a'); // create html element anchor
-        a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
-        a.download = fileName; // Set the file name.
-        a.style.display = 'none'; // set anchor as hidden
-        document.body.appendChild(a);
-        a.click();
-        a.remove()
-        };
-        xhr.open('GET', fileUrl);
-        xhr.send();
-    }
             
     const sendResult = () => {
         const formData = new FormData();
@@ -108,12 +95,31 @@ const Results = () => {
         uploadResult(formData);
     }
 
+    
+    const { isLoading:searchingAwaiting, mutate:searchAwaiting }  = useMutation(Result.SearchAwaitingResults, {
+        onSuccess:res => {
+            setAwaitingResults(res.data.awaitingResults);
+            }
+        });
+    
+    const { isLoading:searchingUploaded, mutate:searchUploaded }  = useMutation(Result.SearchUploadedResults, {
+        onSuccess:res => {
+            setUploadedResults(res.data.uploadedResults);
+            }
+        });
+
+        
+    const handleSearch = (e) => {
+        e.preventDefault();
+        acitveTab == 0 ? searchAwaiting({query:search}) : searchUploaded({query:search})
+    }
+
     useEffect(() => {
         if(id)   viewResult(id);
     }, [id])
 
 
-    if(loadingAwaiting || loadingUploaded){
+    if(loadingAwaiting || loadingUploaded || searchingAwaiting || searchingUploaded){
         return <PageLoading adjustHeight={true} />
     }
 
@@ -126,18 +132,13 @@ const Results = () => {
             <div className="flex gap-14 text-sm pl-5">
                 {
                     ['Awaiting Results', 'Uploaded Results'].map((item, idx) => (
-                        <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
+                        <button onClick={() => {setActiveTab(idx); setSearch('')}} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
                     ))
                 }
             </div>
-            <div className="flex items-center gap-4">
-               {
-               acitveTab  != 2 ? <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} /> :
-                <button onClick={toggleNewCategory} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-10 py-2 text-sm">
-                    <span>Add New Category</span>
-                </button>}
-                {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
-            </div>
+            <form onSubmit={handleSearch} className="flex items-center gap-4">
+                <Input value={search} onChange={e => setSearch(e.target.value)} className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
+            </form>
         </div>
         <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 ) && '!block'}`}>
             <div className="header grid grid-cols-12 gap-3 px-5 font-medium">

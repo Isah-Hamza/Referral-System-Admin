@@ -31,6 +31,8 @@ const endpoints = {
   },
   referrers:{
     GET_ACTIVE_REFERRERS:'/admin/all-active-referrers',
+    SEARCH_ACTIVE_REFERRERS:'/admin/search/all-active-referrers',
+    SEARCH_INACTIVE_REFERRERS:'/admin/search/all-inactive-referrers',
     GET_INACTIVE_REFERRERS:'/admin/all-inactive-referrers',
     GET_REFERRER_DETAILS:'/admin/referrer-details',
     DEACTIVATE_REFERRER:'/admin/deactivate-referrer',
@@ -67,14 +69,20 @@ const endpoints = {
   },
   result:{
     AWAITING_RESULTS:'/admin/result/awaiting',
+    SEARCH_AWAITING_RESULTS:'/admin/result/search-awaiting',
+    SEARCH_UPLOADED_RESULTS:'/admin/result/search-uploaded',
     UPLOADED_RESULTS:'/admin/result/uploaded',
     RESULT_DETAILS:'/admin/result/details',
     UPLOAD_RESULT:'/admin/result/upload',
+
   },
   rebate:{
     REBATE_BY_TESTS:'/admin/rebate-by-test', 
+    SEARCH_REBATE_BY_TESTS:'/admin/rebate-test-search', 
+    SEARCH_REBATE_BY_PAYOUT:'/admin/rebate-payout-search', 
     REBATE_BY_PAYOUTS:'/admin/rebate-by-payout', 
     REBATE_DETAILS:'/admin/rebate-details', 
+
   },
  settings:{
    ADMIN_PROFILE:'/admin/profile',

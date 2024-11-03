@@ -32,6 +32,8 @@ const Rebate = () => {
     const [deactivate, setDeactivate] = useState(false);
     const [id, setId] = useState(0);
     const [rebateDetails, setRebateDetails] = useState(null);
+    const [search, setSearch] = useState('');
+
 
     const toggleViewDetails = () => setViewDetails(!viewDetails);
     const toggleReactivate = () => setReactivate(!reactivate);
@@ -46,82 +48,29 @@ const Rebate = () => {
         }
     })
 
+    
+    const { isLoading:searchingByTest, mutate:searchByTest }  = useMutation(RebateService.SearchRebateByTests, {
+        onSuccess:res => {
+            setTestRebates(res.data.rebates);
+            }
+        });
+    
+    const { isLoading:searchingByPayout, mutate:searchByPayout }  = useMutation(RebateService.SearchRebateByPayouts, {
+        onSuccess:res => {
+            setPayoutRebates(res.data.rebates);
+            }
+        });
+
     const { isLoading:loadingByRebates, isFetching:fetchingPayouts } = useQuery('rebate-by-payouts', () => RebateService.RebateByPayouts(page), {
         onSuccess:res => {
             setPayoutRebates(res.data.rebates);
         }
     })
 
- 
-    const dummyDetails = [
-        {
-            date:'09/10/2024',
-            refer:'Stanley Stacey',
-            test:3,
-            status:'paid',
-            amount:'₦80,000',
-        },
-        {
-            date:'12/01/2023',
-            refer:'Stanley Stacey',
-            test:3,
-            status:'paid',
-            amount:'₦28,000',
-        },
-        {
-            date:'09/10/2024',
-            refer:'Hilda Bacci',
-            test:3,
-            status:'pending',
-            amount:'₦44,000',
-        },
-        {
-            date:'12/01/2023',
-            refer:'Emunne Ijeoma',
-            test:3,
-            status:'pending',
-            amount:'₦26,500',
-        },
-    ]
-
-    const dummyDetails2 = [
-        {
-            refer:'Stanley Stacey',
-            recurring:3,
-            completed_tests:390,
-        },
-        {
-            refer:'Beverly Weimann',
-            recurring:1,
-            completed_tests:21,
-        },
-        {
-            refer:'Ramona Witting',
-            recurring:5,
-            completed_tests:11,
-        },
-        {
-            refer:'Jerome Prohaska',
-            recurring:9,
-            completed_tests:35,
-        },
-        {
-            refer:'Brendan Schoen',
-            recurring:27,
-            completed_tests:44,
-        },
-    ]
-
-    const test_stats = [
-        {
-            title:'Total Rebate Earned',
-            value:'₦2,800,000',
-        },
-        {
-            title:'Pending Rebate',
-            value:'₦280,000',
-        },
-    ]
+    const handleSearch = (e) => {
+        e.preventDefault();
+        acitveTab == 0 ? searchByTest({query:search}) : searchByPayout({query:search})
+    }
 
     const viewRebateDetails = (id) => {
         setId(id);
@@ -139,7 +88,7 @@ const Rebate = () => {
         if(id) viewRebateMutate(id);
     }, [id])
     
-    if(loadingByTests || loadingByRebates || fetchingTests || fetchingPayouts){
+    if(loadingByTests || loadingByRebates || fetchingTests || fetchingPayouts || searchingByTest || searchingByPayout){
         return <PageLoading adjustHeight={true} />
     }
 
@@ -151,14 +100,14 @@ const Rebate = () => {
             <div className="flex gap-14 text-sm pl-10">
                 {
                     ['By Tests', 'By Payouts'].map((item, idx) => (
-                        <button onClick={() => setActiveTab(idx)} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
+                        <button onClick={() => {setActiveTab(idx);setSearch('')}} className={`opacity-70  ${acitveTab==idx && 'font-semibold opacity-100'}`} key={idx}>{item}</button>
                     ))
                 }
             </div>
-            <div className="flex items-center gap-4">
-                <Input className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
+            <form onSubmit={handleSearch} className="flex items-center gap-4">
+                <Input value={search} onChange={e => setSearch(e.target.value)} className={'!rounded-3xl !py-2.5 !min-w-[300px]'} placeholder={'Type user name here...'} icon={<BiSearch size={20} className='text-custom_gray' />} />
                 {/* <Select className={'!rounded-3xl !py-2.5 !min-w-[120px]'} options={[ { label:'All Status',value:null }, {label:'Completed',value:''},{label:'Ongoing'}]} /> */}
-            </div>
+            </form>
         </div>
        { 
         acitveTab == 1 ? <div className="mt-5 text-[13px]">
