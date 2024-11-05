@@ -141,8 +141,7 @@ const Results = () => {
             </form>
         </div>
         <div className={`mt-5 text-[13px] hidden ${(acitveTab == 0 ) && '!block'}`}>
-            <div className="header grid grid-cols-12 gap-3 px-5 font-medium">
-                <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
+            <div className="header grid grid-cols-11 gap-3 px-5 font-medium">
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Assigned Test</p>
                 <p className='col-span-2 line-clamp-1' >Test Date</p>
@@ -153,8 +152,7 @@ const Results = () => {
             <div className="data text-text_color mt-3">
                 {
                     awaitingResults?.map((item,idx) => (
-                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-12 gap-3 px-5 py-6 font-medium`}>
-                    <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-11 gap-3 px-5 py-6 font-medium`}>
                     <p className='col-span-2 line-clamp-1' >{item.full_name}</p>
                     <p className='col-span-2 line-clamp-1' >{item.assigned_test}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.test_date).format('lll')}</p> 
@@ -172,8 +170,7 @@ const Results = () => {
             </div>
         </div>
         <div className={`mt-5 text-[13px] hidden ${(acitveTab == 1 ) && '!block'}`}>
-            <div className="header grid grid-cols-11 gap-3 px-5 font-medium">
-                <p className='mt-1' > <input type="checkbox" className="accent-primary" id="" /></p>
+            <div className="header grid grid-cols-10 gap-3 px-5 font-medium">
                 <p className='col-span-2 line-clamp-1' >Full Name</p>
                 <p className='col-span-2 line-clamp-1' >Assigned Test</p>
                 <p className='col-span-2 line-clamp-1' >Test Date</p>
@@ -183,8 +180,7 @@ const Results = () => {
             <div className="data text-text_color mt-3">
                 {
                     uploadedResults?.map((item,idx) => (
-                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-11  gap-3 px-5 py-6 font-medium`}>
-                    <p className='' > <input type="checkbox" className="accent-primary" id="" /></p>
+                    <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-10  gap-3 px-5 py-6 font-medium`}>
                     <p className='col-span-2 line-clamp-1' >{item.full_name}</p>
                     <p className='col-span-2 line-clamp-1' >{item.assigned_test}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.test_date).format('lll')}</p> 

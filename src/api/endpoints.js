@@ -55,6 +55,8 @@ const endpoints = {
   },
   tests:{
     TESTS:'/admin/test/all',
+    SEARCH_ALL:'/admin/test/search-all',
+    SEARCH_PENDING:'/admin/test/search-pending',
     PENDING_TESTS:'/admin/test/pending',
     MARK_TEST_COMPLETE:'/admin/test/mark-complete',
     TEST_DETAIL:'/admin/test/details',

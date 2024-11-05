@@ -104,12 +104,13 @@ const Profile = ({}) => {
     {
       title:'Test Categories',
       icon:<LuTestTube2 size={20} />,
+      hide: ['Administration','Audit Unit','Laboratory Services','General','Laboratory Services' ,'Radiology'].indexOf(department) < 0,
     },
     {
       title:'Appointment Settings',
       icon:<BiCalendar size={20} />,
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
-      hide: ['Administration','Audit Unit'].indexOf(department) < 0,
+      hide: ['Administration','Audit Unit','Customer Service Unit'].indexOf(department) < 0,
     },
     {
       title:'Departments',
@@ -681,10 +682,16 @@ useEffect(() => {
                 <PageLoading adjustHeight />
               </div> :
               <div className={`p-5 text-[13px]`}>
-                <div className="mb-7">
-                      <p className='text-base font-semibold' >Test Categories</p>
-                      <p className='text-sm' >View/manage test categoreis.</p>
-                  </div>
+                <div className="mb-7 flex items-center justify-between gap-10" >
+                  <div className="">
+                        <p className='text-base font-semibold' >Test Categories</p>
+                        <p className='text-sm' >View/manage test categoreis.</p>
+                    </div>
+                    <button onClick={toggleNewCategory2} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-10 py-2 text-sm">
+                    <span>Add New Category</span>
+                </button>
+
+                </div>
                 <div className="grid grid-cols-3 gap-5">
                 {
                     categories?.map((item,idx) => (
@@ -853,7 +860,10 @@ useEffect(() => {
       {
           newCategory2 || editCategory2 ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
           <div className="bg-white w-[400px] p-5 rounded-xl flex flex-col justify-center text-center gap-3 text-sm">
+            <div className="flex items-center justify-between gap-10">
               <p className='text-base font-semibold' >{newCategory2 ? 'Add New' : 'Edit'} Category</p>
+             
+            </div>
               <div className="grid gap-5 text-left mt-7">
                   <Input value={catTitle} onChange={e=>setCatTitle(e.target.value)} placeholder={'Enter title here..'} icon={<LuTestTube2 className='opacity-80' size={17} />} type={'text'} label={'Category Title'} />
               </div>
@@ -946,7 +956,7 @@ useEffect(() => {
       }
 
       {
-         (deletingUser || changingRole || sendingInvite || updatingSchedule || updatingProfile || changingPassword || updatingCat) ? <LoadingModal /> : null
+         (deletingUser || changingRole || sendingInvite || updatingSchedule || updatingProfile || changingPassword || updatingCat || creatingCat ) ? <LoadingModal /> : null
       }
     </div>
   )

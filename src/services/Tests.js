@@ -17,6 +17,20 @@ const GetAllTests = ({data_per_page=20,page=1}) => {
     .catch((error) => Promise.reject(error));
 }
 
+const SearchAllTests = ({query="",data_per_page=20,page=1}) => {
+  return axiosClient()
+    .get(`${endpoints.tests.SEARCH_ALL}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
+const SearchPendingTests = ({query="",data_per_page=20,page=1}) => {
+  return axiosClient()
+    .get(`${endpoints.tests.SEARCH_PENDING}?query=${query}&data_per_page=${data_per_page}&page=${page}`)
+    .then((res) => res)
+    .catch((error) => Promise.reject(error));
+}
+
 const TestDetail = (lab_id) => {
   return axiosClient()
     .get(`${endpoints.tests.TEST_DETAIL}?lab_id=${lab_id}`)
@@ -89,5 +103,5 @@ const EnableTest = (cat_id) => {
 
 export default {
   GetPendingTests,GetAllTests, MarkComplete, TestDetail, CreateCategory, Categories,Departments,
-  UpdateCategory, UpdateTest, DisableTest, EnableTest, CategoryTests
+  UpdateCategory, UpdateTest, DisableTest, EnableTest, CategoryTests, SearchAllTests, SearchPendingTests
 };
