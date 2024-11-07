@@ -104,25 +104,25 @@ const Profile = ({}) => {
     {
       title:'Test Categories',
       icon:<LuTestTube2 size={20} />,
-      hide: ['Administration','Audit Unit','Laboratory Services - Test Unit','General - Test Unit','Laboratory Services - Test Unit' ,'Radiology - Test Unit'].indexOf(department) < 0,
+      hide: ['Administration','Audit Unit','Admin Unit','Laboratory Services - Test Unit','General - Test Unit','Laboratory Services - Test Unit' ,'Radiology - Test Unit'].indexOf(department) < 0,
     },
     {
       title:'Appointment Settings',
       icon:<BiCalendar size={20} />,
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
-      hide: ['Administration','Audit Unit','Customer Service Unit'].indexOf(department) < 0,
+      hide: ['Administration','Audit Unit','Admin Unit','Customer Service Unit'].indexOf(department) < 0,
     },
     {
       title:'Departments',
       icon:<PiTestTube size={20} />,
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
-      hide: ['Administration','Audit Unit'].indexOf(department) < 0,
+      hide: ['Administration','Audit Unit','Admin Unit'].indexOf(department) < 0,
     },
     {
       title:'User Roles & Permissions',
       icon:<PiUserCircleDuotone size={20} />,
       onClick:() => { document.querySelector('#patient').scrollIntoView() },
-      hide: ['Administration','Audit Unit'].indexOf(department) < 0,
+      hide: ['Administration','Audit Unit','Admin Unit'].indexOf(department) < 0,
     },
   ]
 
@@ -590,7 +590,7 @@ useEffect(() => {
                     <p className='text-base font-semibold' >Departments</p>
                     <p className='text-sm' >Set up and manage your respective departments.</p>
                 </div>
-                <Button onClick={toggleNewCategory} className={'!text-sm px-5 !w-fit !bg-light_blue'} title={'Add New Department'}  /> 
+                {/* <Button onClick={toggleNewCategory} className={'!text-sm px-5 !w-fit !bg-light_blue'} title={'Add New Department'}  />  */}
                 </div>
                 <div className="grid grid-cols-2 w-full gap-5 mt-7">
                   {
@@ -600,7 +600,7 @@ useEffect(() => {
                               <p>{item?.admin_count} user(s)</p>
                               <div className="mt-7 flex items-center justify-end gap-5">
                                   <div className="flex items-center gap-3">
-                                      <button onClick={toggleEditCategory}><FaEdit className='opacity-80'  size={16 }/></button>
+                                      {/* <button onClick={toggleEditCategory}><FaEdit className='opacity-80'  size={16 }/></button> */}
                                   </div>
                               </div>
                           </div>

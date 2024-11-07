@@ -57,12 +57,18 @@ const Results = () => {
 
          
     const { isLoading:loadingAwaiting, isRefetching:refetchingAwaiting, refetch:refetchAwaiting}  = useQuery('awaiting', () => Result.GetAwaitingResults({ page }), {
+        cacheTime:0,
+        keepPreviousData:false,
+        staleTime:0,
         onSuccess:res => {
             setAwaitingResults(res.data.awaitingResults);
             }
         });
          
     const { isLoading:loadingUploaded, isRefetching:refetchingUploaded, refetch:refetchUploaded}  = useQuery('uploaded', () => Result.GetUploadedResults({ page }), {
+        cacheTime:0,
+        keepPreviousData:false,
+        staleTime:0,
         onSuccess:res => {
             setUploadedResults(res.data.uploadedResults);
             }
@@ -78,9 +84,11 @@ const Results = () => {
     const { isLoading:uploadingResult, mutate:uploadResult}  = useMutation(Result.UploadResult, {
         onSuccess:res => {
             successToast(res.data.message);
-            setViewDetails(false);
             toggleUploadTest();
-            acitveTab == 0 ? refetchAwaiting() : refetchUploaded();
+            refetchAwaiting();
+            refetchUploaded();
+            setViewDetails(false);
+            viewResult(id);
             },
         onError:e => {
             errorToast(e.errors.result_file[0]);
@@ -384,7 +392,7 @@ const Results = () => {
                 <button onClick={toggleViewTest} className="max-h-[30px] ml-auto flex items-center gap-1 border-b">
                 <CgClose color='white' />
                     close</button>
-                <img className='flex-1 max-h-[90dvh] mx-auto mb-5' src={details?.result_image} alt="preview" />       
+                <img className='flex-1 max-h-[80dvh] min-h-[200px] min-w-[200px] bg-gray-100 mx-auto mb-5 ' src={details?.result_image} alt="preview" />       
                 {/* <button onClick={() => downloadFile(details?.result_image,`${details?.full_name} Test Result`)} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</button>             */}
                 <a download target='_blank' href={details?.result_image} className="max-h-[45px] -mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</a>            
             </div> : null

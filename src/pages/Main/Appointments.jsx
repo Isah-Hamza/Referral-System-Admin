@@ -136,6 +136,8 @@ const Appointments = () => {
             toggleCheckin();
             successToast(res.data.message);
             getAppoinment(id);
+            refetchingAll();
+            refetchingUpcoming();
         },
         onError: e=> {
             errorToast(e.errors);

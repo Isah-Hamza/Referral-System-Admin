@@ -48,7 +48,7 @@ const MainLayout = () => {
                 header:'Dashboard Overview',
                 sub:'Manage and analyze your patient statistics.',
             },
-            deparments:['Audit Unit', 'Administration','Test Unit','General - Test Unit', 'Laboratory Services - Test Unit', 'Radiology - Test Unit', 'Result Unit','Customer Service Unit','Rebate Unit']
+            deparments:['Admin Unit','Audit Unit', 'Administration','Test Unit','General - Test Unit', 'Laboratory Services - Test Unit', 'Radiology - Test Unit', 'Result Unit','Customer Service Unit','Rebate Unit']
         },
         {
             title:'Referrals',
@@ -58,7 +58,7 @@ const MainLayout = () => {
                 header:'Referrals Management',
                 sub:'View a list of all referred patients, including those who have not yet booked an appointment.',
             },
-            deparments:['Audit Unit', 'Administration','Customer Service Unit']
+            deparments:['Admin Unit','Audit Unit', 'Administration','Customer Service Unit']
 
         },
         {
@@ -69,7 +69,7 @@ const MainLayout = () => {
                 header:'Appointment Management',
                 sub:'Track and manage all patient appointments.',
             },
-            deparments:['Audit Unit', 'Administration','Customer Service Unit']
+            deparments:['Admin Unit','Audit Unit', 'Administration','Customer Service Unit']
 
         },
         {
@@ -80,7 +80,7 @@ const MainLayout = () => {
                 header:'Test Management',
                 sub:'Manage and organize test categories and sub-tests.',
             },
-            deparments:['Audit Unit', 'Administration','Test Unit', 'General - Test Unit','Laboratory Services - Test Unit' ,'Radiology - Test Unit']
+            deparments:['Admin Unit','Audit Unit', 'Administration','Test Unit', 'General - Test Unit','Laboratory Services - Test Unit' ,'Radiology - Test Unit']
 
         },
         {
@@ -91,7 +91,7 @@ const MainLayout = () => {
                 header:'Result Management',
                 sub:'View a list of all patients with completed tests.',
             },
-            deparments:['Audit Unit', 'Administration','Result Unit']
+            deparments:['Admin Unit','Audit Unit', 'Administration','Result Unit']
 
         },
         {
@@ -102,7 +102,7 @@ const MainLayout = () => {
                 header:'Referrer Management',
                 sub:'View and manage a list of all registered doctors/referrers.',
             },
-            deparments:['Audit Unit', 'Administration']
+            deparments:['Admin Unit','Audit Unit', 'Administration']
 
         },
         {
@@ -113,7 +113,7 @@ const MainLayout = () => {
                 header:'Rebate Management',
                 sub:'View the total amount earned by referrers.',
             },
-            deparments:['Audit Unit', 'Administration','Rebate Unit']
+            deparments:['Admin Unit','Audit Unit', 'Administration','Rebate Unit']
         },
         {
             title:'Reports',
@@ -122,7 +122,7 @@ const MainLayout = () => {
                 header:'Reports',
                 sub:'View comprehensive reports',
             },
-            deparments:['Audit Unit', 'Administration'],
+            deparments:['Admin Unit','Audit Unit', 'Administration'],
             icon:FcStatistics,
         },
         {
@@ -132,7 +132,7 @@ const MainLayout = () => {
                 header:'User Log',
                 sub:'View comprehensive reports',
             },
-            deparments:['Audit Unit', 'Administration'],
+            deparments:['Admin Unit','Audit Unit', 'Administration'],
             icon:BsActivity,
         },
         {
@@ -143,7 +143,7 @@ const MainLayout = () => {
                 header:'Settings',
                 sub:'Customize and manage your account and platform preferences.',
             },
-            deparments:['Audit Unit', 'Administration','Test Unit', 'General - Test Unit','Laboratory Services - Test Unit', 'Radiology - Test Unit','Result Unit','Customer Service Unit','Rebate Unit']
+            deparments:['Admin Unit','Audit Unit', 'Administration','Test Unit', 'General - Test Unit','Laboratory Services - Test Unit', 'Radiology - Test Unit','Result Unit','Customer Service Unit','Rebate Unit']
         },
     ]
 

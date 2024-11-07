@@ -114,7 +114,7 @@ const Dashboard = () => {
   return (
     <>
         <div className="mt-2">
-            { (department == 'Administration' || department == 'Audit Unit') ? <div className="grid grid-cols-4 gap-5">
+            { (department == 'Administration' || department == 'Audit Unit' || department == 'Admin Unit') ? <div className="grid grid-cols-4 gap-5">
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Total Referrals</p>
                     <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
@@ -200,7 +200,7 @@ const Dashboard = () => {
                 { department !== 'Rebate Unit' ? <div className="bg-white min-w-[35%] h-full p-5 rounded-lg border">
                     <div className="flex items-center justify-between pb-3 border-b">
                         {
-                         (department == 'Customer Service Unit' || department == 'Administration' || department == 'Audit Unit') ?
+                         (department == 'Customer Service Unit' || department == 'Administration' || department == 'Audit Unit' || department == 'Admin Unit') ?
                          <p className='font-semibold' >Referrals Stats</p> : 
                           (department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ) ? 
                           <p className='font-semibold' >Daily Test Analysis</p> :
@@ -211,7 +211,7 @@ const Dashboard = () => {
                     </div>
                     <div className="mt-3">
                        {
-                         (department == 'Customer Service Unit' || department == 'Administration' || department == 'Audit Unit') ?
+                         (department == 'Customer Service Unit' || department == 'Administration' || department == 'Audit Unit' || department == 'Admin Unit') ?
                           <p className='text-sm' >Analysis of pending & completed referrals</p> : 
                          ( department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ) ? 
                           <p className='text-sm' >Analysis of daily pending & completed tests </p> : 
@@ -243,7 +243,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div> : null}
-              {(department == 'Administration' || department == 'Audit Unit' || department == 'Rebate Unit') ?  <div className="flex-1 rounded-lg border border-custom_gray bg-white">
+              {(department == 'Administration' || department == 'Audit Unit' || department == 'Admin Unit' || department == 'Rebate Unit') ?  <div className="flex-1 rounded-lg border border-custom_gray bg-white">
                     <div className="flex items-center justify-between p-3 border-b">
                         <p className='font-semibold' >Rebate Earning</p>
                         <div className="flex items-center bg-custom_gray p-1 px-1.5 rounded-3xl">
@@ -322,7 +322,7 @@ const Dashboard = () => {
                     : null
                 }
             </div> 
-            { (department == 'Administration' || department == 'Audit Unit' || department == 'Customer Service Unit') ? <div className="flex gap-5 mt-5">
+            { (department == 'Administration' || department == 'Audit Unit' || department == 'Admin Unit' || department == 'Customer Service Unit') ? <div className="flex gap-5 mt-5">
                 <div className="flex-1 bg-white rounded-xl border pb-3">
                     <div className="flex items-center justify-between p-3 border-b">
                         <p className='font-semibold' >Calendar Appointments</p>
