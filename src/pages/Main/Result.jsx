@@ -384,9 +384,9 @@ const Results = () => {
                 <button onClick={toggleViewTest} className="max-h-[30px] ml-auto flex items-center gap-1 border-b">
                 <CgClose color='white' />
                     close</button>
-                <img className='flex-1 max-h-[90dvh] mx-auto mb-5' src={details?.result_image} alt="previwe" />       
+                <img className='flex-1 max-h-[90dvh] mx-auto mb-5' src={details?.result_image} alt="preview" />       
                 {/* <button onClick={() => downloadFile(details?.result_image,`${details?.full_name} Test Result`)} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</button>             */}
-                <a download target='_blank' href={details?.result_status} className="max-h-[45px] -mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</a>            
+                <a download target='_blank' href={details?.result_image} className="max-h-[45px] -mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</a>            
             </div> : null
         }
 

@@ -20,6 +20,7 @@ const endpoints = {
     APPOINTMENT_STATS:'admin/appointments-stats',
     ACTIVITIES:'/admin/all-notifications',
     TEST_STATS:'/admin/department-data',
+    RESULT_DASHBOARD_DETAILS:'admin/result/dashboard-detail',
   },
   referrals:{
     GET_REFERRALS:'/admin/all-referrals',

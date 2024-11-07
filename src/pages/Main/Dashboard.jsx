@@ -42,6 +42,7 @@ const Dashboard = () => {
     const [date, setDate] = useState(() => moment().format('y-MM-DD'));
     const [todayBooking, setTodayBooking] = useState([]);
     const [testStats, setTestStats] = useState(null);
+    const [resultStats, setResultStats] = useState(null);
     const [tab, setTab] = useState(0);
 
     const navigate = useNavigate('');
@@ -71,6 +72,13 @@ const Dashboard = () => {
     const { isLoading:loadingTestStats }  = useQuery('test-stats', () => DashboardServices.GetTestStats(admin_id), {
     onSuccess:res => {
         setTestStats(res.data);
+        }
+    });
+    
+    
+    const { isLoading:loadingResultStats }  = useQuery('result-stats', () => DashboardServices.GetResultDashboardDetails(admin_id), {
+    onSuccess:res => {
+        setResultStats(res.data);
         }
     });
     
@@ -194,22 +202,27 @@ const Dashboard = () => {
                         {
                          (department == 'Customer Service Unit' || department == 'Administration' || department == 'Audit Unit') ?
                          <p className='font-semibold' >Referrals Stats</p> : 
-                          (department == 'General' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
-                          <p className='font-semibold' >Daily Test Analysis</p> : null
+                          (department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ) ? 
+                          <p className='font-semibold' >Daily Test Analysis</p> :
+
+                          (department == 'Result Unit') ? 
+                          <p className='font-semibold' >Result Analysis</p> : null
                        }
                     </div>
                     <div className="mt-3">
                        {
                          (department == 'Customer Service Unit' || department == 'Administration' || department == 'Audit Unit') ?
                           <p className='text-sm' >Analysis of pending & completed referrals</p> : 
-                         ( department == 'General' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? 
-                          <p className='text-sm' >Analysis of daily pending & completed tests </p> : null
+                         ( department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ) ? 
+                          <p className='text-sm' >Analysis of daily pending & completed tests </p> : 
+                          (department == 'Result Unit') ? 
+                          <p className='text-sm' >Analysis of pending & uploaded results</p> : null
                        }
                         <div className="flex flex-col">
                             <div className=" -ml-10 h-[250px]">
                                 <PieChart 
-                                    completed = {(department == 'General' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed} 
-                                    pending= { (department == 'General' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit' ) ? testStats?.percentage?.pending_tests : referralStats?.pending} />
+                                    completed = {(department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit') ? testStats?.percentage?.completed_tests : department == 'Result Unit' ? resultStats?.uploaded_results : referralStats?.completed} 
+                                    pending= { (department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ) ? testStats?.percentage?.pending_tests :  department == 'Result Unit' ? resultStats?.awaiting_results :referralStats?.pending} />
                             </div>
                             <div className="flex justify-center items-center text-center gap-10">
                                 <div className="">
@@ -217,14 +230,14 @@ const Dashboard = () => {
                                         <div className="w-2 h-2 rounded-full bg-[#00C49F]"></div>
                                         <span>Completed</span>
                                     </div>
-                                    <p className='pl-'>{ (department == 'General' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.completed_tests : referralStats?.completed}</p>
+                                    <p className='pl-'>{ (department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ) ? testStats?.percentage?.completed_tests : department == 'Result Unit' ? resultStats?.uploaded_results : referralStats?.completed}</p>
                                 </div>
                                 <div className="">
                                     <div className="text-sm flex items-center gap-1">
                                         <div className="w-2 h-2 rounded-full bg-light_blue"></div>
                                         <span>Pending</span>
                                     </div>
-                                    <p className='pl-'>{(department == 'General' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? testStats?.percentage?.pending_tests : referralStats?.pending}</p>
+                                    <p className='pl-'>{(department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ) ? testStats?.percentage?.pending_tests : department == 'Result Unit' ? resultStats?.awaiting_results : referralStats?.pending}</p>
                                 </div>
                             </div> 
                         </div>
@@ -281,13 +294,13 @@ const Dashboard = () => {
                     : null
                 }
                 {
-                    (department == 'General' || department == 'Laboratory Services' || department == 'Radiology' || department == 'Result Unit') ? 
+                    (department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' || department == 'Result Unit') ? 
                     <div className="w-full grid gap-5">
                          <div className="w-full bg-white rounded-lg p-5 border">
-                            <p>Total Sub Tests</p>
-                            <p className='font-semibold text-xl my-3'>{testStats?.total_medical_tests}</p>
+                            <p>{department == 'Result Unit' ? 'Total Uploaded Results' : 'Total Sub Tests'} </p>
+                            <p className='font-semibold text-xl my-3'>{ department == 'Result Unit' ? resultStats?.uploaded_results : testStats?.total_medical_tests}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
-                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
+                                {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p> */}
                                 {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />
@@ -295,10 +308,10 @@ const Dashboard = () => {
                             </div>
                         </div>
                         <div className="w-full bg-white rounded-lg p-5 border">
-                            <p>Total Test Categories</p>
-                            <p className='font-semibold text-xl my-3'>{testStats?.total_category}</p>
+                        <p>{department == 'Result Unit' ? 'Total Awaiting Results' : 'Total Test Categories'} </p>
+                        <p className='font-semibold text-xl my-3'>{ department == 'Result Unit' ? resultStats?.awaiting_results : testStats?.total_category}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
-                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
+                                {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p> */}
                                 {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />

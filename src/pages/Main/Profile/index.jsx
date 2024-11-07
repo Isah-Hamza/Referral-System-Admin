@@ -104,7 +104,7 @@ const Profile = ({}) => {
     {
       title:'Test Categories',
       icon:<LuTestTube2 size={20} />,
-      hide: ['Administration','Audit Unit','Laboratory Services','General','Laboratory Services' ,'Radiology'].indexOf(department) < 0,
+      hide: ['Administration','Audit Unit','Laboratory Services - Test Unit','General - Test Unit','Laboratory Services - Test Unit' ,'Radiology - Test Unit'].indexOf(department) < 0,
     },
     {
       title:'Appointment Settings',

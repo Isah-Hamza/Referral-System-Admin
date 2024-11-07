@@ -48,7 +48,7 @@ const MainLayout = () => {
                 header:'Dashboard Overview',
                 sub:'Manage and analyze your patient statistics.',
             },
-            deparments:['Audit Unit', 'Administration','Test Unit','General', 'Laboratory Services', 'Radiology', 'Result Unit','Customer Service Unit','Rebate Unit']
+            deparments:['Audit Unit', 'Administration','Test Unit','General - Test Unit', 'Laboratory Services - Test Unit', 'Radiology - Test Unit', 'Result Unit','Customer Service Unit','Rebate Unit']
         },
         {
             title:'Referrals',
@@ -80,7 +80,7 @@ const MainLayout = () => {
                 header:'Test Management',
                 sub:'Manage and organize test categories and sub-tests.',
             },
-            deparments:['Audit Unit', 'Administration','Test Unit', 'General','Laboratory Services' ,'Radiology']
+            deparments:['Audit Unit', 'Administration','Test Unit', 'General - Test Unit','Laboratory Services - Test Unit' ,'Radiology - Test Unit']
 
         },
         {
@@ -143,7 +143,7 @@ const MainLayout = () => {
                 header:'Settings',
                 sub:'Customize and manage your account and platform preferences.',
             },
-            deparments:['Audit Unit', 'Administration','Test Unit', 'General','Laboratory Services', 'Radiology','Result Unit','Customer Service Unit','Rebate Unit']
+            deparments:['Audit Unit', 'Administration','Test Unit', 'General - Test Unit','Laboratory Services - Test Unit', 'Radiology - Test Unit','Result Unit','Customer Service Unit','Rebate Unit']
         },
     ]
 
