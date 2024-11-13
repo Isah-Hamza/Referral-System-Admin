@@ -139,44 +139,6 @@ const Profile = ({}) => {
     }
   }
 
-  const dummy = [
-    {
-        user:'Jersey Russvelt',
-        email:'roosevelt.jersey@gmail.com',
-        phone:'903 2393 343',
-        role:'Tests - Gynaecology'
-    },
-    {
-        user:'Abdullahi Magdalene',
-        email:'abd.mag@hotmail.com',
-        phone:'801 4359 940',
-        role:'Finance'
-    },
-    {
-        user:'Jersey Russvelt',
-        email:'roosevelt.jersey@gmail.com',
-        phone:'903 2393 343',
-        role:'Tests - Gynaecology'
-    },
-    {
-        user:'Abdullahi Magdalene',
-        email:'abd.mag@hotmail.com',
-        phone:'801 4359 940',
-        role:'Finance'
-    },
-    {
-        user:'Jersey Russvelt',
-        email:'roosevelt.jersey@gmail.com',
-        phone:'903 2393 343',
-        role:'Tests - Gynaecology'
-    },
-    {
-        user:'Abdullahi Magdalene',
-        email:'abd.mag@hotmail.com',
-        phone:'801 4359 940',
-        role:'Finance'
-    },
-  ]
 
   const close = () => {
     toggleSuccessful();

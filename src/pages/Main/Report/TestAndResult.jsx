@@ -43,10 +43,10 @@ const TestAndResult = ({testStats}) => {
                         <p>Completed Tests</p>
                         <div className="flex items-center gap-2">
                         <p className='font-semibold text-xl my-3'>{testStats?.total_completed_tests}</p>
-                        <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
+                        {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p> */}
                         </div>
                         <div className="flex items-center justify-between gap-5 mt-5">
-                            <p className='text-sm py-0.5' >Compared to last month</p>
+                            {/* <p className='text-sm py-0.5' >Compared to last month</p> */}
                             
                         </div>
                     </div>

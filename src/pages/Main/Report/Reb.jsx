@@ -47,7 +47,7 @@ const Reb = ({rebateStats}) => {
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Monthly Rebate Earned</p>
                     <p className='font-semibold text-xl my-3'>{ ConvertToNaira(rebateStats?.total_rebate_earned)}</p>
-                    <div className="flex text-sm items-center gap-1 mt-5">
+                    {/* <div className="flex text-sm items-center gap-1 mt-5">
                         {
                          true == 'increase' ?
                               <div className="text-green-500 font-medium flex items-center gap-1">
@@ -60,7 +60,7 @@ const Reb = ({rebateStats}) => {
                             </div> 
                         }
                         <span>vs last month</span>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="bg-white rounded-lg p-5 border">
                     <p>Total Payouts Settled</p>

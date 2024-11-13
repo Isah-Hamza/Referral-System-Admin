@@ -41,10 +41,10 @@ const Ref = ({refStat}) => {
               <p>Total Referrals</p>
               <div className="flex items-center gap-2">
                 <p className='font-semibold text-xl my-3'>{refStat?.total_referrals}</p>
-                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
+                {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p> */}
               </div>
               <div className="flex items-center justify-between gap-5 mt-5">
-                  <p className='text-sm py-0.5' >Compared to last month</p>
+                  {/* <p className='text-sm py-0.5' >Compared to last month</p> */}
                   {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                       <span>View All</span>
                       <MdArrowForward />
@@ -56,10 +56,10 @@ const Ref = ({refStat}) => {
                 <p>Total Referrers</p>
                 <div className="flex items-center gap-2">
                   <p className='font-semibold text-xl my-3'>{refStat?.total_referrers}</p>
-                  <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
+                  {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p> */}
                 </div>
                 <div className="flex items-center justify-between gap-5 mt-5">
-                    <p className='text-sm py-0.5' >Compared to last month</p>
+                    {/* <p className='text-sm py-0.5' >Compared to last month</p> */}
                     
                 </div>
             </div>
@@ -67,10 +67,10 @@ const Ref = ({refStat}) => {
                 <p>Active Referrers</p>
                 <div className="flex items-center gap-2">
                   <p className='font-semibold text-xl my-3'>{refStat?.active_referrers}</p>
-                  <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p>
+                  {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-3xl' >+21</p> */}
                 </div>
                 <div className="flex items-center justify-between gap-5 mt-5">
-                    <p className='text-sm py-0.5' >Compared to last month</p>
+                    {/* <p className='text-sm py-0.5' >Compared to last month</p> */}
                     
                 </div>
             </div>
