@@ -70,7 +70,7 @@ const Report = () => {
                 tabs.map((item,idx) => <button key={idx} onClick={() => setActiveTab(idx)} className={`${activeTab == idx && 'bg-primary text-white rounded-3xl'} min-w-[120px] py-3 px-3`} >{item}</button>)
             }
         </div>
-        <Select className={'min-w-[120px]'} options={durations} />
+        {/* <Select className={'min-w-[120px]'} options={durations} /> */}
       </div>
       {
         (loadingAppointmentTrend || loadingRef || loadingAppointmentStats || loadingRebateStats || loadingTestStats) ?

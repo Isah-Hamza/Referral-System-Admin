@@ -43,9 +43,11 @@ const Profile = ({}) => {
   const department = JSON.parse(window.localStorage.getItem('referrer-admin'))?.department?.name;
   console.log(department)
   const [activeTab, setActiveTab] = useState(0);
+  const [userToDelete, setUserToDelete] = useState(0);
   const [successful, setSuccessful] = useState(false);
   const [deleteAccount, setDeleteAccount] = useState(false);
   const [invite, setInvite] = useState(false);
+  const [deleteUser, setDeleteUser] = useState(false);
 
   const [newCategory, setNewCategory] = useState(false);
   const [newCategory2, setNewCategory2] = useState(false);
@@ -87,6 +89,8 @@ const Profile = ({}) => {
   const toggleDeleteCategory = () => setDeleteCategory(!deleteCategory);
   const toggleChangeRole = () => setChangeRole(!changeRole);
   const toggleInvite = () => setInvite(!invite);
+
+  const toggleDeleteUser = () => setDeleteUser(!deleteUser);
 
   const tabs = [
     {
@@ -190,7 +194,7 @@ const Profile = ({}) => {
 
     const { isLoading:deletingUser, mutate:deleteUserMutate}  = useMutation(Settings.RemoveSubAdmin, {
       onSuccess:res => {
-          // toggleChangeRole()
+          toggleDeleteUser()
           successToast(res.data.message);
           refetchSubAdmins();
           },
@@ -475,6 +479,11 @@ const sendInvites = () => {
   sendInviteMutate({subadmins:data});
 }
 
+const deleteUserFn = (id) => {
+  toggleDeleteUser();
+  setUserToDelete(id);
+}
+
 useEffect(() => {
   if(appointment) setSchedules(appointment);
 }, [appointment])
@@ -618,7 +627,7 @@ useEffect(() => {
                                                           <BiEdit size={17} /> Change Role
                                                       </button> 
                                                       <button 
-                                                          onClick={() => deleteUserMutate({ subadmin_id: selectedAdminId?.admin_id})} 
+                                                          onClick={() => deleteUserFn(selectedAdminId?.admin_id)} 
                                                           className="whitespace-nowrap flex items-center gap-2 text-red-700 w-full rounded-md px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
                                                           <BiTrash size={17} /> Delete User
                                                       </button> 
@@ -848,6 +857,20 @@ useEffect(() => {
                    <div className="mt-10 flex items-center gap-5 ">
                    <Button onClick={toggleDeleteCategory} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
                    <Button onClick={toggleDeleteCategory} className={'!px-5 bg-red-600'} title={'Yes Proceed'} />
+                   </div>
+                 </div>
+               </div> : null
+        }
+         {
+            deleteUser ? 
+               <div className='bg-black/50 fixed inset-0 grid place-content-center' >
+                 <div className="bg-white w-[350px] p-5 rounded-2xl flex flex-col justify-center text-center gap-3 text-sm">
+                   <img className='w-12 m-auto' src={deleteIcon} alt="delete" />
+                   <p className='text-base font-semibold' >Remove This User</p>
+                   <p className='text-sm' >Are you sure you want to remove this user?</p>
+                   <div className="mt-10 flex items-center gap-5 ">
+                   <Button onClick={toggleDeleteUser} className={'!px-5 !bg-white !text-text_color border border-text_color '} title={'Cancel'} />
+                   <Button onClick={() => deleteUserMutate({ subadmin_id: userToDelete})} className={'!px-5 bg-red-600'} title={'Yes Proceed'} />
                    </div>
                  </div>
                </div> : null
