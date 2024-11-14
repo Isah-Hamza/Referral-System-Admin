@@ -72,7 +72,8 @@ const Dashboard = () => {
     const { isLoading:loadingTestStats }  = useQuery('test-stats', () => DashboardServices.GetTestStats(admin_id), {
     onSuccess:res => {
         setTestStats(res.data);
-        }
+        },
+        enabled: (department == 'General - Test Unit' || department == 'Laboratory Services - Test Unit' || department == 'Radiology - Test Unit' ),
     });
     
     

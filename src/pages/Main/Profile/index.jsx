@@ -658,7 +658,7 @@ useEffect(() => {
                         <p className='text-base font-semibold' >Test Categories</p>
                         <p className='text-sm' >View/manage test categoreis.</p>
                     </div>
-                    <button onClick={toggleNewCategory2} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-10 py-2 text-sm">
+                    <button onClick={() => { setCatTitle(''); toggleNewCategory2()}} className="justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium px-10 py-2 text-sm">
                     <span>Add New Category</span>
                 </button>
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { errorToast } from "../utils/Helper";
 
 const DEBUG = process.env.NODE_ENV === "development";
 
@@ -13,7 +14,6 @@ export const axiosClient = () => {
   axiosInstance.interceptors.request.use(
     (config) => {
       let token = window.localStorage.getItem("referrer-admin-token") ?? JSON.parse(window.localStorage.getItem("referrer-user"))?.token ;
-      // let token = JSON.parse(window.localStorage.getItem("referrer-user"))?.token;
 
       if (token !== null && typeof token !== 'string' && token !== 'undefined' && token !== undefined) {
         token = JSON.parse(token);
@@ -41,6 +41,11 @@ export const axiosClient = () => {
       return response;
     },
     (error) => {
+      if (error.response && error.response.status === 401) {
+        window.location.href = '/';
+        errorToast('Session expired. Please Login again');
+        console.log('401 reached')
+      }
       if (error.response && error.response.data) {
         return Promise.reject(error.response.data);
       }
