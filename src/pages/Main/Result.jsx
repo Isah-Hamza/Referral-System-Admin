@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Input from '../../components/Inputs'
-import { BiCopy, BiCopyAlt, BiPhoneIncoming, BiSearch, BiTestTube, BiUser, BiZoomOut } from 'react-icons/bi'
+import { BiCopy, BiCopyAlt, BiPhoneIncoming, BiPrinter, BiSearch, BiTestTube, BiUser, BiZoomOut } from 'react-icons/bi'
 import Select from '../../components/Inputs/Select'
 import Button from '../../components/Button'
 import { CgClose, CgMail } from 'react-icons/cg'
@@ -102,6 +102,17 @@ const Results = () => {
         formData.append('result_file', file),
         uploadResult(formData);
     }
+
+    const handlePrint = (remoteFileUrl) => {
+        // Create a new window or iframe for printing the file
+        const printWindow = window.open(remoteFileUrl, '_blank');
+    
+        // Wait for the content to load, then trigger the print dialog
+        printWindow.onload = () => {
+          printWindow.print(); // Trigger the print dialog
+          printWindow.close(); // Close the print window after printing
+        };
+      };
 
     
     const { isLoading:searchingAwaiting, mutate:searchAwaiting }  = useMutation(Result.SearchAwaitingResults, {
@@ -249,7 +260,7 @@ const Results = () => {
                                     <div key={idx} className="bg-white rounded-md border p-3 text-sm">
                                         <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
                                             <p className='' >{item.type}</p>
-                                            <p className='text-3xl opacity-70' >0{idx + 1}</p>
+                                            {/* <p className='text-3xl opacity-70' >0{idx + 1}</p> */}
                                         </div>
                                         <div className="flex text-sm items-center justify-between gap-2">
                                             <p className='' >{item.category}</p>
@@ -302,9 +313,9 @@ const Results = () => {
                                             <BiZoomOut size={20} className='text-white' />
                                         </div>
                                         <img className='min-h-[100px]' src={details?.result_image} alt="preview" /> 
-                                            <button className="shadow-md absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
+                                            {/* <button className="shadow-md absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
                                             <BsFillTrashFill size={15} color='red' />
-                                        </button> 
+                                        </button>  */}
                                     </div>
                                 </div>
                             </div> 
@@ -370,8 +381,8 @@ const Results = () => {
                     </div>
                     <div className="bg-white flex flex-col overflow-y-auto">
                         <div className="p-3 flex items-center gap-5 justify-between">
-                            <p className='font-semibold opacity-90 '>Uploaded Tests</p>
-                            <button className='underline'>upload more</button>
+                            {/* <p className='font-semibold opacity-90 '>Uploaded Tests</p> */}
+                            {/* <button className='underline'>upload more</button> */}
                         </div>
 
                         <div className="mt-auto p-5 grid grid-cols-2 gap-5">
@@ -392,9 +403,9 @@ const Results = () => {
                 <button onClick={toggleViewTest} className="max-h-[30px] ml-auto flex items-center gap-1 border-b">
                 <CgClose color='white' />
                     close</button>
-                <img className='flex-1 max-h-[80dvh] min-h-[200px] min-w-[200px] bg-gray-100 mx-auto mb-5 ' src={details?.result_image} alt="preview" />       
+                <img className='border rounded-md flex-1 max-h-[80dvh] min-h-[200px] min-w-[200px] bg-gray-100 mx-auto mb-5 ' src={details?.result_image} alt="preview" />       
                 {/* <button onClick={() => downloadFile(details?.result_image,`${details?.full_name} Test Result`)} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</button>             */}
-                <a download target='_blank' href={details?.result_image} className="max-h-[45px] -mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</a>            
+                <button onClick={() => handlePrint(details?.result_image)} className="max-h-[45px] border -mt-8 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <BiPrinter color='white' /> Print</button>            
             </div> : null
         }
 

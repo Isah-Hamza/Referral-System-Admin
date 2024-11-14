@@ -246,7 +246,7 @@ const Category = () => {
                                 <div key={idx} className="bg-white rounded-md border p-3 text-sm">
                                     <div className="mb-2 font-semibold flex gap-2 justify-between items-center">
                                         <p className='' >{item.type}</p>
-                                        <p className='text-3xl opacity-70' >0{idx + 1}</p>
+                                        {/* <p className='text-3xl opacity-70' >0{idx + 1}</p> */}
                                     </div>
                                     <div className="flex text-sm items-center justify-between gap-2">
                                         <p className='' >{item.category}</p>
