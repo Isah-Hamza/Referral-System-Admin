@@ -120,7 +120,7 @@ const Dashboard = () => {
                     <p>Total Referrals</p>
                     <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
                     <div className="flex items-center justify-between gap-5 mt-5">
-                        <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
+                        {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p> */}
                         {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                             <span>View All</span>
                             <MdArrowForward />
@@ -131,7 +131,7 @@ const Dashboard = () => {
                     <p>Total Referrers</p>
                     <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrers}</p>
                     <div className="flex items-center justify-between gap-5 mt-5">
-                        <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
+                        {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p> */}
                         {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                             <span>View All</span>
                             <MdArrowForward />
@@ -273,7 +273,7 @@ const Dashboard = () => {
                             <p>Total Referrals</p>
                             <p className='font-semibold text-xl my-3'>{dashboardStats?.total_referrals}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
-                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p>
+                                {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+21</p> */}
                                 {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />
@@ -284,7 +284,7 @@ const Dashboard = () => {
                             <p>Total Booked Appointments</p>
                             <p className='font-semibold text-xl my-3'>{appointmentStats?.total_appointments}</p>
                             <div className="flex items-center justify-between gap-5 mt-5">
-                                <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p>
+                                {/* <p className='bg-[#C9E6FF] px-3 text-sm py-0.5 rounded-2xl' >+61</p> */}
                                 {/* <button className="text-primary flex items-center gap-1 font-semibold pl-7 text-sm">
                                     <span>View All</span>
                                     <MdArrowForward />
