@@ -24,7 +24,8 @@ import LoadingModal from '../../Loader/LoadingModal'
 import PageLoading from '../../Loader/PageLoading'
 
 const Results = () => {
-    
+
+    const [isPdf, setIsPdf] = useState(false);
     const [previewUrl, setPreviewUrl] = useState(null);
     const query = useLocation().search.split('=')[1];
     const [acitveTab, setActiveTab] = useState(0);
@@ -312,7 +313,11 @@ const Results = () => {
                                         <div className="group-hover:grid absolute inset-0 bg-black/50 hidden place-content-center">
                                             <BiZoomOut size={20} className='text-white' />
                                         </div>
-                                        <img className='min-h-[100px]' src={details?.result_image} alt="preview" /> 
+                                        {
+                                            details?.result_image?.endsWith('.pdf') ? 
+                                            <div className='min-h-[150px] grid place-content-center text-center bg-black/25' > Click To preview PDF </div> :
+                                            <img className='min-h-[100px]' src={details?.result_image} alt="preview" /> 
+                                        }
                                             {/* <button className="shadow-md absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white border grid place-content-center">
                                             <BsFillTrashFill size={15} color='red' />
                                         </button>  */}
@@ -323,7 +328,11 @@ const Results = () => {
                         <div className="grid  gap-5 mt-20">
                             <input
                             onChange={(e) => {
-                                setFile(e.target.files[0])
+                                setFile(e.target.files[0]);
+                                if(e.target?.files[0]?.type == 'application/pdf')
+                                    setIsPdf(true)
+                                else setIsPdf(false);
+                                
                                 toggleUploadTest(); 
                                 toggleViewDetails();
                                 if (e.target.files.length > 0) {
@@ -376,8 +385,19 @@ const Results = () => {
         {
            uploadTest ? <div className='bg-black/50 fixed inset-0 grid place-content-center' >
                 <div className="relative grid grid-cols-3 overflow-hidden bg-[#ededed] w-[1000px] max-h-[95vh] my-auto  rounded-2xl gap-3 text-sm">
-                    <div className="col-span-2 max-h-[inherit] px-7 py-14">
+                    <div className="col-span-2 max-h-[inherit] px-7 py-14 min-w-[200px] min-h-[300px]">
+                     {
+                        isPdf ? 
+                        <embed
+                            src={previewUrl}
+                            width="100%"
+                            height="500px"
+                            type="application/pdf"
+                            style={{ border: '1px solid #ccc' }}
+                            />
+                        :
                         <img className='w-full h-full' src={previewUrl ?? preview} alt="preview" />
+                     }
                     </div>
                     <div className="bg-white flex flex-col overflow-y-auto">
                         <div className="p-3 flex items-center gap-5 justify-between">
@@ -403,7 +423,18 @@ const Results = () => {
                 <button onClick={toggleViewTest} className="max-h-[30px] ml-auto flex items-center gap-1 border-b">
                 <CgClose color='white' />
                     close</button>
-                <img className='border rounded-md flex-1 max-h-[80dvh] min-h-[200px] min-w-[200px] bg-gray-100 mx-auto mb-5 ' src={details?.result_image} alt="preview" />       
+                    {
+                        details?.result_image?.endsWith('.pdf') ? 
+                        <div className='mx-auto'>
+                        <embed
+                        src={details?.result_image}
+                        width="700px"
+                        height="500px"
+                        type="application/pdf"
+                        style={{ border: '1px solid #ccc' }}
+                        /> </div>:
+                        <img className='border rounded-md flex-1 max-h-[80dvh] min-h-[200px] min-w-[200px] bg-gray-100 mx-auto mb-5 ' src={details?.result_image} alt="preview" />       
+                    }
                 {/* <button onClick={() => downloadFile(details?.result_image,`${details?.full_name} Test Result`)} className="-mt-10 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <FcDownload color='white' /> Download Result</button>             */}
                 <button onClick={() => handlePrint(details?.result_image)} className="max-h-[45px] border -mt-8 mb-5 mx-auto bg-primary px-7 p-2 rounded-3xl flex items-center gap-1 text-white"> <BiPrinter color='white' /> Print</button>            
             </div> : null
