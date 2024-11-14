@@ -336,7 +336,7 @@ const Results = () => {
                                     // previewImage.style.display = 'block';
                                 }
                             }} 
-                            hidden accept='image/png,image/jpg,image/jpeg,image/webp' type="file" name="file" id="file" />
+                            hidden accept='image/png,image/jpg,image/jpeg,image/webp,.pdf' type="file" name="file" id="file" />
                             <label htmlFor='file' 
                             className="cursor-pointer justify-center bg-light_blue text-white border rounded-3xl flex  items-center gap-3 font-medium pl-7  py-2 text-sm">
                                 <BiTestTube size={18} />
