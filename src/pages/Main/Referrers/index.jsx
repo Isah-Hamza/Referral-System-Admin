@@ -207,7 +207,7 @@ const Referrers = () => {
                     <p className='col-span-2 line-clamp-1' >{item.referrer_email}</p>
                     <p className='' >{item.referrer_phone}</p>
                     <p className='' >{item.total_referrals}</p>
-                    <p className='' >{ ConvertToNaira(item.total_rebate)}</p>
+                    <p className='' >{ ConvertToNaira(item.total_rebates)}</p>
                     <p onClick={()=> { setId(item.referrer_id); toggleViewDetails()}} className='font-semibold text-light_blue cursor-pointer' >View Details</p>
                     </div>
                     )) 

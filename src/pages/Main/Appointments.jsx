@@ -293,7 +293,7 @@ const Appointments = () => {
                     <div key={idx} className={`${idx % 2 !== 1 && 'bg-[#f9f9f9]'} header grid grid-cols-10  gap-3 px-5 py-6 font-medium`}>
                     <p className='col-span-2 line-clamp-1' >{item.patient_name}</p>
                     <p className='col-span-2 line-clamp-1' >{moment(item.appointment_date).format('lll')}</p> 
-                    <p className='col-span-2 line-clamp-1 pr-5' >{item.amount ?? '-'}</p>
+                    <p className='col-span-2 line-clamp-1 pr-5' >{ item.amount_paid !== 'N/A' ? ConvertToNaira(item.amount_paid) : item.amount_paid } </p>
                     <p className='col-span-2 line-clamp-1 pr-5' >
                         {item.status == 1 ? <div className='bg-primary w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Checked In</div> : null}
                         {item.status == 0 ? <div className='bg-red-500 w-fit text-white p-1.5 px-3 rounded-3xl font-medium' >Not Checked In</div> : null}
@@ -437,10 +437,10 @@ const Appointments = () => {
                                 <button onClick={toggleShowMore} className='w-12 h-12 relative rounded-full grid place-content-center border border-black' >
                                     <HiEllipsisHorizontal />
                                    {showMore ? <div className="p-3 flex flex-col gap-3 absolute bottom-[60px] right-4 min-h-52 border rounded-lg bg-white shadow w-52">
-                                        <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
+                                        {/* <p className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
                                             <CgEye size={18} />
                                             <span>View Patient Details</span>
-                                        </p>
+                                        </p> */}
                                         <p onClick={toggleFollowUp} className="h-fit flex items-center gap-3 font-medium  py-2 text-sm">
                                             <CgMail size={18} />
                                             <span>Send Follow Up</span>
@@ -525,8 +525,8 @@ const Appointments = () => {
                        {
                          ['Emergency (family&personal)','Double Bookings', 'Work Conflict','Patient Forgot','Long Wait Times'].map(item => <div className='flex items-center
                           gap-2 text-sm'>
-                            <input type="radio" name="" id="" />
-                            <p>{item}</p>
+                            <input type="radio" name={'missed_appointment'} id={item} radioGroup='missed_appointment' />
+                            <label htmlFor={item} >{item}</label>
                          </div>)
                        }
                     </div>
